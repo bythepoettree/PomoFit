@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PomoFit — Pomodoro focus with workout breaks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ease: cubic-bezier(.22,.9,.3,1); }
+  /* ---------- THEME: Ember (default) ---------- */
+  body[data-mode="focus"]{
+    --bg:#171C2B; --bg2:#1E2435; --fg:#EFEAE3; --muted:#8A93A8;
+    --accent:#86D7B4; --accent-ink:#0E2A1F; --line:rgba(239,234,227,.14); --chip:#232B40;
+  }
+  body[data-mode="sweat"]{
+    --bg:#F4451F; --bg2:#D7350F; --fg:#1A0E07; --muted:#581D08;
+    --accent:#22100A; --accent-ink:#FFE2CF; --line:rgba(26,14,7,.22); --chip:#FF5C36;
+  }
+  body[data-mode="rest"]{
+    --bg:#22304A; --bg2:#2A3A58; --fg:#EFEAE3; --muted:#93A0BC;
+    --accent:#FFC56F; --accent-ink:#3A2503; --line:rgba(239,234,227,.14); --chip:#2E4061;
+  }
+  /* ---------- THEME: Forest ---------- */
+  body[data-theme="forest"][data-mode="focus"]{
+    --bg:#14301F; --bg2:#1B3C2B; --fg:#EDF3E6; --muted:#8FA892;
+    --accent:#A8E063; --accent-ink:#1E3308; --line:rgba(237,243,230,.14); --chip:#22332A;
+  }
+  body[data-theme="forest"][data-mode="sweat"]{
+    --bg:#E8A317; --bg2:#C9890C; --fg:#221703; --muted:#5F4708;
+    --accent:#173B22; --accent-ink:#D9F2C0; --line:rgba(34,23,3,.2); --chip:#F2B335;
+  }
+  body[data-theme="forest"][data-mode="rest"]{
+    --bg:#1D3A35; --bg2:#244741; --fg:#EDF3E6; --muted:#8FB0A8;
+    --accent:#FFD37A; --accent-ink:#3A2A03; --line:rgba(237,243,230,.14); --chip:#2A524B;
+  }
+  /* ---------- THEME: Ocean ---------- */
+  body[data-theme="ocean"][data-mode="focus"]{
+    --bg:#0E2B55; --bg2:#153567; --fg:#E8F1FA; --muted:#7E96B5;
+    --accent:#5FD4F4; --accent-ink:#04293A; --line:rgba(232,241,250,.14); --chip:#1A2F52;
+  }
+  body[data-theme="ocean"][data-mode="sweat"]{
+    --bg:#E83D74; --bg2:#C92A5C; --fg:#23040F; --muted:#6B0F2E;
+    --accent:#23040F; --accent-ink:#FFD9E8; --line:rgba(35,4,15,.24); --chip:#F25588;
+  }
+  body[data-theme="ocean"][data-mode="rest"]{
+    --bg:#1F2A52; --bg2:#283566; --fg:#E8F1FA; --muted:#8C9AC7;
+    --accent:#8FF0D2; --accent-ink:#063326; --line:rgba(232,241,250,.14); --chip:#2F3D74;
+  }
+  /* ---------- THEME: Mono ---------- */
+  body[data-theme="mono"][data-mode="focus"]{
+    --bg:#101012; --bg2:#1A1A1E; --fg:#F4F4F2; --muted:#8E8E94;
+    --accent:#FFD60A; --accent-ink:#2B2300; --line:rgba(244,244,242,.14); --chip:#222226;
+  }
+  body[data-theme="mono"][data-mode="sweat"]{
+    --bg:#FFD60A; --bg2:#E6BE00; --fg:#161300; --muted:#564B00;
+    --accent:#101012; --accent-ink:#FFE96B; --line:rgba(22,19,0,.22); --chip:#FFE042;
+  }
+  body[data-theme="mono"][data-mode="rest"]{
+    --bg:#26262B; --bg2:#303037; --fg:#F4F4F2; --muted:#9A9AA2;
+    --accent:#9CFF57; --accent-ink:#1B3300; --line:rgba(244,244,242,.14); --chip:#3A3A42;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  button{touch-action:manipulation; user-select:none;}
+  body{
+    background:var(--bg); color:var(--fg);
+    font-family:'Space Grotesk', system-ui, sans-serif;
+    transition: background .6s var(--ease), color .6s var(--ease);
+    display:flex; flex-direction:column; align-items:center;
+    min-height:100dvh; padding:0 16px 32px;
+  }
+  @media (prefers-reduced-motion: reduce){ body{transition:none;} }
+
+  header{
+    width:100%; max-width:560px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 2px 0;
+  }
+  .wordmark{ font-family:'Anton', sans-serif; font-size:20px; letter-spacing:.06em; }
+  .wordmark em{font-style:normal; color:var(--accent);}
+  .tagline{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-top:2px;}
+  .icon-btn{
+    background:var(--chip); color:var(--fg); border:none;
+    border-radius:12px; padding:9px 13px; font-family:inherit; font-size:13px;
+    cursor:pointer; transition:transform .12s var(--ease), opacity .12s var(--ease); white-space:nowrap;
+  }
+  .icon-btn:hover{opacity:.85;}
+  .icon-btn:active{transform:scale(.95);}
+  .icon-btn[aria-pressed="true"]{outline:2px solid var(--accent);}
+  .music-wrap{position:relative;}
+  .music-menu{
+    position:absolute; top:calc(100% + 8px); right:0;
+    display:none; flex-direction:column; gap:8px;
+    background:var(--bg2); border:none; border-radius:16px;
+    padding:10px; min-width:200px; z-index:25;
+    box-shadow:0 14px 36px rgba(0,0,0,.35);
+  }
+  .music-wrap:hover .music-menu, .music-wrap.open .music-menu{display:flex;}
+  .music-opt{
+    display:block; width:100%; text-align:left;
+    background:var(--chip); border:none; color:var(--fg);
+    border-radius:12px; padding:12px 14px;
+    font-family:inherit; font-size:14px; font-weight:500; cursor:pointer;
+    transition:transform .12s var(--ease);
+  }
+  .music-opt:active{transform:scale(.97);}
+  .music-opt.active{background:var(--fg); color:var(--bg);}
+
+  .phase-strip{
+    width:100%; max-width:560px; margin-top:20px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .phase-label{
+    font-family:'Anton', sans-serif; font-size:14px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--accent);
+  }
+  .dots{display:flex; gap:7px;}
+  .dot{width:9px; height:9px; border-radius:50%; border:1.5px solid var(--muted); transition:all .3s;}
+  .dot.done{background:var(--accent); border-color:var(--accent);}
+  .dot.now{border-color:var(--accent); transform:scale(1.25);}
+
+  main{
+    width:100%; max-width:560px;
+    display:flex; flex-direction:column; align-items:center;
+    gap:8px; padding:14px 0 0;
+  }
+  .current-task{color:var(--muted); font-size:14.5px; margin-bottom:2px; text-align:center; max-width:40ch;}
+  .current-task b{color:var(--fg); font-weight:600;}
+  .timer{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(86px, 28vw, 160px);
+    line-height:1; letter-spacing:.01em;
+    font-variant-numeric: tabular-nums; user-select:none;
+  }
+  .sub{color:var(--muted); font-size:15px; text-align:center; max-width:36ch;}
+  .controls{display:flex; gap:12px; margin-top:18px; align-items:center; flex-wrap:wrap; justify-content:center;}
+  .btn{
+    font-family:'Anton', sans-serif; letter-spacing:.08em; font-size:18px;
+    padding:14px 36px; border-radius:16px; border:none; cursor:pointer;
+    background:var(--accent); color:var(--accent-ink);
+    transition:transform .12s var(--ease), opacity .12s var(--ease);
+  }
+  .btn:active{transform:scale(.97); opacity:.92;}
+  .btn.ghost{
+    background:var(--chip); color:var(--fg); border:none;
+    font-size:14px; padding:12px 20px; letter-spacing:.04em;
+  }
+  .btn:focus-visible,.icon-btn:focus-visible,.chip:focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+
+  /* ---------- tasks (Pomofocus style) ---------- */
+  .tasks-panel{width:100%; max-width:430px; margin-top:28px;}
+  .tp-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:2px solid var(--line); padding-bottom:8px;
+    font-weight:700; font-size:16px;
+  }
+  .tp-head span:last-child{font-size:12px; color:var(--muted); font-weight:500;}
+  .task-item{
+    display:flex; align-items:center; gap:10px;
+    background:var(--bg2); border-radius:10px; margin-top:8px; padding:12px;
+    border-left:5px solid transparent; cursor:pointer;
+  }
+  .task-item.selected{border-left-color:var(--accent);}
+  .task-item .t-check{
+    width:22px; height:22px; border-radius:50%; border:2px solid var(--muted);
+    flex:none; display:flex; align-items:center; justify-content:center; font-size:13px;
+    background:transparent; color:var(--accent-ink); cursor:pointer;
+  }
+  .task-item.done .t-check{background:var(--accent); border-color:var(--accent);}
+  .task-item .t-body{flex:1; min-width:0;}
+  .task-item .t-title{font-size:15px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .task-item.done .t-title{text-decoration:line-through; color:var(--muted);}
+  .task-item .t-meta{font-size:11.5px; color:var(--muted); margin-top:1px;}
+  .task-item .t-del{flex:none; background:none; border:none; color:var(--muted); font-size:16px; cursor:pointer; padding:4px;}
+  .add-task{
+    width:100%; margin-top:10px; padding:14px;
+    border:1.5px dashed var(--line); background:transparent; color:var(--muted);
+    border-radius:14px; font-family:inherit; font-size:15px; font-weight:500; cursor:pointer;
+  }
+  .add-task:hover{color:var(--fg);}
+  .task-form{display:none; background:var(--bg2); border-radius:12px; padding:14px; margin-top:10px;}
+  .task-form.show{display:block;}
+  .task-form input{
+    width:100%; background:var(--chip); border:none; color:var(--fg);
+    border-radius:10px; padding:12px 15px; font-family:inherit; font-size:15px;
+  }
+  .task-form input:focus{outline:2px solid var(--accent);}
+  .task-form input::placeholder{color:var(--muted);}
+  .tf-actions{display:flex; justify-content:flex-end; gap:8px; margin-top:12px;}
+  .est-row{display:flex; justify-content:space-between; align-items:center; margin-top:12px;}
+  .est-row > span{font-size:13px; color:var(--muted);}
+  .est-ctrl{display:flex; align-items:center; gap:12px;}
+  .est-ctrl button{
+    width:34px; height:34px; border-radius:10px; border:none;
+    background:var(--chip); color:var(--fg); font-size:17px; cursor:pointer;
+  }
+  .est-ctrl b{font-family:'Anton',sans-serif; font-size:18px; min-width:24px; text-align:center;}
+  .empty-note{color:var(--muted); font-size:13.5px; padding:12px 2px 2px; text-align:center;}
+
+  /* ---------- workout ---------- */
+  .workout{display:none; flex-direction:column; align-items:center; width:100%;}
+  .workout.show{display:flex;}
+  .back-row{width:100%; display:flex; justify-content:flex-start; margin-bottom:2px;}
+  .ex-name{
+    font-family:'Anton', sans-serif; font-size:clamp(28px, 8vw, 44px);
+    letter-spacing:.02em; text-transform:uppercase; text-align:center;
+  }
+  .ex-note{font-size:13px; color:var(--muted); margin-top:2px; min-height:18px; text-align:center;}
+  canvas{display:block;}
+  .counter{display:flex; align-items:baseline; gap:8px; margin-top:-8px;}
+  .counter .big{font-family:'Anton',sans-serif; font-size:50px; line-height:1;}
+  .counter .of{font-size:15px; color:var(--muted);}
+  .traj{
+    display:flex; flex-wrap:wrap; gap:6px; justify-content:center; align-items:center;
+    margin-top:12px; max-width:530px;
+  }
+  .tstep{
+    background:var(--chip); border:none; border-radius:11px;
+    padding:8px 12px; text-align:center;
+  }
+  .tstep b{display:block; font-size:12.5px;}
+  .tstep span{color:var(--muted); font-size:11px;}
+  .tstep.current{background:var(--fg); color:var(--bg);}
+  .tstep.current span{color:var(--bg); opacity:.65;}
+  .tstep.done{opacity:.4;}
+  .tstep.done b{text-decoration:line-through;}
+  .tarrow{color:var(--muted); font-size:13px;}
+  .chips{
+    display:flex; gap:8px; flex-wrap:wrap; justify-content:center;
+    margin-top:14px; max-width:530px; width:100%;
+  }
+  .chip{
+    background:var(--chip); border:none; color:var(--fg);
+    border-radius:999px; padding:10px 17px; font-family:inherit; font-weight:500;
+    font-size:14px; cursor:pointer; transition:all .15s var(--ease);
+  }
+  .chip:hover{opacity:.85;}
+  .chip:active{transform:scale(.95);}
+  .chip.active{background:var(--fg); color:var(--bg); opacity:1;}
+  .stepper-chip{display:inline-flex; align-items:center; gap:10px; padding:4px 8px;}
+  .stepper-chip button{
+    width:30px; height:30px; border-radius:9px; border:none;
+    background:var(--bg2); color:inherit; font-size:15px; cursor:pointer; line-height:1;
+  }
+  .stepper-chip input{
+    width:40px; background:transparent; border:none; color:inherit;
+    font-family:'Anton',sans-serif; font-size:16px; text-align:center; padding:0;
+    -moz-appearance:textfield;
+  }
+  .stepper-chip input:focus{outline:2px solid var(--accent); border-radius:6px;}
+  .stepper-chip input::-webkit-outer-spin-button, .stepper-chip input::-webkit-inner-spin-button{-webkit-appearance:none;}
+  .stepper-chip.active button{background:rgba(0,0,0,.14); color:inherit;}
+
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed; top:14px; left:50%; transform:translate(-50%,-160%);
+    background:var(--fg); color:var(--bg); border-radius:999px;
+    padding:11px 20px; font-size:14px; font-weight:500; z-index:30;
+    box-shadow:0 8px 24px rgba(0,0,0,.3); cursor:pointer;
+    transition:transform .45s var(--ease); max-width:92vw; text-align:center;
+  }
+  .toast.show{transform:translate(-50%,0);}
+
+  .fact{
+    width:100%; max-width:560px; margin-top:22px;
+    background:var(--bg2); border:none; border-radius:18px;
+    padding:15px 18px; transition:opacity .45s var(--ease);
+  }
+  .fact.fade{opacity:0;}
+  body[data-mode="sweat"] .fact, body[data-mode="rest"] .fact{display:none;}
+  .fact .eyebrow{
+    font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; margin-bottom:4px;
+  }
+  .fact p{font-size:13.5px; line-height:1.45;}
+
+  /* ---------- sheets ---------- */
+  .sheet-bg{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; z-index:10;}
+  .sheet-bg.show{display:block;}
+  .sheet{
+    position:fixed; left:50%; bottom:0; transform:translateX(-50%);
+    width:100%; max-width:560px; background:var(--bg2); color:var(--fg);
+    border-radius:26px 26px 0 0; padding:24px 22px 36px; z-index:11;
+    display:none; max-height:86dvh; overflow-y:auto;
+  }
+  .sheet.show{display:block;}
+  .sheet h2{font-family:'Anton',sans-serif; letter-spacing:.04em; font-size:20px; margin-bottom:14px;}
+  .set-row{margin-bottom:16px;}
+  .set-row .lab{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:8px;}
+  .seg{display:flex; gap:8px; flex-wrap:wrap;}
+  .toggle-row{display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-top:1px solid var(--line); gap:12px;}
+  .toggle-row span{font-size:15px;}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0;}
+  .stat{background:var(--chip); border:none; border-radius:16px; padding:14px;}
+  .stat .num{font-family:'Anton',sans-serif; font-size:26px;}
+  .stat .lab{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:2px;}
+  .hist-item{display:flex; justify-content:space-between; gap:10px; padding:9px 2px; border-top:1px solid var(--line); font-size:13.5px;}
+  .hist-item .when{color:var(--muted); flex:none;}
+  .signin-note{font-size:12.5px; color:var(--muted); line-height:1.5; margin-top:10px;}
+  .task-add{display:flex; gap:8px; margin-bottom:14px;}
+  .task-add input{
+    flex:1; background:var(--chip); border:none; color:var(--fg);
+    border-radius:12px; padding:12px 15px; font-family:inherit; font-size:15px;
+  }
+  .task-add input:focus{outline:2px solid var(--accent);}
+
+  footer{
+    width:100%; max-width:560px; text-align:center;
+    color:var(--muted); font-size:12px; letter-spacing:.05em; padding-top:16px;
+  }
+  footer b{color:var(--accent); font-weight:600;}
+</style>
+</head>
+<body data-mode="focus" data-theme="forest">
+
+<div class="toast" id="toast" role="status">💧 Hydration check</div>
+
+<header>
+  <div>
+    <div class="wordmark">POMO<em>FIT</em></div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <div class="music-wrap" id="musicWrap">
+      <button class="icon-btn" id="musicBtn" aria-pressed="false" title="Meditation music" aria-label="Meditation music" style="width:38px;text-align:center;padding:8px 0;">♪</button>
+      <div class="music-menu" id="musicMenu">
+        <input type="range" id="volSlider" min="0" max="100" value="70" style="width:100%;accent-color:var(--accent);" aria-label="Music volume">
+      </div>
+    </div>
+    <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+    <button class="icon-btn" id="profileBtn" title="Profile & progress">Sign in</button>
+  </div>
+</header>
+
+<div class="phase-strip">
+  <div class="phase-label" id="phaseLabel">Focus</div>
+  <div class="dots" id="dots"></div>
+</div>
+
+<main>
+  <!-- FOCUS -->
+  <div id="timerBlock" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+    <div class="current-task" id="currentTaskLabel">Time to focus!</div>
+    <div class="timer" id="timer">25:00</div>
+    <div class="controls">
+      <button class="btn" id="startBtn">START</button>
+      <button class="btn ghost" id="skipBtn">Skip →</button>
+    </div>
+
+    <!-- Pomofocus-style task list -->
+    <div class="tasks-panel">
+      <div class="tp-head"><span>Tasks</span><span></span></div>
+      <div id="taskListMain"></div>
+      <button class="add-task" id="addTaskOpen">＋ Add Task</button>
+      <div class="task-form" id="taskForm">
+        <input id="newTaskInput" type="text" maxlength="80" placeholder="What are you working on?">
+        <div class="est-row">
+          <span>Est. pomodoros 🍅</span>
+          <div class="est-ctrl">
+            <button type="button" id="estMinus" aria-label="Fewer">−</button><b id="estVal">1</b><button type="button" id="estPlus" aria-label="More">＋</button>
+          </div>
+        </div>
+        <div class="tf-actions">
+          <button class="icon-btn" id="cancelTaskBtn">Cancel</button>
+          <button class="btn" id="saveTaskBtn" style="font-size:14px;padding:10px 24px;">SAVE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKOUT -->
+  <div class="workout" id="workoutBlock">
+    <div class="back-row">
+      <button class="btn ghost" id="backBtn">← Back to study</button>
+    </div>
+    <div class="ex-name" id="exName">Pick a programme</div>
+    <div class="ex-note" id="exNote">Each programme is sized to fill your whole break.</div>
+    <canvas id="cv" width="340" height="250"></canvas>
+    <div class="counter" id="counterRow" style="visibility:hidden;">
+      <div class="big" id="repNum">0</div>
+      <div class="of" id="repOf">/ 20 reps</div>
+    </div>
+    <div class="traj" id="traj"></div>
+    <button class="btn" id="progStartBtn" style="display:none;margin-top:12px;">START PROGRAMME</button>
+    <div class="chips" id="chips"></div>
+    <div class="controls">
+      <button class="btn ghost" id="shuffleBtn">🎲 Surprise mix</button>
+      <button class="btn ghost" id="restBtn">Just rest</button>
+    </div>
+    <div class="sub" id="breakClock" style="margin-top:12px;"></div>
+  </div>
+</main>
+
+<div class="fact" id="factCard">
+  <div class="eyebrow">Brain fuel</div>
+  <p id="factText"></p>
+</div>
+
+<footer>Session <b id="sesNum">1</b> · long break after 4 rounds</footer>
+
+<!-- ================= SHEETS ================= -->
+<div class="sheet-bg" id="sheetBg"></div>
+
+<div class="sheet" id="settingsSheet">
+  <h2>Settings</h2>
+  <div class="set-row"><div class="lab">Theme</div><div class="seg" id="themeSeg"></div></div>
+  <div class="set-row"><div class="lab">Focus length</div><div class="seg" id="focusSeg"></div></div>
+  <div class="set-row"><div class="lab">Sweat break</div><div class="seg" id="breakSeg"></div></div>
+  <div class="set-row"><div class="lab">Long break</div><div class="seg" id="longSeg"></div></div>
+  <div class="toggle-row"><span>💧 Hydration reminders (every 45 min)</span><button class="icon-btn" id="remToggle" aria-pressed="true">On</button></div>
+  <div class="toggle-row"><span>Sound effects</span><button class="icon-btn" id="sfxToggle" aria-pressed="true">On</button></div>
+  <div class="toggle-row"><span>Auto-start breaks</span><button class="icon-btn" id="autoBreak" aria-pressed="true">On</button></div>
+  <div class="toggle-row"><span>Auto-start focus after break</span><button class="icon-btn" id="autoFocus" aria-pressed="false">Off</button></div>
+  <div class="controls" style="justify-content:center;"><button class="btn close-sheet">DONE</button></div>
+</div>
+
+<div class="sheet" id="profileSheet">
+  <h2 id="profileTitle">Sign in</h2>
+  <div id="signinBox">
+    <div class="task-add" style="margin-bottom:8px;">
+      <input id="userInput" type="text" maxlength="30" placeholder="Username" autocomplete="username">
+    </div>
+    <div class="task-add">
+      <input id="passInput" type="password" maxlength="50" placeholder="Password" autocomplete="current-password">
+    </div>
+    <p class="signin-note" id="authMsg" style="min-height:16px;margin:0 0 6px;"></p>
+    <div class="controls" style="justify-content:flex-start;gap:8px;margin-top:0;">
+      <button class="btn" id="signInBtn" style="font-size:14px;padding:11px 22px;">SIGN IN</button>
+      <button class="btn ghost" id="signUpBtn">Create account</button>
+    </div>
+    <p class="signin-note" id="storageNote">Accounts live in this browser — sign back in any time on this device. Passwords are stored only as a secure hash.</p>
+  </div>
+  <div id="statsBox" style="display:none;">
+    <div class="stat-grid">
+      <div class="stat"><div class="num" id="stSessions">0</div><div class="lab">Focus rounds</div></div>
+      <div class="stat"><div class="num" id="stMinutes">0</div><div class="lab">Minutes studied</div></div>
+      <div class="stat"><div class="num" id="stReps">0</div><div class="lab">Total reps</div></div>
+    </div>
+    <div class="set-row"><div class="lab">Recent activity</div><div id="histList"></div></div>
+    <div class="controls" style="justify-content:center;">
+      <button class="btn ghost" id="signOutBtn">Sign out</button>
+      <button class="btn close-sheet">DONE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================
+   PomoFit — pomodoro focus with workout breaks
+   ===================================================== */
+const S = {
+  focusMin: 25, breakMin: 5, longMin: 15,
+  autoBreak: true, autoFocus: false, sound: true, reminders: true,
+  phase: 'focus', running: false,
+  endAt: 0, remaining: 25*60*1000,
+  session: 1, completed: 0,
+  reps: 0, activeTask: null,
+};
+let DATA = { name:null, tasks:[], history:[], totals:{sessions:0, minutes:0, reps:0} };
+let storageOK = false;
+
+const $ = id => document.getElementById(id);
+const timerEl=$('timer'), startBtn=$('startBtn');
+const phaseLabel=$('phaseLabel'), dotsEl=$('dots'), sesNum=$('sesNum');
+const workoutBlock=$('workoutBlock'), timerBlock=$('timerBlock');
+const exName=$('exName'), exNote=$('exNote'), repNum=$('repNum'), repOf=$('repOf');
+const counterRow=$('counterRow'), chipsEl=$('chips'), breakClock=$('breakClock');
+const trajEl=$('traj'), toast=$('toast');
+const cv=$('cv'), ctx=cv.getContext('2d');
+
+const DPR = Math.min(window.devicePixelRatio||1, 2);
+const CW=340, CH=250;
+cv.width=CW*DPR; cv.height=CH*DPR; cv.style.width=CW+'px'; cv.style.height=CH+'px';
+ctx.scale(DPR,DPR);
+
+/* ---------- persistence ---------- */
+/* storage adapter: writes to every store available (browser localStorage +
+   Claude artifact storage) and reads from whichever has the data */
+const store = {
+  hasLocal:false, hasArt:false, mem:{},
+  async init(){
+    try{ localStorage.setItem('__t','1'); localStorage.removeItem('__t'); this.hasLocal=true; }catch(e){}
+    try{ this.hasArt = !!(window.storage && typeof window.storage.get==='function'); }catch(e){}
+  },
+  async get(k){
+    if(this.hasArt){
+      try{ const r=await window.storage.get(k); if(r && r.value!=null) return r.value; }catch(e){}
+    }
+    if(this.hasLocal){
+      try{ const v=localStorage.getItem(k); if(v!=null) return v; }catch(e){}
+    }
+    return this.mem[k]||null;
+  },
+  async set(k,v){
+    this.mem[k]=v;
+    if(this.hasLocal){ try{ localStorage.setItem(k,v); }catch(e){} }
+    if(this.hasArt){ try{ await window.storage.set(k,v); }catch(e){} }
+  }
+};
+let ACCOUNTS={};
+const blankData=()=>({name:null, tasks:[], history:[], totals:{sessions:0, minutes:0, reps:0}});
+async function sha(text){
+  try{
+    const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }catch(e){
+    let x=0; for(const c of text){ x=(x*31 + c.charCodeAt(0))>>>0; } return 'x'+x;
+  }
+}
+async function loadData(){
+  await store.init();
+  storageOK = store.hasLocal || store.hasArt;
+  if(!storageOK) $('storageNote').textContent =
+    'Saving isn\'t available here, so accounts will only last this visit.';
+  try{ ACCOUNTS = JSON.parse((await store.get('pomofit:accounts'))||'{}'); }catch(e){ ACCOUNTS={}; }
+  const ses = await store.get('pomofit:session');
+  if(ses && ACCOUNTS[ses]){
+    DATA = Object.assign(blankData(), ACCOUNTS[ses].data||{});
+    DATA.name = ses;
+  }
+  renderProfile(); renderTasks();
+}
+let saveQueued=false;
+function saveData(){
+  if(saveQueued) return;
+  saveQueued=true;
+  setTimeout(async ()=>{
+    saveQueued=false;
+    if(DATA.name && ACCOUNTS[DATA.name]){
+      ACCOUNTS[DATA.name].data = {tasks:DATA.tasks, history:DATA.history, totals:DATA.totals};
+      await store.set('pomofit:accounts', JSON.stringify(ACCOUNTS));
+    }
+  }, 300);
+}
+function authMsg(m){ $('authMsg').textContent=m; }
+async function signUp(){
+  const u=$('userInput').value.trim(), pw=$('passInput').value;
+  if(u.length<2) return authMsg('Username needs at least 2 characters.');
+  if(pw.length<4) return authMsg('Password needs at least 4 characters.');
+  if(ACCOUNTS[u]) return authMsg('That username is taken — try signing in instead.');
+  const salt=Math.random().toString(36).slice(2,10);
+  ACCOUNTS[u]={salt, hash:await sha(salt+pw), data:{tasks:[], history:[], totals:{sessions:0, minutes:0, reps:0}}};
+  await store.set('pomofit:accounts', JSON.stringify(ACCOUNTS));
+  await store.set('pomofit:session', u);
+  DATA=blankData(); DATA.name=u;
+  S.activeTask=null; $('passInput').value='';
+  authMsg(storageOK ? '' : 'Heads up: saving isn\'t available in this preview — on the published site your account will persist.');
+  renderProfile(); renderTasks();
+}
+async function signIn(){
+  const u=$('userInput').value.trim(), pw=$('passInput').value;
+  const acc=ACCOUNTS[u];
+  if(!acc) return authMsg('No account with that username — create one.');
+  if(acc.hash !== await sha(acc.salt+pw)) return authMsg('Wrong password — try again.');
+  await store.set('pomofit:session', u);
+  DATA = Object.assign(blankData(), acc.data||{});
+  DATA.name=u;
+  S.activeTask=null; $('passInput').value=''; authMsg('');
+  renderProfile(); renderTasks();
+}
+
+/* ---------- sound effects ---------- */
+let AC=null;
+function ac(){ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended')AC.resume(); return AC; }
+function beep(freq, dur=0.09, gain=0.05, type='sine', when=0){
+  if(!S.sound) return;
+  try{
+    const a=ac(), t=a.currentTime+when, o=a.createOscillator(), g=a.createGain();
+    o.type=type; o.frequency.value=freq;
+    g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.02);
+  }catch(e){}
+}
+const chimeFocusEnd = ()=>{ beep(660,.12,.07); beep(880,.12,.07,'sine',.13); beep(1100,.2,.07,'sine',.26); };
+const chimeBreakEnd = ()=>{ beep(880,.1,.06); beep(660,.18,.06,'sine',.12); };
+const chimeProgDone = ()=>{ beep(523,.1,.07); beep(659,.1,.07,'sine',.1); beep(784,.1,.07,'sine',.2); beep(1047,.25,.08,'sine',.3); };
+const repTick = ()=> beep(1320,.04,.025,'square');
+/* proper bell: inharmonic partials with long decay, like a desk bell */
+function bell(strikes){
+  if(!S.sound) return;
+  try{
+    const a=ac();
+    for(let s=0; s<(strikes||1); s++){
+      const t=a.currentTime + s*0.9;
+      [[880,1,3.5],[1760,0.5,2.6],[2217,0.28,2.0],[660,0.32,4.2]].forEach(pt=>{
+        const o=a.createOscillator(), g=a.createGain();
+        o.frequency.value=pt[0];
+        g.gain.setValueAtTime(0.0001,t);
+        g.gain.exponentialRampToValueAtTime(0.14*pt[1], t+0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001, t+pt[2]);
+        o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+pt[2]+0.1);
+      });
+    }
+  }catch(e){}
+}
+function notify(title, body){
+  try{
+    if('Notification' in window && Notification.permission==='granted'){
+      new Notification(title, {body:body, tag:'pomofit'});
+    }
+  }catch(e){}
+}
+
+/* ---------- meditation tunes: 5 generative tracks ---------- */
+const MUSIC = { on:false, key:null, master:null, nodes:[], timers:[], vol:0.7 };
+function noiseBuf(a){
+  const len=a.sampleRate*2, b=a.createBuffer(1,len,a.sampleRate), d=b.getChannelData(0);
+  let last=0;
+  for(let i=0;i<len;i++){ const w=Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last*3.5; }
+  return b;
+}
+function masterGain(){ return Math.pow(MUSIC.vol,2)*0.7 + 0.02; }
+const TRACKS={
+  bells:{name:'🔔 Zen Bells', build(a,out){
+    const f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=1600; f.connect(out);
+    const dg=a.createGain(); dg.gain.value=0.5; dg.connect(f);
+    [110,110.6,165.1].forEach(fr=>{const o=a.createOscillator();o.frequency.value=fr;o.connect(dg);o.start();MUSIC.nodes.push(o);});
+    const P=[220,261.63,293.66,329.63,392,440,523.25];
+    MUSIC.timers.push(setInterval(()=>{
+      const t=a.currentTime,o=a.createOscillator(),g=a.createGain();
+      o.frequency.value=P[Math.floor(Math.random()*P.length)]*(Math.random()<.25?2:1);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.exponentialRampToValueAtTime(0.8,t+0.5);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+5.5);
+      o.connect(g);g.connect(f);o.start(t);o.stop(t+5.7);
+    },3200));
+  }},
+  drone:{name:'🌌 Deep Drone', build(a,out){
+    const f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=700; f.connect(out);
+    [82.4,82.9,123.5,164.8,165.6].forEach((fr,i)=>{
+      const o=a.createOscillator(); o.type=i<2?'sawtooth':'sine'; o.frequency.value=fr;
+      const g=a.createGain(); g.gain.value=i<2?0.12:0.3;
+      o.connect(g); g.connect(f); o.start(); MUSIC.nodes.push(o);
+    });
+    const lfo=a.createOscillator(),lg=a.createGain();
+    lfo.frequency.value=0.05; lg.gain.value=300;
+    lfo.connect(lg); lg.connect(f.frequency); lfo.start(); MUSIC.nodes.push(lfo);
+  }},
+  waves:{name:'🌊 Ocean Waves', build(a,out){
+    const src=a.createBufferSource(); src.buffer=noiseBuf(a); src.loop=true;
+    const f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=600;
+    const g=a.createGain(); g.gain.value=0.55;
+    src.connect(f); f.connect(g); g.connect(out); src.start(); MUSIC.nodes.push(src);
+    const lfo=a.createOscillator(),lg=a.createGain();
+    lfo.frequency.value=0.08; lg.gain.value=0.4;
+    lfo.connect(lg); lg.connect(g.gain); lfo.start(); MUSIC.nodes.push(lfo);
+    const lfo2=a.createOscillator(),lg2=a.createGain();
+    lfo2.frequency.value=0.07; lg2.gain.value=350;
+    lfo2.connect(lg2); lg2.connect(f.frequency); lfo2.start(); MUSIC.nodes.push(lfo2);
+  }},
+  rain:{name:'🌧 Rain & Birdsong', build(a,out){
+    // faint distant-rain bed, kept low so it reads as air, not fuzz
+    const src=a.createBufferSource(); src.buffer=noiseBuf(a); src.loop=true;
+    const hp=a.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1600;
+    const lp=a.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=4200;
+    const g=a.createGain(); g.gain.value=0.10;
+    src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(out); src.start(); MUSIC.nodes.push(src);
+    // a shared noise buffer for individual drop impacts
+    const dropBuf=noiseBuf(a);
+    function drop(t){
+      const s=a.createBufferSource(); s.buffer=dropBuf;
+      s.playbackRate.value=0.7+Math.random()*1.6;
+      const bp=a.createBiquadFilter(); bp.type='bandpass';
+      bp.frequency.value=500+Math.random()*2600; bp.Q.value=2.5+Math.random()*4;
+      const dg=a.createGain();
+      const peak=0.10+Math.random()*0.22, dur=0.025+Math.random()*0.07;
+      dg.gain.setValueAtTime(0.0001,t);
+      dg.gain.exponentialRampToValueAtTime(peak, t+0.004);
+      dg.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      s.connect(bp); bp.connect(dg);
+      if(a.createStereoPanner){ const pn=a.createStereoPanner(); pn.pan.value=Math.random()*2-1; dg.connect(pn); pn.connect(out); }
+      else dg.connect(out);
+      s.start(t, Math.random()*1.5, dur+0.05); 
+    }
+    // the patter: clusters of distinct drops at random moments and positions
+    MUSIC.timers.push(setInterval(()=>{
+      const t=a.currentTime;
+      const n=1+Math.floor(Math.random()*3);   // 1–3 drops per tick
+      for(let i=0;i<n;i++) drop(t+Math.random()*0.07);
+    },70));
+    // occasional heavier drips off leaves and ledges
+    MUSIC.timers.push(setInterval(()=>{
+      if(Math.random()<0.5){
+        const t=a.currentTime,o=a.createOscillator(),pg=a.createGain();
+        o.frequency.setValueAtTime(900+Math.random()*900, t);
+        o.frequency.exponentialRampToValueAtTime(400+Math.random()*300, t+0.08);
+        pg.gain.setValueAtTime(0.0001,t);
+        pg.gain.exponentialRampToValueAtTime(0.07+Math.random()*0.05, t+0.008);
+        pg.gain.exponentialRampToValueAtTime(0.0001, t+0.12);
+        o.connect(pg); pg.connect(out); o.start(t); o.stop(t+0.2);
+      }
+    },700));
+    // birdsong: occasional phrases of 2–5 warbling chirps, panned around the stereo field
+    function chirp(t, base, pan){
+      const o=a.createOscillator(), g=a.createGain();
+      const dur=0.06+Math.random()*0.09;
+      const up=Math.random()<0.6;
+      o.frequency.setValueAtTime(base, t);
+      o.frequency.exponentialRampToValueAtTime(base*(up?1.3+Math.random()*0.4:0.7), t+dur*0.8);
+      // fast warble for realism
+      const vib=a.createOscillator(), vg=a.createGain();
+      vib.frequency.value=25+Math.random()*20; vg.gain.value=base*0.06;
+      vib.connect(vg); vg.connect(o.frequency); vib.start(t); vib.stop(t+dur+0.05);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.exponentialRampToValueAtTime(0.05+Math.random()*0.04, t+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g);
+      if(a.createStereoPanner){ const p=a.createStereoPanner(); p.pan.value=pan; g.connect(p); p.connect(out); }
+      else g.connect(out);
+      o.start(t); o.stop(t+dur+0.05);
+    }
+    MUSIC.timers.push(setInterval(()=>{
+      if(Math.random()<0.34){
+        const t=a.currentTime;
+        const base=2200+Math.random()*1900;        // each bird has its own pitch
+        const pan=(Math.random()*2-1)*0.8;         // and its own spot in the trees
+        const n=2+Math.floor(Math.random()*4);     // 2–5 chirps per phrase
+        let off=0;
+        for(let i=0;i<n;i++){
+          chirp(t+off, base*(0.95+Math.random()*0.1), pan);
+          off+=0.09+Math.random()*0.14;
+        }
+      }
+    },2600));
+  }},
+  binaural:{name:'🧠 Binaural Calm', build(a,out){
+    const mk=(fr,pan)=>{
+      const o=a.createOscillator(); o.frequency.value=fr;
+      const g=a.createGain(); g.gain.value=0.4;
+      o.connect(g);
+      if(a.createStereoPanner){ const p=a.createStereoPanner(); p.pan.value=pan; g.connect(p); p.connect(out); }
+      else g.connect(out);
+      o.start(); MUSIC.nodes.push(o);
+    };
+    mk(200,-1); mk(206,1);
+    const o=a.createOscillator(); o.frequency.value=400;
+    const g=a.createGain(); g.gain.value=0.05; o.connect(g); g.connect(out); o.start(); MUSIC.nodes.push(o);
+  }},
+};
+function startTrack(key){
+  stopMusic(true);
+  const a=ac();
+  const g=a.createGain(); g.gain.value=0.0001; g.connect(a.destination);
+  g.gain.exponentialRampToValueAtTime(masterGain(), a.currentTime+1.2);
+  MUSIC.master=g; MUSIC.key=key; MUSIC.on=true;
+  TRACKS[key].build(a,g);
+  updateMusicUI();
+}
+function stopMusic(quiet){
+  MUSIC.timers.forEach(clearInterval); MUSIC.timers=[];
+  if(MUSIC.master){
+    try{
+      const t=AC.currentTime;
+      MUSIC.master.gain.cancelScheduledValues(t);
+      MUSIC.master.gain.setValueAtTime(Math.max(0.0001,MUSIC.master.gain.value),t);
+      MUSIC.master.gain.exponentialRampToValueAtTime(0.0001,t+0.8);
+    }catch(e){}
+    const nodes=MUSIC.nodes;
+    setTimeout(()=>nodes.forEach(n=>{try{n.stop();}catch(e){}}),1000);
+  }
+  MUSIC.nodes=[]; MUSIC.master=null; MUSIC.on=false; MUSIC.key=null;
+  if(!quiet) updateMusicUI();
+}
+function updateMusicUI(){
+  const b=$('musicBtn');
+  b.setAttribute('aria-pressed', MUSIC.on);
+  b.textContent = '♪';
+  document.querySelectorAll('#musicMenu .music-opt').forEach(c=>c.classList.toggle('active', c.dataset.key===MUSIC.key));
+}
+['bells','rain','waves'].forEach(k=>{
+  const c=document.createElement('button');
+  c.className='music-opt'; c.dataset.key=k; c.textContent=TRACKS[k].name;
+  c.onclick=e=>{ e.stopPropagation(); (MUSIC.key===k) ? stopMusic() : startTrack(k); };
+  $('musicMenu').insertBefore(c, $('volSlider'));
+});
+$('volSlider').oninput=e=>{
+  MUSIC.vol=e.target.value/100;
+  if(MUSIC.master){ try{ MUSIC.master.gain.setTargetAtTime(masterGain(), AC.currentTime, 0.1); }catch(e2){} }
+};
+$('musicBtn').onclick=e=>{ e.stopPropagation(); $('musicWrap').classList.toggle('open'); };
+document.addEventListener('click',e=>{ if(!$('musicWrap').contains(e.target)) $('musicWrap').classList.remove('open'); });
+
+/* =====================================================
+   EXERCISES + PROGRAMMES
+   ===================================================== */
+const EX = {
+  jacks:  {name:'Jumping Jacks', period:0.9,  minR:10, maxR:20},
+  squats: {name:'Squats',        period:2.6,  minR:6,  maxR:12},
+  pushups:{name:'Push-ups',      period:2.2,  minR:5,  maxR:10},
+  knees:  {name:'High Knees',    period:0.42, minR:16, maxR:30},
+  lunges: {name:'Lunges',        period:2.0,  minR:6,  maxR:10, note:'Switches sides halfway'},
+  plank:  {name:'Plank',         period:1, timeBased:true, minR:15, maxR:40, note:'Keep your back flat'},
+};
+const PROGRAMMES = {
+  cardio:  {name:'⚡ Cardio Spark',     steps:['jacks','knees','squats']},
+  strength:{name:'🏋 Strength Circuit', steps:['squats','pushups','lunges']},
+  core:    {name:'🧘 Core & Hold',      steps:['plank','pushups','knees']},
+  full:    {name:'🔥 Full Body',        steps:['jacks','squats','pushups','knees']},
+};
+let PROG=null; // {name, steps:[{key,target,unit}], idx, mode:'ex'|'rest'|'done', tStart, rest}
+
+function buildProgramme(pkey, keys){
+  const leftSec = Math.max(60, (S.running ? S.endAt-Date.now() : S.remaining)/1000);
+  const ks = keys || PROGRAMMES[pkey].steps;
+  const n = ks.length, rest = 10;
+  const per = Math.max(20, (leftSec - 12 - rest*(n-1)) / n);
+  // ~45% of each slot is active reps; the rest is natural pacing room
+  const steps = ks.map(k=>{
+    const ex=EX[k];
+    if(ex.timeBased) return {key:k, target:clamp(Math.round(per*0.5), ex.minR, ex.maxR), unit:'sec'};
+    return {key:k, target:clamp(Math.round(per*0.45/ex.period), ex.minR, ex.maxR), unit:'reps'};
+  });
+  return {name: keys ? '🎲 Surprise Mix' : PROGRAMMES[pkey].name, steps, idx:0, mode:'ex', tStart:performance.now(), rest};
+}
+function selectProgramme(pkey, keys){
+  PROG = buildProgramme(pkey, keys);
+  PROG.mode='ready';
+  document.querySelectorAll('#chips .chip').forEach(c=>c.classList.toggle('active', c.dataset.key===pkey));
+  exName.textContent=PROG.name;
+  exNote.textContent=PROG.steps.length+' moves · sized to your break';
+  counterRow.style.visibility='hidden';
+  $('progStartBtn').style.display='inline-block';
+  renderTraj();
+  beep(880,.08,.05);
+}
+$('progStartBtn').onclick=()=>{
+  if(!PROG) return;
+  $('progStartBtn').style.display='none';
+  beep(1100,.1,.05);
+  beginStep();
+};
+function beginStep(){
+  const st=PROG.steps[PROG.idx], ex=EX[st.key];
+  PROG.mode='ex'; PROG.tStart=performance.now(); S.reps=0;
+  exName.textContent=ex.name;
+  exNote.textContent=`Step ${PROG.idx+1} of ${PROG.steps.length} · ${PROG.name}`+(ex.note?' · '+ex.note:'');
+  counterRow.style.visibility='visible';
+  repNum.textContent='0'; repOf.textContent='/ '+st.target+' '+st.unit;
+  renderTraj();
+}
+function stepDone(){
+  const st=PROG.steps[PROG.idx];
+  if(st.unit==='reps') DATA.totals.reps += st.target;
+  logEntry({type:'workout', ex:EX[st.key].name, reps:st.target, unit:st.unit});
+  saveData();
+  if(PROG.idx >= PROG.steps.length-1){
+    PROG.mode='done';
+    chimeProgDone();
+    exName.textContent='Programme complete! 💪';
+    exNote.textContent='Shake it out and breathe — focus is up next.';
+    counterRow.style.visibility='hidden';
+    renderTraj(true);
+  } else {
+    PROG.mode='rest'; PROG.tStart=performance.now();
+    beep(660,.1,.05);
+    counterRow.style.visibility='hidden';
+    renderTraj();
+  }
+}
+function renderTraj(allDone){
+  trajEl.innerHTML='';
+  if(!PROG) return;
+  PROG.steps.forEach((st,i)=>{
+    const d=document.createElement('div');
+    let cls='tstep';
+    if(allDone || i<PROG.idx || (i===PROG.idx && PROG.mode==='rest')) cls+=' done';
+    else if(i===PROG.idx && PROG.mode==='ex') cls+=' current';
+    d.className=cls;
+    d.innerHTML=`<b></b><span>${st.target} ${st.unit}</span>`;
+    d.querySelector('b').textContent=EX[st.key].name;
+    trajEl.appendChild(d);
+    if(i<PROG.steps.length-1){
+      const a=document.createElement('div'); a.className='tarrow'; a.textContent='→';
+      trajEl.appendChild(a);
+    }
+  });
+}
+
+/* ---------- figure rendering ---------- */
+const B = { head:13, neck:11, torso:52, uArm:33, fArm:31, thigh:44, shin:42, foot:13 };
+const GROUND = 214, CX = 170;
+const easeLoop = t => (1-Math.cos(2*Math.PI*t))/2;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function ik(root, target, l1, l2, bend){
+  let dx=target.x-root.x, dy=target.y-root.y;
+  let d=clamp(Math.hypot(dx,dy), Math.abs(l1-l2)+0.5, l1+l2-0.5);
+  const base=Math.atan2(dy,dx);
+  const cos=clamp((l1*l1+d*d-l2*l2)/(2*l1*d),-1,1);
+  const a=base+bend*Math.acos(cos);
+  return {x:root.x+l1*Math.cos(a), y:root.y+l1*Math.sin(a)};
+}
+const fk=(p,len,ang)=>({x:p.x+len*Math.sin(ang), y:p.y+len*Math.cos(ang)});
+let _col='#EFEAE3';
+function col(){ return _col; }
+function colFar(){ return getComputedStyle(document.body).getPropertyValue('--muted').trim() || '#999'; }
+function limb(a,b,c, far){
+  ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); if(c) ctx.lineTo(c.x,c.y);
+  ctx.lineWidth = far?6:7.5;
+  ctx.strokeStyle = far ? colFar() : col();
+  ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+}
+function head(c){ ctx.beginPath(); ctx.arc(c.x,c.y,B.head,0,7); ctx.fillStyle=col(); ctx.fill(); }
+function torso(pel,sh){
+  ctx.beginPath(); ctx.moveTo(pel.x,pel.y); ctx.lineTo(sh.x,sh.y);
+  ctx.lineWidth=8.5; ctx.strokeStyle=col(); ctx.lineCap='round'; ctx.stroke();
+}
+function shadow(x, w){
+  ctx.beginPath(); ctx.ellipse(x, GROUND+8, w, 6, 0, 0, 7);
+  ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fill();
+}
+function groundLine(){
+  ctx.beginPath(); ctx.moveTo(20,GROUND+9); ctx.lineTo(CW-20,GROUND+9);
+  ctx.lineWidth=2; ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--line').trim();
+  ctx.stroke();
+}
+function drawSquat(t){
+  const s = easeLoop(t);
+  const pel = {x:CX-10*s, y:GROUND-(B.thigh+B.shin-4)+ s*44};
+  const lean = s*0.55;
+  const sh = {x:pel.x + B.torso*Math.sin(lean), y:pel.y - B.torso*Math.cos(lean)};
+  const hd = {x:sh.x + (B.neck+B.head)*Math.sin(lean*0.7), y:sh.y-(B.neck+B.head)*Math.cos(lean*0.7)+2};
+  const footN={x:CX+14,y:GROUND}, footF={x:CX+2,y:GROUND};
+  const kneeN=ik(pel,footN,B.thigh,B.shin,-1), kneeF=ik(pel,footF,B.thigh,B.shin,-1);
+  const armA = 1.45*s + 0.12;
+  const elbF=fk(sh,B.uArm,armA+0.05), hanF=fk(elbF,B.fArm,armA+0.2*s);
+  const elbN=fk(sh,B.uArm,armA), hanN=fk(elbN,B.fArm,armA+0.15*s);
+  shadow(CX, 42);
+  limb(pel,kneeF,{x:footF.x+B.foot,y:footF.y},true);
+  limb(sh,elbF,hanF,true);
+  limb(pel,kneeN,{x:footN.x+B.foot,y:footN.y});
+  torso(pel,sh);
+  limb(sh,elbN,hanN);
+  head(hd);
+}
+function drawPushup(t){
+  const s = easeLoop(t);
+  const toe = {x:CX-98, y:GROUND-3};
+  const sh  = {x:CX+36, y:GROUND-60 + s*30};
+  const dx=sh.x-toe.x, dy=sh.y-toe.y, L=Math.hypot(dx,dy);
+  const ux=dx/L, uy=dy/L;
+  const P=u=>({x:toe.x+dx*u, y:toe.y+dy*u});
+  const pel=P(0.50), knee=P(0.26);
+  const hd={x:sh.x+ux*(B.neck+B.head-2), y:sh.y+uy*(B.neck+B.head-2)-3};
+  const hand={x:sh.x+4, y:GROUND};
+  const elbN=ik(sh,hand,B.uArm,B.fArm,1);
+  const elbF=ik({x:sh.x-4,y:sh.y+3},{x:hand.x-5,y:GROUND},B.uArm,B.fArm,1);
+  shadow(CX-20, 92);
+  limb({x:pel.x-3,y:pel.y+3},{x:knee.x-3,y:knee.y+3},{x:toe.x-3,y:GROUND},true);
+  limb({x:sh.x-4,y:sh.y+3},elbF,{x:hand.x-5,y:GROUND},true);
+  ctx.beginPath(); ctx.moveTo(toe.x,toe.y); ctx.lineTo(pel.x,pel.y); ctx.lineTo(sh.x,sh.y);
+  ctx.lineWidth=8.5; ctx.strokeStyle=col(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+  limb(sh,elbN,hand);
+  head(hd);
+}
+function drawPlank(time){
+  const br = Math.sin(time*1.4)*1.5;
+  const toe={x:CX-100, y:GROUND-3};
+  const sh ={x:CX+38, y:GROUND-46+br};
+  const dx=sh.x-toe.x, dy=sh.y-toe.y, L=Math.hypot(dx,dy);
+  const ux=dx/L, uy=dy/L;
+  const P=u=>({x:toe.x+dx*u, y:toe.y+dy*u});
+  const pel=P(0.50), knee=P(0.26);
+  const hd ={x:sh.x+ux*(B.neck+B.head-2), y:sh.y+uy*(B.neck+B.head-2)-3};
+  const elbN={x:sh.x-2,y:GROUND}, hanN={x:sh.x+28,y:GROUND};
+  const elbF={x:sh.x-7,y:GROUND-1}, hanF={x:sh.x+23,y:GROUND-1};
+  shadow(CX-22, 92);
+  limb({x:pel.x-3,y:pel.y+3},{x:knee.x-3,y:knee.y+3},{x:toe.x-3,y:GROUND},true);
+  limb({x:sh.x-4,y:sh.y+3},elbF,hanF,true);
+  ctx.beginPath(); ctx.moveTo(toe.x,toe.y); ctx.lineTo(pel.x,pel.y); ctx.lineTo(sh.x,sh.y);
+  ctx.lineWidth=8.5; ctx.strokeStyle=col(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+  limb(sh,elbN,hanN);
+  head(hd);
+}
+function drawHighKnees(t){
+  const half = t<0.5 ? 0 : 1;
+  const u = (t%0.5)/0.5;
+  const drive = Math.sin(Math.PI*u);
+  const pel = {x:CX, y:GROUND-(B.thigh+B.shin-6) - drive*5};
+  const sh = {x:pel.x+B.torso*0.08, y:pel.y-B.torso};
+  const hd = {x:sh.x+4, y:sh.y-B.neck-B.head+3};
+  const th = 0.15 + drive*1.55, kb = 0.2 + drive*1.5;
+  const kneeD = fk(pel,B.thigh,th);
+  const footD = fk(kneeD,B.shin, th-kb);
+  const footP = {x:CX+2, y:GROUND};
+  const kneeP = ik(pel,footP,B.thigh,B.shin,-1);
+  const swing = (half?1:-1)*(drive-0.5)*1.5;
+  const elbN=fk(sh,B.uArm,swing), hanN=fk(elbN,B.fArm,swing+1.5);
+  const elbF=fk({x:sh.x-3,y:sh.y+2},B.uArm,-swing), hanF=fk(elbF,B.fArm,-swing+1.5);
+  shadow(CX, 36);
+  if(half===0){
+    limb({x:pel.x-3,y:pel.y+1},kneeP,{x:footP.x+B.foot,y:footP.y},true);
+    limb({x:sh.x-3,y:sh.y+2},elbF,hanF,true);
+    torso(pel,sh); limb(pel,kneeD,footD); limb(sh,elbN,hanN);
+  } else {
+    limb({x:pel.x-3,y:pel.y+1},kneeD,footD,true);
+    limb({x:sh.x-3,y:sh.y+2},elbF,hanF,true);
+    torso(pel,sh); limb(pel,kneeP,{x:footP.x+B.foot,y:footP.y}); limb(sh,elbN,hanN);
+  }
+  head(hd);
+}
+function drawLunge(t, mirrored){
+  const s = easeLoop(t);
+  ctx.save();
+  if(mirrored){ ctx.translate(CW,0); ctx.scale(-1,1); }
+  const pel = {x:CX-6, y:GROUND-(B.thigh+B.shin-12) + s*30};
+  const sh = {x:pel.x+2, y:pel.y-B.torso};
+  const hd = {x:sh.x+3, y:sh.y-B.neck-B.head+3};
+  const footFr={x:CX+46,y:GROUND}, toeBk={x:CX-56,y:GROUND-2};
+  const kneeFr = ik(pel,footFr,B.thigh,B.shin,-1);
+  const kneeBk = ik(pel,toeBk,B.thigh,B.shin,-1);
+  const elb=fk(sh,B.uArm,0.55), han={x:pel.x+6,y:pel.y-4};
+  const elbF=fk({x:sh.x-3,y:sh.y+2},B.uArm,-0.5), hanF={x:pel.x-8,y:pel.y-2};
+  shadow(CX, 64);
+  limb(pel,kneeBk,{x:toeBk.x-2,y:GROUND},true);
+  limb({x:sh.x-3,y:sh.y+2},elbF,hanF,true);
+  torso(pel,sh);
+  limb(pel,kneeFr,{x:footFr.x+B.foot,y:footFr.y});
+  limb(sh,elb,han);
+  head(hd);
+  ctx.restore();
+}
+function drawJacks(t){
+  const s = easeLoop(t);
+  const legA = s*0.5, armA = 0.12 + s*2.6;
+  const Lleg = B.thigh+B.shin-2;
+  const hop = Math.sin(Math.PI*easeLoop(t))*5;
+  const pelY = GROUND - Lleg*Math.cos(legA) - hop;
+  const shY = pelY - B.torso+4;
+  const hd = {x:CX, y:shY-B.neck-B.head+4};
+  const shL={x:CX-15,y:shY}, shR={x:CX+15,y:shY};
+  const hipL={x:CX-9,y:pelY}, hipR={x:CX+9,y:pelY};
+  const footL={x:hipL.x-Lleg*Math.sin(legA), y:hipL.y+Lleg*Math.cos(legA)};
+  const footR={x:hipR.x+Lleg*Math.sin(legA), y:hipR.y+Lleg*Math.cos(legA)};
+  const kneeL={x:(hipL.x+footL.x)/2-1,y:(hipL.y+footL.y)/2};
+  const kneeR={x:(hipR.x+footR.x)/2+1,y:(hipR.y+footR.y)/2};
+  const aL = {x:-Math.sin(armA), y:Math.cos(armA)};
+  const elbL={x:shL.x+aL.x*B.uArm, y:shL.y+aL.y*B.uArm};
+  const hanL={x:elbL.x+aL.x*B.fArm, y:elbL.y+aL.y*B.fArm};
+  const elbR={x:shR.x-aL.x*B.uArm, y:shR.y+aL.y*B.uArm};
+  const hanR={x:elbR.x-aL.x*B.fArm, y:elbR.y+aL.y*B.fArm};
+  shadow(CX, 34+ s*26);
+  ctx.beginPath(); ctx.moveTo(CX,pelY); ctx.lineTo(CX,shY);
+  ctx.lineWidth=10; ctx.strokeStyle=col(); ctx.lineCap='round'; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(shL.x,shL.y); ctx.lineTo(shR.x,shR.y); ctx.lineWidth=7.5; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(hipL.x,hipL.y); ctx.lineTo(hipR.x,hipR.y); ctx.lineWidth=7.5; ctx.stroke();
+  limb(hipL,kneeL,footL); limb(hipR,kneeR,footR);
+  limb(shL,elbL,hanL);    limb(shR,elbR,hanR);
+  head(hd);
+}
+function drawIdle(){
+  const time=performance.now()/1000;
+  const sway=Math.sin(time*1.2)*0.03;
+  const pel={x:CX, y:GROUND-(B.thigh+B.shin-4)};
+  const sh={x:pel.x + sway*22, y:pel.y - B.torso};
+  const hd={x:sh.x+sway*30,y:sh.y-B.neck-B.head+3};
+  const kneeN=ik(pel,{x:CX+10,y:GROUND},B.thigh,B.shin,-1);
+  const kneeF=ik(pel,{x:CX-2,y:GROUND},B.thigh,B.shin,-1);
+  const elb=fk(sh,B.uArm,0.18+sway), han=fk(elb,B.fArm,0.3);
+  const elbF=fk({x:sh.x-3,y:sh.y+2},B.uArm,-0.15), hanF=fk(elbF,B.fArm,-0.05);
+  shadow(CX,38);
+  limb(pel,kneeF,{x:CX-2+B.foot,y:GROUND},true);
+  limb({x:sh.x-3,y:sh.y+2},elbF,hanF,true);
+  torso(pel,sh);
+  limb(pel,kneeN,{x:CX+10+B.foot,y:GROUND});
+  limb(sh,elb,han);
+  head(hd);
+}
+function drawEx(key, t, el){
+  switch(key){
+    case 'jacks':  drawJacks(t); break;
+    case 'squats': drawSquat(t); break;
+    case 'pushups':drawPushup(t); break;
+    case 'knees':  drawHighKnees(el); break;
+    case 'lunges': drawLunge(t, PROG && S.reps >= PROG.steps[PROG.idx].target/2); break;
+    case 'plank':  drawPlank(el); break;
+  }
+}
+
+/* ---------- animation loop (programme engine) ---------- */
+function animate(){
+  requestAnimationFrame(animate);
+  _col = getComputedStyle(document.body).getPropertyValue('--fg').trim();
+  ctx.clearRect(0,0,CW,CH);
+  groundLine();
+  if(!PROG || PROG.mode==='done' || PROG.mode==='ready'){ drawIdle(); return; }
+  const el=(performance.now()-PROG.tStart)/1000;
+
+  if(PROG.mode==='rest'){
+    drawIdle();
+    const next=EX[PROG.steps[PROG.idx+1].key];
+    exName.textContent='Rest';
+    exNote.textContent='Next: '+next.name+' in '+Math.max(0,Math.ceil(PROG.rest-el))+'s';
+    if(el>=PROG.rest){ PROG.idx++; beginStep(); }
+    return;
+  }
+  const st=PROG.steps[PROG.idx], ex=EX[st.key];
+  if(ex.timeBased){
+    drawPlank(el);
+    const sec=Math.min(st.target, Math.floor(el));
+    if(sec!==S.reps){ S.reps=sec; repNum.textContent=sec; if(sec && sec%5===0) repTick(); }
+    if(el>=st.target) stepDone();
+    return;
+  }
+  const t=(st.key==='knees') ? ((el/(ex.period*2))%1) : ((el/ex.period)%1);
+  const rep=Math.min(st.target, Math.floor(el/ex.period));
+  if(rep!==S.reps){ S.reps=rep; repNum.textContent=rep; repTick(); }
+  drawEx(st.key, t, (st.key==='knees')?((el/(ex.period*2))%1):el);
+  if(rep>=st.target) stepDone();
+}
+
+/* ---------- brain fuel + hydration ---------- */
+const FACTS = [
+  "Even mild dehydration — around 1–2% of body weight — can measurably dull attention, working memory, and mood. Sip before you feel thirsty.",
+  "A single 10-minute bout of moderate exercise can sharpen focus and executive function for up to an hour afterward — perfect timing for your next session.",
+  "Exercise increases blood flow to the prefrontal cortex, the brain region that handles planning, focus, and self-control.",
+  "Movement triggers BDNF — a protein often called 'fertilizer for the brain' — which supports learning and new neural connections.",
+  "Regular aerobic exercise is linked to a larger hippocampus, the brain's memory hub. Your jumping jacks are studying with you.",
+  "Your brain is roughly 75% water. Headaches and fading concentration are often early thirst signals, not a need for more caffeine.",
+  "Short active breaks beat passive scrolling: light movement reduces mental fatigue and restores attention better than staying seated.",
+  "Exercise raises dopamine and norepinephrine — the same neurotransmitters that govern alertness and sustained attention.",
+  "Standing up and moving every 25–50 minutes counteracts the cognitive dip that comes from prolonged sitting.",
+  "Steady sipping beats chugging: your body absorbs water better in small, regular amounts across the day.",
+  "Slow, instrumental music at a calm tempo can mask distracting noise and help sustain attention during deep work.",
+  "Squats and lunges recruit your biggest muscles, giving you the most circulation boost — and brain oxygen — per rep.",
+  "The Pomodoro technique works partly because deadlines sharpen attention: a ticking 25-minute window keeps your brain from drifting.",
+  "Sleep is when memories consolidate — a workout plus a good night's rest cements what you studied far better than cramming.",
+  "Natural light exposure during study hours helps regulate alertness; a quick walk outside doubles as exercise and a focus reset.",
+  "Heart-pumping movement increases lactate, which your brain happily burns as fuel during demanding mental work.",
+  "Studying in multiple short sessions beats one marathon: spaced practice can dramatically improve long-term retention.",
+  "Stretching tight hip flexors and shoulders after sitting improves posture — and easier breathing means better oxygen flow to the brain.",
+  "Mild exercise before memorising new material has been shown to improve recall compared to staying sedentary.",
+  "Chronic dehydration shrinks attention span gradually — people often misread it as boredom or burnout.",
+  "Green tea pairs caffeine with L-theanine, giving a smoother, jitter-free alertness than coffee for many people.",
+  "Your brain uses about 20% of your body's energy at rest — feed it: steady meals beat sugar spikes for sustained focus.",
+  "Laughing, like exercise, increases blood flow and lowers stress hormones — a funny clip on a long break isn't wasted time.",
+  "Handwriting notes activates more motor and memory circuits than typing, which can deepen understanding of tricky material.",
+];
+/* ---------- location-flavoured facts ---------- */
+let localFactsLoaded=false;
+async function initLocalFacts(){
+  if(localFactsLoaded) return;
+  localFactsLoaded=true;
+  /* coarse, IP-based lookup only — city/country level, no GPS, no permission prompt */
+  let place=null;
+  try{
+    const r=await fetch('https://ipapi.co/json/');
+    const j=await r.json();
+    if(j && (j.city||j.country_name)) place={city:j.city||'', country:j.country_name||'', lat:parseFloat(j.latitude)||0};
+  }catch(e){}
+  if(!place){
+    try{
+      const r=await fetch('https://ipwho.is/');
+      const j=await r.json();
+      if(j && j.success!==false) place={city:j.city||'', country:j.country||'', lat:parseFloat(j.latitude)||0};
+    }catch(e){}
+  }
+  if(!place || !(place.city||place.country)) return;
+  const name=place.city||place.country;
+  let local=[];
+  /* AI-crafted facts — works when running inside Claude */
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6', max_tokens:1000, messages:[{role:'user',
+        content:'Give 4 short, interesting, true facts (max 25 words each) that connect studying, focus, exercise, parks, walking, or universities to '+name+', '+place.country+'. Respond ONLY with a JSON array of strings, no other text.'}]})
+    });
+    const data=await resp.json();
+    const text=(data.content||[]).map(i=>i.text||'').join('');
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    if(Array.isArray(parsed)) local=parsed.filter(x=>typeof x==='string').slice(0,4);
+  }catch(e){}
+  /* fallback: location-aware templates for the published site */
+  if(!local.length){
+    local=[
+      'Studying in '+name+'? A 10-minute walk outside between pomodoros gives you daylight, movement and a memory boost in one.',
+      'Find your nearest green space in '+name+' — studies link exercising near nature to bigger mood and attention gains than indoor workouts.',
+      'Your sweat breaks add up: four breaks a day in '+name+' is roughly 80 squats, lunges and push-ups you would not otherwise do.',
+      Math.abs(place.lat)>40
+        ? 'At '+name+'\u2019s latitude, winter daylight is scarce — a midday movement break outside helps keep your body clock and focus sharp.'
+        : 'In '+name+'\u2019s climate, hydration matters even more — keep that bottle topped up between focus rounds.'
+    ];
+  }
+  local.forEach(f=>FACTS.push('\ud83d\udccd '+f));
+}
+
+let factIdx = Math.floor(Math.random()*FACTS.length);
+const factCard=$('factCard'), factText=$('factText');
+factText.textContent = FACTS[factIdx];
+function nextFact(){
+  factCard.classList.add('fade');
+  setTimeout(()=>{
+    factIdx=(factIdx+1)%FACTS.length;
+    factText.textContent=FACTS[factIdx];
+    factCard.classList.remove('fade');
+  }, 450);
+}
+setInterval(nextFact, 75000);
+
+const HYDRATE_MSGS = [
+  "💧 45-minute check-in — take a few sips of water.",
+  "💧 Hydration time! Small sips beat big chugs.",
+  "💧 You've been at it a while — grab some water.",
+  "💧 Water break: your brain is 75% the stuff.",
+];
+let hydrateIdx = 0, toastTimer=null;
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  beep(988,.08,.05); beep(1319,.12,.05,'sine',.1);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toast.classList.remove('show'), 12000);
+}
+toast.onclick = ()=>toast.classList.remove('show');
+setInterval(()=>{ if(S.reminders) showToast(HYDRATE_MSGS[hydrateIdx++ % HYDRATE_MSGS.length]); }, 45*60*1000);
+
+/* ---------- tasks (Pomofocus style) ---------- */
+const taskListMain=$('taskListMain'), taskForm=$('taskForm'), newTaskInput=$('newTaskInput');
+let estCount=1;
+function setEst(v){ estCount=Math.max(1,Math.min(20,v)); $('estVal').textContent=estCount; }
+['estMinus','estPlus'].forEach(id=>{
+  $(id).addEventListener('click', e=>{
+    e.preventDefault(); e.stopPropagation();
+    setEst(estCount + (id==='estPlus'?1:-1));
+  });
+});
+$('addTaskOpen').onclick=()=>{ taskForm.classList.add('show'); setEst(1); newTaskInput.focus(); };
+$('cancelTaskBtn').onclick=()=>{ taskForm.classList.remove('show'); newTaskInput.value=''; };
+function saveTask(){
+  const title=newTaskInput.value.trim();
+  if(!title) return;
+  const t={id:'t'+Date.now(), title, done:false, sessions:0, minutes:0, est:estCount};
+  DATA.tasks.unshift(t);
+  S.activeTask=t.id;                     // newly added task auto-links
+  newTaskInput.value=''; taskForm.classList.remove('show');
+  saveData(); renderTasks();
+}
+$('saveTaskBtn').onclick=saveTask;
+newTaskInput.addEventListener('keydown',e=>{ if(e.key==='Enter') saveTask(); });
+
+function renderTasks(){
+  taskListMain.innerHTML='';
+  if(!DATA.tasks.length){
+    taskListMain.innerHTML='';
+  }
+  DATA.tasks.forEach(t=>{
+    const row=document.createElement('div');
+    const isDone = t.est ? (t.sessions>=t.est) : !!t.done;   // cross-out is earned, not clicked
+    row.className='task-item'+(isDone?' done':'')+(S.activeTask===t.id?' selected':'');
+    let meta;
+    if(t.est){
+      const left=Math.max(0, t.est - t.sessions);
+      meta = `🍅 ${t.sessions}/${t.est}` + (left ? ` · ${left} to go` : ' · estimate reached 🎉') + (t.minutes?` · ${t.minutes} min`:'');
+    } else {
+      meta = t.sessions ? `${t.sessions} session${t.sessions>1?'s':''} · ${t.minutes} min` : '';
+    }
+    row.innerHTML=`
+      <div class="t-check" aria-hidden="true">${isDone?'✓':''}</div>
+      <div class="t-body"><div class="t-title"></div><div class="t-meta">${meta}</div></div>
+      <button class="t-del" aria-label="Delete task">✕</button>`;
+    row.querySelector('.t-title').textContent=t.title;
+    row.onclick=()=>{                              // tap row → link to session
+      S.activeTask = (S.activeTask===t.id)?null:t.id;
+      renderTasks();
+    };
+    row.querySelector('.t-del').onclick=e=>{
+      e.stopPropagation();
+      DATA.tasks=DATA.tasks.filter(x=>x.id!==t.id);
+      if(S.activeTask===t.id) S.activeTask=null;
+      saveData(); renderTasks();
+    };
+    taskListMain.appendChild(row);
+  });
+  const cur=DATA.tasks.find(x=>x.id===S.activeTask);
+  if(cur){
+    const prog = cur.est ? ` · 🍅 ${cur.sessions}/${cur.est}` : '';
+    $('currentTaskLabel').innerHTML = '🎯 <b></b>'+prog;
+    $('currentTaskLabel').querySelector('b').textContent=cur.title;
+  } else {
+    $('currentTaskLabel').textContent='Time to focus!';
+  }
+}
+
+/* ---------- profile & history ---------- */
+function logEntry(e){
+  e.ts=Date.now();
+  DATA.history.unshift(e);
+  if(DATA.history.length>40) DATA.history.length=40;
+}
+function logFocus(minutes, completed){
+  minutes=Math.round(minutes);
+  DATA.totals.minutes += minutes;
+  const t=DATA.tasks.find(x=>x.id===S.activeTask);
+  if(completed){
+    // a pomodoro only counts when the full focus timer elapses
+    DATA.totals.sessions++;
+    if(t){
+      t.sessions++; t.minutes+=minutes;
+      if(t.est && t.sessions>=t.est) t.done=true;   // auto cross-out at estimate
+    }
+    logEntry({type:'focus', min:minutes, task:t?t.title:null});
+  } else if(minutes>=1){
+    if(t) t.minutes+=minutes;
+    logEntry({type:'focus', min:minutes, task:t?t.title:null});
+  }
+  saveData(); renderTasks();
+}
+function renderProfile(){
+  const signed=!!DATA.name;
+  $('profileBtn').textContent = signed ? '👤 '+DATA.name.split(' ')[0] : 'Sign in';
+  $('profileTitle').textContent = signed ? DATA.name+"'s progress" : 'Sign in';
+  $('signinBox').style.display = signed?'none':'block';
+  $('statsBox').style.display = signed?'block':'none';
+  if(signed){
+    $('stSessions').textContent=DATA.totals.sessions;
+    $('stMinutes').textContent=DATA.totals.minutes;
+    $('stReps').textContent=DATA.totals.reps;
+    const h=$('histList'); h.innerHTML='';
+    if(!DATA.history.length) h.innerHTML='<p class="empty-note">Nothing logged yet — finish a focus round or a workout.</p>';
+    DATA.history.slice(0,8).forEach(e=>{
+      const d=new Date(e.ts);
+      const when=d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+      const row=document.createElement('div'); row.className='hist-item';
+      const what = e.type==='focus'
+        ? `📖 ${e.min} min focus${e.task?' · '+e.task:''}`
+        : `💪 ${e.ex} — ${e.reps} ${e.unit}`;
+      row.innerHTML=`<span class="what"></span><span class="when">${when}</span>`;
+      row.querySelector('.what').textContent=what;
+      h.appendChild(row);
+    });
+  }
+}
+$('signInBtn').onclick=signIn;
+$('signUpBtn').onclick=signUp;
+$('passInput').addEventListener('keydown',e=>{ if(e.key==='Enter') signIn(); });
+$('signOutBtn').onclick=async ()=>{
+  await store.set('pomofit:session','');
+  DATA=blankData();
+  S.activeTask=null;
+  renderProfile(); renderTasks();
+};
+
+/* ---------- timer engine ---------- */
+let tickInt=null;
+function phaseDuration(){
+  if(S.phase==='focus') return S.focusMin*60000;
+  if(S.phase==='sweat') return S.breakMin*60000;
+  return S.longMin*60000;
+}
+function fmt(ms){
+  const s=Math.max(0,Math.ceil(ms/1000));
+  return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+}
+function start(){
+  if(S.running) return;
+  S.running=true;
+  S.endAt=Date.now()+S.remaining;
+  startBtn.textContent='PAUSE';
+  tickInt=setInterval(tick,200);
+  ac();
+  try{
+    if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
+  }catch(e){}
+}
+function pause(){
+  if(!S.running) return;
+  S.running=false;
+  S.remaining=Math.max(0,S.endAt-Date.now());
+  startBtn.textContent='RESUME';
+  clearInterval(tickInt);
+}
+function tick(){
+  const left=S.endAt-Date.now();
+  render(left);
+  if(left<=0) nextPhase(true);
+}
+function nextPhase(natural){
+  if(S.phase==='focus'){
+    const left = S.running ? Math.max(0,S.endAt-Date.now()) : S.remaining;
+    logFocus(natural ? S.focusMin : (phaseDuration()-left)/60000, natural);
+  }
+  clearInterval(tickInt); S.running=false;
+  if(S.phase==='focus'){
+    if(natural){
+      bell(2); chimeFocusEnd();
+      notify('🍅 Focus complete!', 'Nice work — time for your sweat break.');
+    }
+    S.completed++;
+    if(S.completed>=4){ setPhase('rest'); S.completed=0; }
+    else setPhase('sweat');
+    if(S.autoBreak) start(); else startBtn.textContent='START';
+  } else {
+    if(natural){
+      bell(1); chimeBreakEnd();
+      notify('⏰ Break over', 'Back to the books — you\'ve got this.');
+    }
+    S.session++;
+    sesNum.textContent=S.session;
+    setPhase('focus');
+    if(S.autoFocus) start(); else startBtn.textContent='START';
+  }
+}
+function setPhase(p){
+  S.phase=p;
+  S.remaining=phaseDuration();
+  S.endAt=Date.now()+S.remaining;
+  PROG=null; S.reps=0;
+  counterRow.style.visibility='hidden';
+  $('progStartBtn').style.display='none';
+  renderTraj();
+  document.querySelectorAll('#chips .chip').forEach(c=>c.classList.remove('active'));
+  document.body.dataset.mode = p;
+  const isBreak = p!=='focus';
+  workoutBlock.classList.toggle('show', isBreak);
+  timerBlock.style.display = isBreak ? 'none':'flex';
+  phaseLabel.textContent = p==='focus' ? 'Focus' : p==='sweat' ? 'Sweat Break' : 'Long Break';
+  if(isBreak){
+    exName.textContent='Pick a programme';
+    exNote.textContent = p==='rest'
+      ? 'Long break — a programme will stretch to fill it, or just rest.'
+      : 'Each programme is sized to fill your whole break.';
+  }
+  nextFact();
+  renderDots();
+  render(S.remaining);
+}
+function render(left){
+  const txt=fmt(left);
+  timerEl.textContent=txt;
+  breakClock.textContent = S.phase!=='focus' ? (txt+' left in break') : '';
+  document.title = txt+' · '+(S.phase==='focus'?'Focus':'Break')+' — PomoFit';
+  if(S.phase!=='focus' && S.running) S.remaining=Math.max(0,left);
+}
+function renderDots(){
+  dotsEl.innerHTML='';
+  for(let i=0;i<4;i++){
+    const d=document.createElement('div'); d.className='dot';
+    if(i<S.completed) d.classList.add('done');
+    if(i===S.completed && S.phase==='focus') d.classList.add('now');
+    dotsEl.appendChild(d);
+  }
+}
+
+/* ---------- UI wiring ---------- */
+startBtn.onclick=()=> S.running?pause():start();
+$('skipBtn').onclick=()=> nextPhase(false);
+$('backBtn').onclick=()=> nextPhase(false);
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space' && e.target.tagName!=='INPUT' && !document.querySelector('.sheet.show')){
+    e.preventDefault(); S.running?pause():start();
+  }
+});
+
+/* programme chips */
+Object.keys(PROGRAMMES).forEach(k=>{
+  const c=document.createElement('button');
+  c.className='chip'; c.dataset.key=k;
+  c.textContent=PROGRAMMES[k].name;
+  c.onclick=()=>selectProgramme(k);
+  chipsEl.appendChild(c);
+});
+$('shuffleBtn').onclick=()=>{
+  const keys=Object.keys(EX).sort(()=>Math.random()-0.5).slice(0,3);
+  selectProgramme(null, keys);
+};
+$('restBtn').onclick=()=>{
+  PROG=null; S.reps=0;
+  counterRow.style.visibility='hidden';
+  $('progStartBtn').style.display='none';
+  renderTraj();
+  document.querySelectorAll('#chips .chip').forEach(c=>c.classList.remove('active'));
+  exName.textContent='Resting easy';
+  exNote.textContent='';
+};
+
+/* sheets */
+const sheetBg=$('sheetBg');
+function openSheet(id){
+  document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));
+  if(id==='profileSheet') renderProfile();
+  $(id).classList.add('show'); sheetBg.classList.add('show');
+}
+function closeSheets(){
+  document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));
+  sheetBg.classList.remove('show');
+}
+$('settingsBtn').onclick=()=>openSheet('settingsSheet');
+$('profileBtn').onclick=()=>openSheet('profileSheet');
+sheetBg.onclick=closeSheets;
+document.querySelectorAll('.close-sheet').forEach(b=>b.onclick=closeSheets);
+
+/* themes */
+const THEMES={ember:'🔥 Ember', forest:'🌲 Forest', ocean:'🌊 Ocean', mono:'⚡ Mono'};
+const themeSeg=$('themeSeg');
+Object.keys(THEMES).forEach(k=>{
+  const b=document.createElement('button');
+  b.className='chip'; b.textContent=THEMES[k];
+  if(k==='forest') b.classList.add('active');
+  b.onclick=()=>{
+    document.body.dataset.theme=k;
+    themeSeg.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    b.classList.add('active');
+  };
+  themeSeg.appendChild(b);
+});
+
+function seg(elId, values, get, set){
+  const el=$(elId);
+  values.forEach(v=>{
+    const b=document.createElement('button');
+    b.className='chip'; b.textContent=v+' min';
+    if(get()===v) b.classList.add('active');
+    b.onclick=()=>{
+      set(v);
+      el.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      b.classList.add('active');
+      if(!S.running){ S.remaining=phaseDuration(); render(S.remaining); }
+    };
+    el.appendChild(b);
+  });
+}
+(function(){
+  const wrap=document.createElement('div');
+  wrap.className='chip stepper-chip'; wrap.id='focusStepper';
+  wrap.innerHTML='<button type="button" id="fsMinus" aria-label="Fewer minutes">−</button><input id="fsVal" type="text" inputmode="numeric" maxlength="3" value="01" aria-label="Custom minutes"><button type="button" id="fsPlus" aria-label="More minutes">＋</button>';
+  $('focusSeg').appendChild(wrap);          // appended first, so it leads the row
+  const val=wrap.querySelector('#fsVal');
+  let v=1;
+  function commit(){
+    S.focusMin=v;
+    document.querySelectorAll('#focusSeg .chip').forEach(c=>c.classList.remove('active'));
+    wrap.classList.add('active');
+    if(!S.running){ S.remaining=phaseDuration(); render(S.remaining); }
+  }
+  function show(){ val.value=String(v).padStart(2,'0'); }
+  wrap.querySelector('#fsMinus').addEventListener('click',e=>{ e.stopPropagation(); v=Math.max(1,v-1); show(); commit(); });
+  wrap.querySelector('#fsPlus').addEventListener('click',e=>{ e.stopPropagation(); v=Math.min(180,v+1); show(); commit(); });
+  val.addEventListener('click',e=>{ e.stopPropagation(); val.select(); });
+  val.addEventListener('input',()=>{
+    const n=parseInt(val.value.replace(/\D/g,''),10);
+    if(n>=1 && n<=180){ v=n; commit(); }
+  });
+  val.addEventListener('blur',show);
+  val.addEventListener('keydown',e=>{ if(e.key==='Enter'){ val.blur(); } });
+  show();
+})();
+seg('focusSeg',[15,25,45,50],()=>S.focusMin,v=>S.focusMin=v);
+seg('breakSeg',[3,5,10],()=>S.breakMin,v=>S.breakMin=v);
+seg('longSeg',[15,20,30],()=>S.longMin,v=>S.longMin=v);
+function wireToggle(id, get, set){
+  const b=$(id);
+  b.onclick=()=>{ set(!get()); b.textContent=get()?'On':'Off'; b.setAttribute('aria-pressed',get()); };
+}
+wireToggle('remToggle',()=>S.reminders,v=>S.reminders=v);
+wireToggle('sfxToggle',()=>S.sound,v=>S.sound=v);
+wireToggle('autoBreak',()=>S.autoBreak,v=>S.autoBreak=v);
+wireToggle('autoFocus',()=>S.autoFocus,v=>S.autoFocus=v);
+
+/* ---------- boot ---------- */
+renderDots();
+render(S.remaining);
+renderTasks();
+animate();
+loadData();
+initLocalFacts();
+</script>
+</body>
+</html>
