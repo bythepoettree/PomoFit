@@ -390,6 +390,14 @@
     color:var(--muted); font-size:12px; letter-spacing:.05em; padding-top:16px;
   }
   footer b{color:var(--accent); font-weight:600;}
+  .kofi-link{
+    display:inline-flex; align-items:center; gap:8px; margin-top:14px;
+    background:var(--chip); color:var(--fg); text-decoration:none;
+    border-radius:999px; padding:12px 24px; font-size:15px; font-weight:600;
+    transition:transform .12s var(--ease), opacity .12s var(--ease);
+  }
+  .kofi-link:hover{opacity:.85;}
+  .kofi-link:active{transform:scale(.96);}
 </style>
 </head>
 <body data-mode="focus" data-theme="forest">
@@ -481,7 +489,10 @@
   <p id="factText"></p>
 </div>
 
-<footer>Session <b id="sesNum">1</b> · long break after 4 rounds</footer>
+<footer>
+  Session <b id="sesNum">1</b> · long break after 4 rounds<br>
+  <a class="kofi-link" href="https://ko-fi.com/pomofit" target="_blank" rel="noopener noreferrer">☕ Buy me a coffee</a>
+</footer>
 
 <!-- ================= SHEETS ================= -->
 <div class="sheet-bg" id="sheetBg"></div>
