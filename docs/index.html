@@ -3,7 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PomoFit — Pomodoro focus with workout breaks</title>
+<title>PomoFit — Pomodoro Focus Timer with Workout Breaks</title>
+<meta name="description" content="PomoFit is a free Pomodoro focus timer that turns your breaks into quick workouts. Stay on task, then move — with custom timers, exercise programmes, and progress tracking.">
+<link rel="canonical" href="https://www.pomofit.fit/">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / social sharing -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="PomoFit — Pomodoro Focus Timer with Workout Breaks">
+<meta property="og:description" content="A free Pomodoro focus timer that turns your breaks into quick workouts. Stay on task, then move.">
+<meta property="og:url" content="https://www.pomofit.fit/">
+<meta property="og:site_name" content="PomoFit">
+
+<!-- Twitter card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PomoFit — Pomodoro Focus Timer with Workout Breaks">
+<meta name="twitter:description" content="A free Pomodoro focus timer that turns your breaks into quick workouts.">
+
+<meta name="theme-color" content="#171C2B">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "PomoFit",
+  "url": "https://www.pomofit.fit/",
+  "description": "A free Pomodoro focus timer that turns your breaks into quick workouts.",
+  "applicationCategory": "ProductivityApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -391,10 +421,10 @@
   }
   footer b{color:var(--accent); font-weight:600;}
   .kofi-link{
-    display:inline-flex; align-items:center; gap:8px; margin-top:14px;
-    background:var(--chip); color:var(--fg); text-decoration:none;
-    border-radius:999px; padding:12px 24px; font-size:15px; font-weight:600;
-    transition:transform .12s var(--ease), opacity .12s var(--ease);
+    display:inline-flex; align-items:center; gap:6px; margin:0;
+    background:var(--accent); color:var(--accent-ink); text-decoration:none;
+    border-radius:999px; padding:9px 16px; font-size:13.5px; font-weight:700;
+    white-space:nowrap; transition:transform .12s var(--ease), opacity .12s var(--ease);
   }
   .kofi-link:hover{opacity:.85;}
   .kofi-link:active{transform:scale(.96);}
@@ -408,7 +438,8 @@
   <div>
     <div class="wordmark">POMO<em>FIT</em></div>
   </div>
-  <div style="display:flex;gap:8px;">
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
+    <a class="kofi-link" href="https://ko-fi.com/pomofit" target="_blank" rel="noopener noreferrer">☕ Support</a>
     <div class="music-wrap" id="musicWrap">
       <button class="icon-btn" id="musicBtn" aria-pressed="false" title="Meditation music" aria-label="Meditation music" style="width:38px;text-align:center;padding:8px 0;">♪</button>
       <div class="music-menu" id="musicMenu">
@@ -490,8 +521,7 @@
 </div>
 
 <footer>
-  Session <b id="sesNum">1</b> · long break after 4 rounds<br>
-  <a class="kofi-link" href="https://ko-fi.com/pomofit" target="_blank" rel="noopener noreferrer">☕ Buy me a coffee</a>
+  Session <b id="sesNum">1</b> · long break after 4 rounds
 </footer>
 
 <!-- ================= SHEETS ================= -->
@@ -519,12 +549,45 @@
     <div class="task-add">
       <input id="passInput" type="password" maxlength="50" placeholder="Password" autocomplete="current-password">
     </div>
+    <div id="securityFields">
+      <p class="signin-note" style="margin-top:0;">Creating an account? Set a security question in case you forget your password:</p>
+      <div class="task-add" style="margin-bottom:8px;">
+        <select id="secQuestion" style="width:100%;background:var(--chip);border:none;color:var(--fg);border-radius:12px;padding:12px 15px;font-family:inherit;font-size:15px;">
+          <option value="pet">What was the name of your first pet?</option>
+          <option value="city">What city were you born in?</option>
+          <option value="school">What was your first school?</option>
+          <option value="word">What's a word only you would remember?</option>
+        </select>
+      </div>
+      <div class="task-add">
+        <input id="secAnswer" type="text" maxlength="50" placeholder="Your answer" autocomplete="off">
+      </div>
+    </div>
     <p class="signin-note" id="authMsg" style="min-height:16px;margin:0 0 6px;"></p>
     <div class="controls" style="justify-content:flex-start;gap:8px;margin-top:0;">
       <button class="btn" id="signInBtn" style="font-size:14px;padding:11px 22px;">SIGN IN</button>
       <button class="btn ghost" id="signUpBtn">Create account</button>
     </div>
+    <p class="signin-note" id="forgotNote" style="margin-top:8px;"><a href="#" id="forgotLink" style="color:var(--accent);text-decoration:none;font-weight:600;">Forgot password?</a></p>
     <p class="signin-note" id="storageNote">Accounts live in this browser — sign back in any time on this device. Passwords are stored only as a secure hash.</p>
+  </div>
+  <div id="resetBox" style="display:none;">
+    <p class="signin-note" style="margin-top:0;">Answer your security question to set a new password.</p>
+    <div class="task-add" style="margin-bottom:8px;">
+      <input id="resetUserInput" type="text" maxlength="30" placeholder="Username" autocomplete="username">
+    </div>
+    <p class="signin-note" id="resetQuestionLabel" style="display:none;margin-top:0;"></p>
+    <div class="task-add" id="resetAnswerRow" style="display:none;">
+      <input id="resetAnswerInput" type="text" maxlength="50" placeholder="Your answer" autocomplete="off">
+    </div>
+    <div class="task-add" id="resetNewPassRow" style="display:none;">
+      <input id="resetNewPassInput" type="password" maxlength="50" placeholder="New password" autocomplete="new-password">
+    </div>
+    <p class="signin-note" id="resetMsg" style="min-height:16px;margin:0 0 6px;"></p>
+    <div class="controls" style="justify-content:flex-start;gap:8px;margin-top:0;">
+      <button class="btn" id="resetContinueBtn" style="font-size:14px;padding:11px 22px;">CONTINUE</button>
+      <button class="btn ghost" id="resetCancelBtn">Cancel</button>
+    </div>
   </div>
   <div id="statsBox" style="display:none;">
     <div class="profile-edit">
@@ -734,15 +797,22 @@ function syncSettingsUI(){
 function authMsg(m){ $('authMsg').textContent=m; }
 async function signUp(){
   const u=$('userInput').value.trim(), pw=$('passInput').value;
+  const secQ=$('secQuestion').value, secA=$('secAnswer').value.trim();
   if(u.length<2) return authMsg('Username needs at least 2 characters.');
   if(pw.length<4) return authMsg('Password needs at least 4 characters.');
   if(ACCOUNTS[u]) return authMsg('That username is taken — try signing in instead.');
+  if(secA.length<2) return authMsg('Please add an answer to the security question, so you can recover your account later.');
   const salt=Math.random().toString(36).slice(2,10);
-  ACCOUNTS[u]={salt, hash:await sha(salt+pw), data:{tasks:[], history:[], totals:{sessions:0, minutes:0, reps:0}}};
+  const secSalt=Math.random().toString(36).slice(2,10);
+  ACCOUNTS[u]={
+    salt, hash:await sha(salt+pw),
+    secQ, secSalt, secHash:await sha(secSalt+secA.toLowerCase()),
+    data:{tasks:[], history:[], totals:{sessions:0, minutes:0, reps:0}}
+  };
   await store.set('pomofit:accounts', JSON.stringify(ACCOUNTS));
   await store.set('pomofit:session', u);
   DATA=blankData(); DATA.name=u;
-  S.activeTask=null; $('passInput').value='';
+  S.activeTask=null; $('passInput').value=''; $('secAnswer').value='';
   authMsg(storageOK ? '' : 'Heads up: saving isn\'t available in this preview — on the published site your account will persist.');
   renderProfile(); renderTasks();
 }
@@ -757,6 +827,74 @@ async function signIn(){
   S.activeTask=null; $('passInput').value=''; authMsg('');
   renderProfile(); renderTasks();
 }
+
+/* ---------- forgot password / account recovery ---------- */
+const SEC_QUESTIONS={
+  pet:'What was the name of your first pet?',
+  city:'What city were you born in?',
+  school:'What was your first school?',
+  word:"What's a word only you would remember?",
+};
+let resetStage='user'; // 'user' -> 'answer' -> 'newpass'
+let resetUser=null;
+function resetMsg(m){ $('resetMsg').textContent=m; }
+function showResetBox(){
+  resetStage='user'; resetUser=null;
+  $('signinBox').style.display='none';
+  $('resetBox').style.display='block';
+  $('resetUserInput').value=''; $('resetAnswerInput').value=''; $('resetNewPassInput').value='';
+  $('resetQuestionLabel').style.display='none';
+  $('resetAnswerRow').style.display='none';
+  $('resetNewPassRow').style.display='none';
+  $('resetContinueBtn').textContent='CONTINUE';
+  resetMsg('');
+}
+function showSigninBox(){
+  $('resetBox').style.display='none';
+  $('signinBox').style.display='block';
+}
+$('forgotLink').onclick=(e)=>{ e.preventDefault(); showResetBox(); };
+$('resetCancelBtn').onclick=showSigninBox;
+$('resetContinueBtn').onclick=async ()=>{
+  if(resetStage==='user'){
+    const u=$('resetUserInput').value.trim();
+    const acc=ACCOUNTS[u];
+    if(!acc) return resetMsg('No account with that username.');
+    if(!acc.secQ || !acc.secHash) return resetMsg('This account doesn\'t have a security question set up — sorry, recovery isn\'t available. You\'ll need to create a new account.');
+    resetUser=u; resetStage='answer';
+    $('resetQuestionLabel').textContent=SEC_QUESTIONS[acc.secQ]||'Security question';
+    $('resetQuestionLabel').style.display='block';
+    $('resetAnswerRow').style.display='flex';
+    $('resetContinueBtn').textContent='VERIFY ANSWER';
+    resetMsg('');
+    return;
+  }
+  if(resetStage==='answer'){
+    const acc=ACCOUNTS[resetUser];
+    const a=$('resetAnswerInput').value.trim().toLowerCase();
+    if(!a) return resetMsg('Please enter your answer.');
+    if(await sha(acc.secSalt+a) !== acc.secHash) return resetMsg('That answer doesn\'t match — try again.');
+    resetStage='newpass';
+    $('resetAnswerRow').style.display='none';
+    $('resetQuestionLabel').style.display='none';
+    $('resetNewPassRow').style.display='flex';
+    $('resetContinueBtn').textContent='SAVE NEW PASSWORD';
+    resetMsg('');
+    return;
+  }
+  if(resetStage==='newpass'){
+    const pw=$('resetNewPassInput').value;
+    if(pw.length<4) return resetMsg('Password needs at least 4 characters.');
+    const acc=ACCOUNTS[resetUser];
+    const salt=Math.random().toString(36).slice(2,10);
+    acc.salt=salt; acc.hash=await sha(salt+pw);
+    await store.set('pomofit:accounts', JSON.stringify(ACCOUNTS));
+    showSigninBox();
+    $('userInput').value=resetUser; $('passInput').value='';
+    authMsg('Password updated — sign in with your new password.');
+    return;
+  }
+};
 
 /* ---------- sound effects ---------- */
 let AC=null;
@@ -1514,6 +1652,7 @@ function renderProfile(){
     : 'Sign in';
   $('profileTitle').textContent = signed ? nm+"'s progress" : 'Sign in';
   $('signinBox').style.display = signed?'none':'block';
+  if(!signed) $('resetBox').style.display='none';
   $('statsBox').style.display = signed?'block':'none';
   if(signed){
     $('displayNameInput').value = DATA.displayName || '';
