@@ -114,28 +114,11 @@
     background:var(--chip); color:var(--fg); border:none;
     border-radius:12px; padding:9px 13px; font-family:inherit; font-size:13px;
     cursor:pointer; transition:transform .12s var(--ease), opacity .12s var(--ease); white-space:nowrap;
+    display:inline-flex; align-items:center; justify-content:center;
   }
   .icon-btn:hover{opacity:.85;}
   .icon-btn:active{transform:scale(.95);}
   .icon-btn[aria-pressed="true"]{outline:2px solid var(--accent);}
-  .music-wrap{position:relative;}
-  .music-menu{
-    position:absolute; top:calc(100% + 8px); right:0;
-    display:none; flex-direction:column; gap:8px;
-    background:var(--bg2); border:none; border-radius:16px;
-    padding:10px; min-width:200px; z-index:25;
-    box-shadow:0 14px 36px rgba(0,0,0,.35);
-  }
-  .music-wrap:hover .music-menu, .music-wrap.open .music-menu{display:flex;}
-  .music-opt{
-    display:block; width:100%; text-align:left;
-    background:var(--chip); border:none; color:var(--fg);
-    border-radius:12px; padding:12px 14px;
-    font-family:inherit; font-size:14px; font-weight:500; cursor:pointer;
-    transition:transform .12s var(--ease);
-  }
-  .music-opt:active{transform:scale(.97);}
-  .music-opt.active{background:var(--fg); color:var(--bg);}
 
   .phase-strip{
     width:100%; max-width:560px; margin-top:20px;
@@ -470,6 +453,41 @@
   .float-chat-head button{background:none; border:none; color:var(--muted); font-size:16px; cursor:pointer; padding:2px 6px;}
   .float-chat .together-chat{flex:1; min-height:120px;}
   .float-chat .together-reacts button{padding:5px 8px; font-size:16px;}
+
+  /* ---------- floating member avatars (bottom-left, mirrors float-chat) ---------- */
+  .float-members{
+    position:fixed; bottom:16px; z-index:998;
+    left:max(16px, calc(50vw - 280px));
+    display:none; align-items:flex-end; gap:8px;
+  }
+  .float-members.show{display:flex;}
+  .float-members.sheet-open{display:none;}
+  .float-member{
+    position:relative; width:42px; height:42px; flex:none;
+    border-radius:50%; overflow:hidden; background:var(--chip);
+    border:2px solid var(--bg); box-shadow:0 6px 18px rgba(0,0,0,.3);
+    display:flex; align-items:center; justify-content:center;
+    animation:memberGyrate 6s ease-in-out infinite;
+  }
+  .float-member:nth-child(2n){ animation-duration:7.5s; animation-delay:-1.4s; }
+  .float-member:nth-child(3n){ animation-duration:5.2s; animation-delay:-2.8s; }
+  .float-member:nth-child(4n){ animation-duration:8.4s; animation-delay:-0.6s; }
+  .float-member img{width:100%; height:100%; object-fit:cover; display:block;}
+  .float-member .initial{font-family:'Anton',sans-serif; font-size:15px; color:var(--muted);}
+  .float-member .you-dot{
+    position:absolute; bottom:-1px; right:-1px; width:11px; height:11px;
+    border-radius:50%; background:var(--accent); border:2px solid var(--bg);
+  }
+  @keyframes memberGyrate{
+    0%{ transform:rotate(0deg) translateY(0); }
+    25%{ transform:rotate(-4deg) translateY(-1px); }
+    50%{ transform:rotate(0deg) translateY(-2px); }
+    75%{ transform:rotate(4deg) translateY(-1px); }
+    100%{ transform:rotate(0deg) translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .float-member{ animation:none; }
+  }
   .hist-item{display:flex; justify-content:space-between; gap:10px; padding:9px 2px; border-top:1px solid var(--line); font-size:13.5px;}
   .hist-item .when{color:var(--muted); flex:none;}
   .signin-note{font-size:12.5px; color:var(--muted); line-height:1.5; margin-top:10px;}
@@ -506,6 +524,8 @@
 
 <div class="toast" id="toast" role="status">💧 Hydration check</div>
 
+<div class="float-members" id="floatMembers"></div>
+
 <div class="float-chat" id="floatChat">
   <div class="float-chat-panel" id="floatChatPanel">
     <div class="float-chat-head">
@@ -533,19 +553,19 @@
 </div>
 
 <header>
-  <div>
+  <div style="display:flex;align-items:center;gap:10px;">
     <div class="wordmark">POMO<em>FIT</em></div>
+    <button class="icon-btn" id="themeToggleBtn" title="Switch theme" aria-label="Switch theme" style="width:34px;text-align:center;padding:7px 0;">◐</button>
   </div>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
     <a class="kofi-link" href="https://ko-fi.com/pomofit" target="_blank" rel="noopener noreferrer">☕ Support</a>
-    <div class="music-wrap" id="musicWrap">
-      <button class="icon-btn" id="musicBtn" aria-pressed="false" title="Meditation music" aria-label="Meditation music" style="width:38px;text-align:center;padding:8px 0;">♪</button>
-      <div class="music-menu" id="musicMenu">
-        <input type="range" id="volSlider" min="0" max="100" value="70" style="width:100%;accent-color:var(--accent);" aria-label="Music volume">
-      </div>
-    </div>
-    <button class="icon-btn" id="togetherBtn" title="Study together" aria-label="Study together" style="width:38px;text-align:center;padding:8px 0;">🧑‍🤝‍🧑</button>
-    <button class="icon-btn" id="themeToggleBtn" title="Switch theme" aria-label="Switch theme" style="width:38px;text-align:center;padding:8px 0;">◐</button>
+    <button class="icon-btn" id="togetherBtn" title="Study together" aria-label="Study together" style="width:38px;text-align:center;padding:8px 0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m11 17l2 2a1 1 0 1 0 3-3"/>
+        <path d="m14 14l2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/>
+        <path d="m21 3l1 11h-2M3 3L2 14l6.5 6.5a1 1 0 1 0 3-3M3 4h8"/>
+      </svg>
+    </button>
     <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
     <button class="icon-btn" id="profileBtn" title="Sign in" aria-label="Sign in" style="width:38px;text-align:center;padding:8px 0;">👤</button>
   </div>
@@ -1114,185 +1134,6 @@ function notify(title, body){
     }
   }catch(e){}
 }
-
-/* ---------- meditation tunes: 5 generative tracks ---------- */
-const MUSIC = { on:false, key:null, master:null, nodes:[], timers:[], vol:0.7 };
-function noiseBuf(a){
-  const len=a.sampleRate*2, b=a.createBuffer(1,len,a.sampleRate), d=b.getChannelData(0);
-  let last=0;
-  for(let i=0;i<len;i++){ const w=Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last*3.5; }
-  return b;
-}
-function masterGain(){ return Math.pow(MUSIC.vol,2)*0.7 + 0.02; }
-const TRACKS={
-  bells:{name:'🔔 Zen Bells', build(a,out){
-    const f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=1600; f.connect(out);
-    const dg=a.createGain(); dg.gain.value=0.5; dg.connect(f);
-    [110,110.6,165.1].forEach(fr=>{const o=a.createOscillator();o.frequency.value=fr;o.connect(dg);o.start();MUSIC.nodes.push(o);});
-    const P=[220,261.63,293.66,329.63,392,440,523.25];
-    MUSIC.timers.push(setInterval(()=>{
-      const t=a.currentTime,o=a.createOscillator(),g=a.createGain();
-      o.frequency.value=P[Math.floor(Math.random()*P.length)]*(Math.random()<.25?2:1);
-      g.gain.setValueAtTime(0.0001,t);
-      g.gain.exponentialRampToValueAtTime(0.8,t+0.5);
-      g.gain.exponentialRampToValueAtTime(0.0001,t+5.5);
-      o.connect(g);g.connect(f);o.start(t);o.stop(t+5.7);
-    },3200));
-  }},
-  drone:{name:'🌌 Deep Drone', build(a,out){
-    const f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=700; f.connect(out);
-    [82.4,82.9,123.5,164.8,165.6].forEach((fr,i)=>{
-      const o=a.createOscillator(); o.type=i<2?'sawtooth':'sine'; o.frequency.value=fr;
-      const g=a.createGain(); g.gain.value=i<2?0.12:0.3;
-      o.connect(g); g.connect(f); o.start(); MUSIC.nodes.push(o);
-    });
-    const lfo=a.createOscillator(),lg=a.createGain();
-    lfo.frequency.value=0.05; lg.gain.value=300;
-    lfo.connect(lg); lg.connect(f.frequency); lfo.start(); MUSIC.nodes.push(lfo);
-  }},
-  waves:{name:'🌊 Ocean Waves', build(a,out){
-    const src=a.createBufferSource(); src.buffer=noiseBuf(a); src.loop=true;
-    const f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=600;
-    const g=a.createGain(); g.gain.value=0.55;
-    src.connect(f); f.connect(g); g.connect(out); src.start(); MUSIC.nodes.push(src);
-    const lfo=a.createOscillator(),lg=a.createGain();
-    lfo.frequency.value=0.08; lg.gain.value=0.4;
-    lfo.connect(lg); lg.connect(g.gain); lfo.start(); MUSIC.nodes.push(lfo);
-    const lfo2=a.createOscillator(),lg2=a.createGain();
-    lfo2.frequency.value=0.07; lg2.gain.value=350;
-    lfo2.connect(lg2); lg2.connect(f.frequency); lfo2.start(); MUSIC.nodes.push(lfo2);
-  }},
-  rain:{name:'🌧 Rain & Birdsong', build(a,out){
-    // faint distant-rain bed, kept low so it reads as air, not fuzz
-    const src=a.createBufferSource(); src.buffer=noiseBuf(a); src.loop=true;
-    const hp=a.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1600;
-    const lp=a.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=4200;
-    const g=a.createGain(); g.gain.value=0.10;
-    src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(out); src.start(); MUSIC.nodes.push(src);
-    // a shared noise buffer for individual drop impacts
-    const dropBuf=noiseBuf(a);
-    function drop(t){
-      const s=a.createBufferSource(); s.buffer=dropBuf;
-      s.playbackRate.value=0.7+Math.random()*1.6;
-      const bp=a.createBiquadFilter(); bp.type='bandpass';
-      bp.frequency.value=500+Math.random()*2600; bp.Q.value=2.5+Math.random()*4;
-      const dg=a.createGain();
-      const peak=0.10+Math.random()*0.22, dur=0.025+Math.random()*0.07;
-      dg.gain.setValueAtTime(0.0001,t);
-      dg.gain.exponentialRampToValueAtTime(peak, t+0.004);
-      dg.gain.exponentialRampToValueAtTime(0.0001, t+dur);
-      s.connect(bp); bp.connect(dg);
-      if(a.createStereoPanner){ const pn=a.createStereoPanner(); pn.pan.value=Math.random()*2-1; dg.connect(pn); pn.connect(out); }
-      else dg.connect(out);
-      s.start(t, Math.random()*1.5, dur+0.05); 
-    }
-    // the patter: clusters of distinct drops at random moments and positions
-    MUSIC.timers.push(setInterval(()=>{
-      const t=a.currentTime;
-      const n=1+Math.floor(Math.random()*3);   // 1–3 drops per tick
-      for(let i=0;i<n;i++) drop(t+Math.random()*0.07);
-    },70));
-    // occasional heavier drips off leaves and ledges
-    MUSIC.timers.push(setInterval(()=>{
-      if(Math.random()<0.5){
-        const t=a.currentTime,o=a.createOscillator(),pg=a.createGain();
-        o.frequency.setValueAtTime(900+Math.random()*900, t);
-        o.frequency.exponentialRampToValueAtTime(400+Math.random()*300, t+0.08);
-        pg.gain.setValueAtTime(0.0001,t);
-        pg.gain.exponentialRampToValueAtTime(0.07+Math.random()*0.05, t+0.008);
-        pg.gain.exponentialRampToValueAtTime(0.0001, t+0.12);
-        o.connect(pg); pg.connect(out); o.start(t); o.stop(t+0.2);
-      }
-    },700));
-    // birdsong: occasional phrases of 2–5 warbling chirps, panned around the stereo field
-    function chirp(t, base, pan){
-      const o=a.createOscillator(), g=a.createGain();
-      const dur=0.06+Math.random()*0.09;
-      const up=Math.random()<0.6;
-      o.frequency.setValueAtTime(base, t);
-      o.frequency.exponentialRampToValueAtTime(base*(up?1.3+Math.random()*0.4:0.7), t+dur*0.8);
-      // fast warble for realism
-      const vib=a.createOscillator(), vg=a.createGain();
-      vib.frequency.value=25+Math.random()*20; vg.gain.value=base*0.06;
-      vib.connect(vg); vg.connect(o.frequency); vib.start(t); vib.stop(t+dur+0.05);
-      g.gain.setValueAtTime(0.0001,t);
-      g.gain.exponentialRampToValueAtTime(0.05+Math.random()*0.04, t+0.015);
-      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
-      o.connect(g);
-      if(a.createStereoPanner){ const p=a.createStereoPanner(); p.pan.value=pan; g.connect(p); p.connect(out); }
-      else g.connect(out);
-      o.start(t); o.stop(t+dur+0.05);
-    }
-    MUSIC.timers.push(setInterval(()=>{
-      if(Math.random()<0.34){
-        const t=a.currentTime;
-        const base=2200+Math.random()*1900;        // each bird has its own pitch
-        const pan=(Math.random()*2-1)*0.8;         // and its own spot in the trees
-        const n=2+Math.floor(Math.random()*4);     // 2–5 chirps per phrase
-        let off=0;
-        for(let i=0;i<n;i++){
-          chirp(t+off, base*(0.95+Math.random()*0.1), pan);
-          off+=0.09+Math.random()*0.14;
-        }
-      }
-    },2600));
-  }},
-  binaural:{name:'🧠 Binaural Calm', build(a,out){
-    const mk=(fr,pan)=>{
-      const o=a.createOscillator(); o.frequency.value=fr;
-      const g=a.createGain(); g.gain.value=0.4;
-      o.connect(g);
-      if(a.createStereoPanner){ const p=a.createStereoPanner(); p.pan.value=pan; g.connect(p); p.connect(out); }
-      else g.connect(out);
-      o.start(); MUSIC.nodes.push(o);
-    };
-    mk(200,-1); mk(206,1);
-    const o=a.createOscillator(); o.frequency.value=400;
-    const g=a.createGain(); g.gain.value=0.05; o.connect(g); g.connect(out); o.start(); MUSIC.nodes.push(o);
-  }},
-};
-function startTrack(key){
-  stopMusic(true);
-  const a=ac();
-  const g=a.createGain(); g.gain.value=0.0001; g.connect(a.destination);
-  g.gain.exponentialRampToValueAtTime(masterGain(), a.currentTime+1.2);
-  MUSIC.master=g; MUSIC.key=key; MUSIC.on=true;
-  TRACKS[key].build(a,g);
-  updateMusicUI();
-}
-function stopMusic(quiet){
-  MUSIC.timers.forEach(clearInterval); MUSIC.timers=[];
-  if(MUSIC.master){
-    try{
-      const t=AC.currentTime;
-      MUSIC.master.gain.cancelScheduledValues(t);
-      MUSIC.master.gain.setValueAtTime(Math.max(0.0001,MUSIC.master.gain.value),t);
-      MUSIC.master.gain.exponentialRampToValueAtTime(0.0001,t+0.8);
-    }catch(e){}
-    const nodes=MUSIC.nodes;
-    setTimeout(()=>nodes.forEach(n=>{try{n.stop();}catch(e){}}),1000);
-  }
-  MUSIC.nodes=[]; MUSIC.master=null; MUSIC.on=false; MUSIC.key=null;
-  if(!quiet) updateMusicUI();
-}
-function updateMusicUI(){
-  const b=$('musicBtn');
-  b.setAttribute('aria-pressed', MUSIC.on);
-  b.textContent = '♪';
-  document.querySelectorAll('#musicMenu .music-opt').forEach(c=>c.classList.toggle('active', c.dataset.key===MUSIC.key));
-}
-['bells','rain','waves'].forEach(k=>{
-  const c=document.createElement('button');
-  c.className='music-opt'; c.dataset.key=k; c.textContent=TRACKS[k].name;
-  c.onclick=e=>{ e.stopPropagation(); (MUSIC.key===k) ? stopMusic() : startTrack(k); };
-  $('musicMenu').insertBefore(c, $('volSlider'));
-});
-$('volSlider').oninput=e=>{
-  MUSIC.vol=e.target.value/100;
-  if(MUSIC.master){ try{ MUSIC.master.gain.setTargetAtTime(masterGain(), AC.currentTime, 0.1); }catch(e2){} }
-};
-$('musicBtn').onclick=e=>{ e.stopPropagation(); $('musicWrap').classList.toggle('open'); };
-document.addEventListener('click',e=>{ if(!$('musicWrap').contains(e.target)) $('musicWrap').classList.remove('open'); });
 
 /* =====================================================
    EXERCISES + PROGRAMMES
@@ -2197,6 +2038,7 @@ function showTogetherActive(){
   $('togetherActive').style.display='block';
   $('togetherDoneRow').style.display='none';
   $('floatChat').classList.add('show');
+  $('floatMembers').classList.add('show');
 }
 function showTogetherIntro(){
   $('togetherIntro').style.display='block';
@@ -2204,6 +2046,7 @@ function showTogetherIntro(){
   $('togetherDoneRow').style.display='flex';
   togetherMsg('');
   $('floatChat').classList.remove('show');
+  $('floatMembers').classList.remove('show');
   setChatExpanded(false);
 }
 
@@ -2339,12 +2182,29 @@ function broadcastTimer(){
 function renderMembers(members){
   const wrap=$('togetherMembers');
   wrap.innerHTML='';
-  const list=Object.values(members);
+  const floatWrap=$('floatMembers');
+  floatWrap.innerHTML='';
+  const list=Object.entries(members).map(([uid,m])=>({...m, uid}));
   list.forEach(m=>{
     const chip=document.createElement('div'); chip.className='member-chip';
     chip.innerHTML = (m.avatar ? `<img class="member-avatar" src="${m.avatar}" alt="">` : '<span class="dot"></span>') + `<span></span>`;
     chip.querySelector('span:last-child').textContent = m.name || 'Someone';
     wrap.appendChild(chip);
+
+    const bubble=document.createElement('div'); bubble.className='float-member';
+    bubble.title = m.name || 'Someone';
+    if(m.avatar){
+      bubble.innerHTML = `<img src="${m.avatar}" alt="">`;
+    } else {
+      const initial=document.createElement('span'); initial.className='initial';
+      initial.textContent = (m.name||'?').trim()[0]?.toUpperCase() || '?';
+      bubble.appendChild(initial);
+    }
+    if(fb && m.uid===fb.uid){
+      const dot=document.createElement('span'); dot.className='you-dot';
+      bubble.appendChild(dot);
+    }
+    floatWrap.appendChild(bubble);
   });
   $('togetherStatus').textContent = list.length<=1
     ? 'Just you so far — share the code to bring someone in.'
@@ -2465,11 +2325,13 @@ function openSheet(id){
   if(id==='profileSheet') renderProfile();
   $(id).classList.add('show'); sheetBg.classList.add('show');
   $('floatChat').classList.add('sheet-open');
+  $('floatMembers').classList.add('sheet-open');
 }
 function closeSheets(){
   document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));
   sheetBg.classList.remove('show');
   $('floatChat').classList.remove('sheet-open');
+  $('floatMembers').classList.remove('sheet-open');
 }
 $('settingsBtn').onclick=()=>openSheet('settingsSheet');
 $('profileBtn').onclick=()=>openSheet('profileSheet');
