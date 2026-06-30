@@ -58,32 +58,6 @@
     --bg:#22304A; --bg2:#2A3A58; --fg:#EFEAE3; --muted:#93A0BC;
     --accent:#FFC56F; --accent-ink:#3A2503; --line:rgba(239,234,227,.14); --chip:#2E4061;
   }
-  /* ---------- THEME: Forest ---------- */
-  body[data-theme="forest"][data-mode="focus"]{
-    --bg:#14301F; --bg2:#1B3C2B; --fg:#EDF3E6; --muted:#8FA892;
-    --accent:#A8E063; --accent-ink:#1E3308; --line:rgba(237,243,230,.14); --chip:#22332A;
-  }
-  body[data-theme="forest"][data-mode="sweat"]{
-    --bg:#E8A317; --bg2:#C9890C; --fg:#221703; --muted:#5F4708;
-    --accent:#173B22; --accent-ink:#D9F2C0; --line:rgba(34,23,3,.2); --chip:#F2B335;
-  }
-  body[data-theme="forest"][data-mode="rest"]{
-    --bg:#1D3A35; --bg2:#244741; --fg:#EDF3E6; --muted:#8FB0A8;
-    --accent:#FFD37A; --accent-ink:#3A2A03; --line:rgba(237,243,230,.14); --chip:#2A524B;
-  }
-  /* ---------- THEME: Ocean ---------- */
-  body[data-theme="ocean"][data-mode="focus"]{
-    --bg:#0E2B55; --bg2:#153567; --fg:#E8F1FA; --muted:#7E96B5;
-    --accent:#5FD4F4; --accent-ink:#04293A; --line:rgba(232,241,250,.14); --chip:#1A2F52;
-  }
-  body[data-theme="ocean"][data-mode="sweat"]{
-    --bg:#E83D74; --bg2:#C92A5C; --fg:#23040F; --muted:#6B0F2E;
-    --accent:#23040F; --accent-ink:#FFD9E8; --line:rgba(35,4,15,.24); --chip:#F25588;
-  }
-  body[data-theme="ocean"][data-mode="rest"]{
-    --bg:#1F2A52; --bg2:#283566; --fg:#E8F1FA; --muted:#8C9AC7;
-    --accent:#8FF0D2; --accent-ink:#063326; --line:rgba(232,241,250,.14); --chip:#2F3D74;
-  }
   /* ---------- THEME: Mono ---------- */
   body[data-theme="mono"][data-mode="focus"]{
     --bg:#101012; --bg2:#1A1A1E; --fg:#F4F4F2; --muted:#8E8E94;
@@ -304,6 +278,19 @@
   .stepper-chip input::-webkit-outer-spin-button, .stepper-chip input::-webkit-inner-spin-button{-webkit-appearance:none;}
   .stepper-chip.active button{background:rgba(0,0,0,.14); color:inherit;}
 
+  .round-stepper{
+    display:inline-flex; align-items:center; gap:10px;
+    background:var(--chip); border-radius:14px; padding:6px 8px 6px 14px; width:fit-content;
+  }
+  .round-stepper button{
+    width:30px; height:30px; border-radius:9px; border:none;
+    background:var(--bg2); color:inherit; font-size:15px; cursor:pointer; line-height:1;
+  }
+  .round-stepper button:hover{opacity:.85;}
+  .round-stepper button:active{transform:scale(.92);}
+  #rndVal{font-family:'Anton',sans-serif; font-size:16px; min-width:18px; text-align:center;}
+  .round-stepper-unit{font-size:12.5px; color:var(--muted); margin-left:2px;}
+
   /* ---------- programme picker (vertical list) ---------- */
   .prog-list{width:100%; max-width:530px; margin-top:14px; display:flex; flex-direction:column; gap:10px;}
   .prog-card{
@@ -412,6 +399,40 @@
   .crop-zoom span{font-size:15px; color:var(--muted); flex:none;}
   .crop-zoom input{flex:1; accent-color:var(--accent);}
   .crop-hint{text-align:center; font-size:12px; color:var(--muted); margin-top:10px;}
+
+  /* ---------- study together (shared sessions) ---------- */
+  .together-code-row{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px;}
+  .together-code{
+    font-family:'Anton',sans-serif; font-size:22px; letter-spacing:.12em;
+    background:var(--chip); border-radius:12px; padding:8px 14px; display:inline-block; margin-top:2px;
+  }
+  .together-members{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .member-chip{
+    display:inline-flex; align-items:center; gap:6px; background:var(--chip);
+    border-radius:999px; padding:6px 12px 6px 6px; font-size:13px; font-weight:500;
+  }
+  .member-chip .dot{width:8px; height:8px; border-radius:50%; background:var(--accent); flex:none;}
+  .member-avatar{width:22px; height:22px; border-radius:50%; object-fit:cover; flex:none; background:var(--bg2);}
+  .together-status{
+    font-size:12.5px; color:var(--muted); text-align:center; background:var(--chip);
+    border-radius:12px; padding:10px; margin-bottom:14px;
+  }
+  .together-chat{
+    max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;
+    margin-bottom:10px; padding-right:2px;
+  }
+  .chat-msg{font-size:13.5px; line-height:1.4;}
+  .chat-msg .who{font-weight:700; color:var(--accent); margin-right:6px;}
+  .chat-msg.system{color:var(--muted); font-style:italic; font-size:12.5px;}
+  .chat-msg.react{font-size:20px;}
+  .chat-msg.react .who{font-size:12.5px;}
+  .together-reacts{display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;}
+  .together-reacts button{
+    background:var(--chip); border:none; border-radius:10px; font-size:18px;
+    padding:6px 10px; cursor:pointer; transition:transform .12s var(--ease);
+  }
+  .together-reacts button:hover{opacity:.85;}
+  .together-reacts button:active{transform:scale(1.15);}
   .hist-item{display:flex; justify-content:space-between; gap:10px; padding:9px 2px; border-top:1px solid var(--line); font-size:13.5px;}
   .hist-item .when{color:var(--muted); flex:none;}
   .signin-note{font-size:12.5px; color:var(--muted); line-height:1.5; margin-top:10px;}
@@ -444,7 +465,7 @@
   .footer-links a{color:var(--muted); text-decoration:underline; text-decoration-color:rgba(128,128,128,.4);}
 </style>
 </head>
-<body data-mode="focus" data-theme="forest">
+<body data-mode="focus" data-theme="ember">
 
 <div class="toast" id="toast" role="status">💧 Hydration check</div>
 
@@ -460,8 +481,10 @@
         <input type="range" id="volSlider" min="0" max="100" value="70" style="width:100%;accent-color:var(--accent);" aria-label="Music volume">
       </div>
     </div>
+    <button class="icon-btn" id="togetherBtn" title="Study together" aria-label="Study together" style="width:38px;text-align:center;padding:8px 0;">🧑‍🤝‍🧑</button>
+    <button class="icon-btn" id="themeToggleBtn" title="Switch theme" aria-label="Switch theme" style="width:38px;text-align:center;padding:8px 0;">◐</button>
     <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
-    <button class="icon-btn" id="profileBtn" title="Profile & progress">Sign in</button>
+    <button class="icon-btn" id="profileBtn" title="Sign in" aria-label="Sign in" style="width:38px;text-align:center;padding:8px 0;">👤</button>
   </div>
 </header>
 
@@ -535,7 +558,7 @@
 </div>
 
 <footer>
-  Session <b id="sesNum">1</b> · long break after 4 rounds
+  Session <b id="sesNum">1</b> · long break after <b id="longEveryLabel">4</b> rounds
   <div class="footer-links"><a href="privacy.html">Privacy Policy</a></div>
 </footer>
 
@@ -552,10 +575,18 @@
 
 <div class="sheet" id="settingsSheet">
   <h2>Settings</h2>
-  <div class="set-row"><div class="lab">Theme</div><div class="seg" id="themeSeg"></div></div>
   <div class="set-row"><div class="lab">Focus length</div><div class="seg" id="focusSeg"></div></div>
   <div class="set-row"><div class="lab">Sweat break</div><div class="seg" id="breakSeg"></div></div>
   <div class="set-row"><div class="lab">Long break</div><div class="seg" id="longSeg"></div></div>
+  <div class="set-row">
+    <div class="lab">Long break after</div>
+    <div class="round-stepper">
+      <button type="button" id="rndMinus" aria-label="Fewer rounds">−</button>
+      <span id="rndVal">4</span>
+      <button type="button" id="rndPlus" aria-label="More rounds">＋</button>
+      <span class="round-stepper-unit">rounds</span>
+    </div>
+  </div>
   <div class="toggle-row"><span>💧 Hydration reminders (every 45 min)</span><button class="icon-btn" id="remToggle" aria-pressed="true">On</button></div>
   <div class="toggle-row"><span>Sound effects</span><button class="icon-btn" id="sfxToggle" aria-pressed="true">On</button></div>
   <div class="toggle-row"><span>Auto-start breaks</span><button class="icon-btn" id="autoBreak" aria-pressed="true">On</button></div>
@@ -663,12 +694,72 @@
   </div>
 </div>
 
+<div class="sheet" id="togetherSheet">
+  <h2>Study Together</h2>
+
+  <div id="togetherIntro">
+    <div id="togetherStart">
+      <p class="signin-note" style="margin-top:0;">Share a focus session with a friend — your timers stay in sync, no account needed.</p>
+      <div class="task-add" style="margin-bottom:8px;">
+        <input id="nicknameInput" type="text" maxlength="20" placeholder="Your name in the session" autocomplete="off">
+      </div>
+      <div class="controls" style="justify-content:flex-start;gap:8px;margin-top:0;flex-wrap:wrap;">
+        <button class="btn" id="createSessionBtn" style="font-size:14px;padding:11px 22px;">START A SESSION</button>
+      </div>
+      <div class="task-add" style="margin-top:16px;margin-bottom:8px;">
+        <input id="joinCodeInput" type="text" maxlength="6" placeholder="Have a code? Enter it here" autocomplete="off" style="text-transform:uppercase;letter-spacing:.1em;">
+      </div>
+      <div class="controls" style="justify-content:flex-start;gap:8px;margin-top:0;">
+        <button class="btn ghost" id="joinSessionBtn">JOIN SESSION</button>
+      </div>
+      <p class="signin-note" id="togetherMsg" style="min-height:16px;"></p>
+    </div>
+  </div>
+
+  <div id="togetherActive" style="display:none;">
+    <div class="together-code-row">
+      <div>
+        <div class="signin-note" style="margin:0 0 2px;">Session code</div>
+        <div class="together-code" id="sessionCodeDisplay">——————</div>
+      </div>
+      <button class="btn ghost" id="copyCodeBtn" style="font-size:12.5px;padding:9px 14px;">Copy link</button>
+    </div>
+
+    <div class="together-members" id="togetherMembers"></div>
+
+    <div class="together-status" id="togetherStatus">Waiting for everyone to be ready…</div>
+
+    <div class="together-chat" id="togetherChat"></div>
+
+    <div class="together-reacts" id="togetherReacts">
+      <button type="button" data-emoji="🔥">🔥</button>
+      <button type="button" data-emoji="💪">💪</button>
+      <button type="button" data-emoji="👏">👏</button>
+      <button type="button" data-emoji="☕">☕</button>
+      <button type="button" data-emoji="😅">😅</button>
+      <button type="button" data-emoji="🎉">🎉</button>
+    </div>
+    <div class="task-add">
+      <input id="chatInput" type="text" maxlength="200" placeholder="Say something…" autocomplete="off">
+      <button class="btn" id="chatSendBtn" style="padding:0 18px;">Send</button>
+    </div>
+
+    <div class="controls" style="justify-content:center;margin-top:18px;">
+      <button class="btn ghost" id="leaveSessionBtn">Leave session</button>
+    </div>
+  </div>
+
+  <div class="controls" style="justify-content:center;" id="togetherDoneRow">
+    <button class="btn close-sheet">DONE</button>
+  </div>
+</div>
+
 <script>
 /* =====================================================
    PomoFit — pomodoro focus with workout breaks
    ===================================================== */
 const S = {
-  focusMin: 25, breakMin: 5, longMin: 15,
+  focusMin: 25, breakMin: 5, longMin: 15, longBreakEvery: 4,
   autoBreak: true, autoFocus: false, sound: true, reminders: false,
   phase: 'focus', running: false,
   endAt: 0, remaining: 25*60*1000,
@@ -761,7 +852,7 @@ function saveSettings(){
     settingsSaveQueued=false;
     const snap={
       theme: document.body.dataset.theme,
-      focusMin: S.focusMin, breakMin: S.breakMin, longMin: S.longMin,
+      focusMin: S.focusMin, breakMin: S.breakMin, longMin: S.longMin, longBreakEvery: S.longBreakEvery,
       reminders: S.reminders, sound: S.sound, autoBreak: S.autoBreak, autoFocus: S.autoFocus,
     };
     await store.set('pomofit:settings', JSON.stringify(snap));
@@ -775,6 +866,7 @@ async function loadSettings(){
   if(typeof saved.focusMin==='number') S.focusMin = saved.focusMin;
   if(typeof saved.breakMin==='number') S.breakMin = saved.breakMin;
   if(typeof saved.longMin==='number') S.longMin = saved.longMin;
+  if(typeof saved.longBreakEvery==='number') S.longBreakEvery = clamp(Math.round(saved.longBreakEvery),2,12);
   if(typeof saved.reminders==='boolean') S.reminders = saved.reminders;
   if(typeof saved.sound==='boolean') S.sound = saved.sound;
   if(typeof saved.autoBreak==='boolean') S.autoBreak = saved.autoBreak;
@@ -794,10 +886,10 @@ async function loadIntroState(){
   if(dismissed==='1') introBubble.classList.add('hide');
 }
 function syncSettingsUI(){
-  // theme chips
-  themeSeg.querySelectorAll('.chip').forEach(c=>{
-    c.classList.toggle('active', c.dataset.theme===document.body.dataset.theme);
-  });
+  $('rndVal').textContent = S.longBreakEvery;
+  $('longEveryLabel').textContent = S.longBreakEvery;
+  // theme button
+  if(typeof applyTheme==='function') applyTheme(document.body.dataset.theme);
   // duration chips (focus/break/long)
   [['focusSeg',S.focusMin],['breakSeg',S.breakMin],['longSeg',S.longMin]].forEach(([elId,val])=>{
     const el=$(elId);
@@ -1670,9 +1762,12 @@ function renderProfile(){
   const b=$('resetStatsBtn'); if(b){ b.textContent='Reset'; b.classList.remove('armed'); }
   const signed=!!DATA.name;
   const nm=displayName();
-  $('profileBtn').innerHTML = signed
-    ? (DATA.avatar ? `<img src="${DATA.avatar}" alt="" style="width:20px;height:20px;border-radius:50%;object-fit:cover;vertical-align:-4px;margin-right:6px;">` : '👤 ') + esc(nm.split(' ')[0])
-    : 'Sign in';
+  const profileBtnEl=$('profileBtn');
+  profileBtnEl.title = signed ? nm : 'Sign in';
+  profileBtnEl.setAttribute('aria-label', signed ? 'Profile: '+nm : 'Sign in');
+  profileBtnEl.innerHTML = signed
+    ? (DATA.avatar ? `<img src="${DATA.avatar}" alt="${esc(nm)}" style="width:20px;height:20px;border-radius:50%;object-fit:cover;display:block;">` : '👤')
+    : '👤';
   $('profileTitle').textContent = signed ? nm+"'s progress" : 'Sign in';
   $('signinBox').style.display = signed?'none':'block';
   if(!signed) $('resetBox').style.display='none';
@@ -1853,6 +1948,7 @@ function start(){
   startBtn.textContent='PAUSE';
   tickInt=setInterval(tick,200);
   ac();
+  broadcastTimer();
 }
 function pause(){
   if(!S.running) return;
@@ -1860,11 +1956,12 @@ function pause(){
   S.remaining=Math.max(0,S.endAt-Date.now());
   startBtn.textContent='RESUME';
   clearInterval(tickInt);
+  broadcastTimer();
 }
 function tick(){
   const left=S.endAt-Date.now();
   render(left);
-  if(left<=0) nextPhase(true);
+  if(left<=0 && (!mySession || isHost)) nextPhase(true);
 }
 function nextPhase(natural){
   if(S.phase==='focus'){
@@ -1878,7 +1975,7 @@ function nextPhase(natural){
       notify('🍅 Focus complete!', 'Nice work — time for your sweat break.');
     }
     S.completed++;
-    if(S.completed>=4){ setPhase('rest'); S.completed=0; }
+    if(S.completed>=S.longBreakEvery){ setPhase('rest'); S.completed=0; }
     else setPhase('sweat');
     if(S.autoBreak) start(); else startBtn.textContent='START';
   } else {
@@ -1891,6 +1988,7 @@ function nextPhase(natural){
     setPhase('focus');
     if(S.autoFocus) start(); else startBtn.textContent='START';
   }
+  broadcastTimer();
 }
 function setPhase(p){
   S.phase=p;
@@ -1969,6 +2067,292 @@ $('restBtn').onclick=()=>{
   exNote.textContent='';
 };
 
+/* ============================================================
+   STUDY TOGETHER — shared sessions via Firebase Realtime Database
+   ============================================================
+   To activate: fill in YOUR Firebase project config below.
+   Get it from: Firebase Console > Project settings > General > Your apps > SDK setup.
+   Also enable: Build > Authentication > Sign-in method > Anonymous,
+   and Build > Realtime Database > Create Database. */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBEPKyDDzbNneGLp-iF0TkQifz9x9r4xW4",
+  authDomain: "pomofit-dc5aa.firebaseapp.com",
+  databaseURL: "https://pomofit-dc5aa-default-rtdb.firebaseio.com",
+  projectId: "pomofit-dc5aa",
+  storageBucket: "pomofit-dc5aa.firebasestorage.app",
+  messagingSenderId: "560326463792",
+  appId: "1:560326463792:web:16043873dfc4a1d07738f5",
+};
+const FIREBASE_READY = !!FIREBASE_CONFIG.apiKey && !!FIREBASE_CONFIG.databaseURL;
+
+let fb = null;          // { app, auth, db, uid }
+let fbLoadPromise = null;
+let mySession = null;   // current session code, or null
+let sessionRefs = null; // { sessionRef, timerRef, membersRef, chatRef, myMemberRef }
+let sessionListeners = [];
+let isHost = false;
+let suppressLocalBroadcast = false;
+
+function loadScript(src){
+  return new Promise((resolve, reject)=>{
+    const s=document.createElement('script');
+    s.src=src; s.onload=resolve; s.onerror=()=>reject(new Error('Failed to load '+src));
+    document.head.appendChild(s);
+  });
+}
+async function ensureFirebase(){
+  if(fb) return fb;
+  if(fbLoadPromise) return fbLoadPromise;
+  fbLoadPromise = (async ()=>{
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js');
+    const app = firebase.initializeApp(FIREBASE_CONFIG);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    const cred = await auth.signInAnonymously();
+    fb = { app, auth, db, uid: cred.user.uid };
+    return fb;
+  })();
+  return fbLoadPromise;
+}
+
+function genSessionCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no ambiguous chars
+  let code='';
+  for(let i=0;i<6;i++) code+=chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+function togetherMsg(m){ $('togetherMsg').textContent=m; }
+function myNickname(){
+  const typed=$('nicknameInput').value.trim();
+  return typed || displayName() || 'Someone';
+}
+
+function showTogetherActive(){
+  $('togetherIntro').style.display='none';
+  $('togetherActive').style.display='block';
+  $('togetherDoneRow').style.display='none';
+}
+function showTogetherIntro(){
+  $('togetherIntro').style.display='block';
+  $('togetherActive').style.display='none';
+  $('togetherDoneRow').style.display='flex';
+  togetherMsg('');
+}
+
+$('togetherBtn').onclick=()=>{
+  openSheet('togetherSheet');
+  if(!FIREBASE_READY){
+    togetherMsg('Shared sessions aren\'t set up on this site yet — check back soon!');
+    $('createSessionBtn').disabled=true;
+    $('joinSessionBtn').disabled=true;
+  } else if(displayName()){
+    $('nicknameInput').value = displayName();
+  }
+};
+
+$('createSessionBtn').onclick=async ()=>{
+  if(!FIREBASE_READY) return;
+  togetherMsg('Creating session…');
+  try{
+    await ensureFirebase();
+    const code=genSessionCode();
+    await joinOrCreateSession(code, true);
+  }catch(e){ togetherMsg('Couldn\'t create a session — check your connection and try again.'); }
+};
+$('joinSessionBtn').onclick=async ()=>{
+  if(!FIREBASE_READY) return;
+  const code=$('joinCodeInput').value.trim().toUpperCase();
+  if(code.length<4) return togetherMsg('Enter a valid session code.');
+  togetherMsg('Joining…');
+  try{
+    await ensureFirebase();
+    const snap = await fb.db.ref('sessions/'+code+'/createdAt').get();
+    if(!snap.exists()) return togetherMsg('No session found with that code.');
+    await joinOrCreateSession(code, false);
+  }catch(e){ togetherMsg('Couldn\'t join — check the code and your connection.'); }
+};
+
+async function joinOrCreateSession(code, asHost){
+  await ensureFirebase();
+  mySession = code;
+  isHost = asHost;
+  const sessionRef = fb.db.ref('sessions/'+code);
+  const timerRef = sessionRef.child('timer');
+  const membersRef = sessionRef.child('members');
+  const chatRef = sessionRef.child('chat');
+  const myMemberRef = membersRef.child(fb.uid);
+  sessionRefs = { sessionRef, timerRef, membersRef, chatRef, myMemberRef };
+
+  if(asHost){
+    await timerRef.set({
+      phase:S.phase, running:S.running, endAt:S.endAt, remaining:S.remaining,
+      completed:S.completed, session:S.session, longBreakEvery:S.longBreakEvery,
+      focusMin:S.focusMin, breakMin:S.breakMin, longMin:S.longMin,
+      updatedBy: fb.uid,
+    });
+    await sessionRef.child('createdAt').set(firebase.database.ServerValue.TIMESTAMP);
+  }
+
+  await myMemberRef.set({
+    name: myNickname(),
+    avatar: DATA.avatar || null,
+    joinedAt: firebase.database.ServerValue.TIMESTAMP,
+  });
+  myMemberRef.onDisconnect().remove();
+
+  attachSessionListeners();
+  $('sessionCodeDisplay').textContent = code;
+  showTogetherActive();
+  togetherMsg('');
+}
+
+function attachSessionListeners(){
+  const { timerRef, membersRef, chatRef } = sessionRefs;
+
+  const onTimer = timerRef.on('value', snap=>{
+    const v=snap.val();
+    if(!v) return;
+    applyRemoteTimer(v);
+  });
+  sessionListeners.push(['timer', timerRef, onTimer]);
+
+  const onMembers = membersRef.on('value', snap=>{
+    renderMembers(snap.val()||{});
+  });
+  sessionListeners.push(['members', membersRef, onMembers]);
+
+  let chatStarted=Date.now();
+  const onChat = chatRef.limitToLast(50).on('child_added', snap=>{
+    renderChatMessage(snap.val());
+  });
+  sessionListeners.push(['chat', chatRef.limitToLast(50), onChat]);
+}
+function detachSessionListeners(){
+  sessionListeners.forEach(([type, ref, cb])=> ref.off('value', cb));
+  sessionListeners=[];
+}
+
+function applyRemoteTimer(v){
+  if(v.updatedBy===fb.uid && suppressLocalBroadcast) return;
+  suppressLocalBroadcast=true;
+  S.phase=v.phase; S.running=v.running; S.endAt=v.endAt; S.remaining=v.remaining;
+  S.completed=v.completed; S.session=v.session; S.longBreakEvery=v.longBreakEvery;
+  S.focusMin=v.focusMin; S.breakMin=v.breakMin; S.longMin=v.longMin;
+  sesNum.textContent=S.session;
+  setPhaseUIOnly(S.phase);
+  if(S.running){
+    clearInterval(tickInt); tickInt=setInterval(tick,200);
+    startBtn.textContent='PAUSE';
+  } else {
+    clearInterval(tickInt);
+    startBtn.textContent = S.remaining<phaseDuration() ? 'RESUME' : 'START';
+  }
+  render(S.remaining);
+  suppressLocalBroadcast=false;
+}
+// like setPhase() but skips resetting timer fields, since those come from the remote snapshot
+function setPhaseUIOnly(p){
+  document.body.dataset.mode = p;
+  const isBreak = p!=='focus';
+  workoutBlock.classList.toggle('show', isBreak);
+  timerBlock.style.display = isBreak ? 'none':'flex';
+  phaseLabel.textContent = p==='focus' ? 'Focus' : p==='sweat' ? 'Sweat Break' : 'Long Break';
+  renderDots();
+}
+function broadcastTimer(){
+  if(!mySession || !sessionRefs || suppressLocalBroadcast) return;
+  sessionRefs.timerRef.set({
+    phase:S.phase, running:S.running, endAt:S.endAt, remaining:S.remaining,
+    completed:S.completed, session:S.session, longBreakEvery:S.longBreakEvery,
+    focusMin:S.focusMin, breakMin:S.breakMin, longMin:S.longMin,
+    updatedBy: fb.uid,
+  });
+}
+
+function renderMembers(members){
+  const wrap=$('togetherMembers');
+  wrap.innerHTML='';
+  const list=Object.values(members);
+  list.forEach(m=>{
+    const chip=document.createElement('div'); chip.className='member-chip';
+    chip.innerHTML = (m.avatar ? `<img class="member-avatar" src="${m.avatar}" alt="">` : '<span class="dot"></span>') + `<span></span>`;
+    chip.querySelector('span:last-child').textContent = m.name || 'Someone';
+    wrap.appendChild(chip);
+  });
+  $('togetherStatus').textContent = list.length<=1
+    ? 'Just you so far — share the code to bring someone in.'
+    : list.length+' people in this session.';
+}
+
+function renderChatMessage(m){
+  if(!m) return;
+  const log=$('togetherChat');
+  const row=document.createElement('div');
+  if(m.type==='react'){
+    row.className='chat-msg react';
+    row.innerHTML = `<span class="who"></span><span></span>`;
+    row.querySelector('.who').textContent=(m.name||'Someone')+':';
+    row.querySelector('span:last-child').textContent=m.emoji||'';
+  } else if(m.type==='system'){
+    row.className='chat-msg system';
+    row.textContent=m.text||'';
+  } else {
+    row.className='chat-msg';
+    row.innerHTML = `<span class="who"></span><span></span>`;
+    row.querySelector('.who').textContent=(m.name||'Someone')+':';
+    row.querySelector('span:last-child').textContent=m.text||'';
+  }
+  log.appendChild(row);
+  log.scrollTop=log.scrollHeight;
+}
+function sendChat(text){
+  if(!mySession || !sessionRefs || !text.trim()) return;
+  sessionRefs.chatRef.push({ type:'text', name:myNickname(), text:text.trim().slice(0,200), at:firebase.database.ServerValue.TIMESTAMP });
+}
+function sendReact(emoji){
+  if(!mySession || !sessionRefs) return;
+  sessionRefs.chatRef.push({ type:'react', name:myNickname(), emoji, at:firebase.database.ServerValue.TIMESTAMP });
+}
+$('chatSendBtn').onclick=()=>{ sendChat($('chatInput').value); $('chatInput').value=''; };
+$('chatInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ sendChat($('chatInput').value); $('chatInput').value=''; } });
+$('togetherReacts').addEventListener('click', e=>{
+  const b=e.target.closest('button[data-emoji]');
+  if(b) sendReact(b.dataset.emoji);
+});
+
+$('copyCodeBtn').onclick=async ()=>{
+  if(!mySession) return;
+  const url=location.origin+location.pathname+'?join='+mySession;
+  try{
+    await navigator.clipboard.writeText(url);
+    const b=$('copyCodeBtn'); const prev=b.textContent;
+    b.textContent='Copied!'; setTimeout(()=>{ b.textContent=prev; }, 1500);
+  }catch(e){ togetherMsg('Couldn\'t copy — session code is '+mySession); }
+};
+$('leaveSessionBtn').onclick=async ()=>{
+  if(sessionRefs){
+    try{ await sessionRefs.myMemberRef.remove(); }catch(e){}
+    detachSessionListeners();
+  }
+  mySession=null; sessionRefs=null; isHost=false;
+  showTogetherIntro();
+};
+
+// auto-join via ?join=CODE link
+(function checkJoinLink(){
+  try{
+    const params=new URLSearchParams(location.search);
+    const code=params.get('join');
+    if(code){
+      $('joinCodeInput').value=code.toUpperCase();
+      openSheet('togetherSheet');
+      if(displayName()) $('nicknameInput').value = displayName();
+    }
+  }catch(e){}
+})();
+
 /* sheets */
 const sheetBg=$('sheetBg');
 function openSheet(id){
@@ -1985,21 +2369,22 @@ $('profileBtn').onclick=()=>openSheet('profileSheet');
 sheetBg.onclick=closeSheets;
 document.querySelectorAll('.close-sheet').forEach(b=>b.onclick=closeSheets);
 
-/* themes */
-const THEMES={ember:'🔥 Ember', forest:'🌲 Forest', ocean:'🌊 Ocean', mono:'⚡ Mono'};
-const themeSeg=$('themeSeg');
-Object.keys(THEMES).forEach(k=>{
-  const b=document.createElement('button');
-  b.className='chip'; b.textContent=THEMES[k]; b.dataset.theme=k;
-  if(k==='forest') b.classList.add('active');
-  b.onclick=()=>{
-    document.body.dataset.theme=k;
-    themeSeg.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-    b.classList.add('active');
-    saveSettings();
-  };
-  themeSeg.appendChild(b);
-});
+/* themes: cycles between Ember and Mono */
+const THEME_ORDER=['ember','mono'];
+const THEME_ICON={ember:'◐', mono:'◑'};
+const themeToggleBtn=$('themeToggleBtn');
+function applyTheme(k){
+  document.body.dataset.theme=k;
+  themeToggleBtn.textContent=THEME_ICON[k]||'◐';
+  themeToggleBtn.title='Theme: '+(k==='mono'?'Mono':'Ember')+' (tap to switch)';
+}
+themeToggleBtn.onclick=()=>{
+  const cur=document.body.dataset.theme;
+  const next=THEME_ORDER[(THEME_ORDER.indexOf(cur)+1) % THEME_ORDER.length] || 'mono';
+  applyTheme(next);
+  saveSettings();
+};
+applyTheme(document.body.dataset.theme);
 
 function seg(elId, values, get, set){
   const el=$(elId);
@@ -2049,6 +2434,16 @@ let syncFocusStepperDisplay = ()=>{};
 seg('focusSeg',[15,25,45,50],()=>S.focusMin,v=>S.focusMin=v);
 seg('breakSeg',[3,5,10],()=>S.breakMin,v=>S.breakMin=v);
 seg('longSeg',[15,20,30],()=>S.longMin,v=>S.longMin=v);
+
+/* rounds before long break */
+function setLongBreakEvery(n){
+  S.longBreakEvery = clamp(Math.round(n), 2, 12);
+  $('rndVal').textContent = S.longBreakEvery;
+  $('longEveryLabel').textContent = S.longBreakEvery;
+  saveSettings();
+}
+$('rndMinus').onclick=()=> setLongBreakEvery(S.longBreakEvery-1);
+$('rndPlus').onclick=()=> setLongBreakEvery(S.longBreakEvery+1);
 function wireToggle(id, get, set){
   const b=$(id);
   b.onclick=()=>{ set(!get()); b.textContent=get()?'On':'Off'; b.setAttribute('aria-pressed',get()); saveSettings(); };
