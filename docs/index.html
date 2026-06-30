@@ -433,6 +433,36 @@
   }
   .together-reacts button:hover{opacity:.85;}
   .together-reacts button:active{transform:scale(1.15);}
+
+  /* ---------- floating chat widget (front page, while in a session) ---------- */
+  .float-chat{
+    position:fixed; right:16px; bottom:16px; z-index:20;
+    width:min(340px, calc(100vw - 32px)); display:none;
+  }
+  .float-chat.show{display:block;}
+  .float-chat.sheet-open{display:none;}
+  .float-chat-toggle{
+    display:flex; align-items:center; gap:8px; background:var(--accent); color:var(--accent-ink);
+    border:none; border-radius:999px; padding:12px 18px; font-weight:700; font-size:13.5px;
+    cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,.25); margin-left:auto;
+    transition:transform .12s var(--ease);
+  }
+  .float-chat-toggle:hover{opacity:.9;}
+  .float-chat-toggle:active{transform:scale(.97);}
+  .float-chat-badge{
+    background:rgba(0,0,0,.2); border-radius:999px; padding:1px 8px; font-size:11.5px; font-weight:700;
+  }
+  .float-chat-panel{
+    display:none; background:var(--bg2); border-radius:18px; padding:14px;
+    box-shadow:0 12px 32px rgba(0,0,0,.3); margin-bottom:10px; max-height:60vh;
+    flex-direction:column;
+  }
+  .float-chat.expanded .float-chat-panel{display:flex;}
+  .float-chat-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+  .float-chat-head .code{font-size:11.5px; color:var(--muted); letter-spacing:.08em;}
+  .float-chat-head button{background:none; border:none; color:var(--muted); font-size:16px; cursor:pointer; padding:2px 6px;}
+  .float-chat .together-chat{flex:1; min-height:120px;}
+  .float-chat .together-reacts button{padding:5px 8px; font-size:16px;}
   .hist-item{display:flex; justify-content:space-between; gap:10px; padding:9px 2px; border-top:1px solid var(--line); font-size:13.5px;}
   .hist-item .when{color:var(--muted); flex:none;}
   .signin-note{font-size:12.5px; color:var(--muted); line-height:1.5; margin-top:10px;}
@@ -468,6 +498,32 @@
 <body data-mode="focus" data-theme="ember">
 
 <div class="toast" id="toast" role="status">💧 Hydration check</div>
+
+<div class="float-chat" id="floatChat">
+  <div class="float-chat-panel" id="floatChatPanel">
+    <div class="float-chat-head">
+      <div class="code" id="floatChatCode">Session ——————</div>
+      <button type="button" id="floatChatCollapseBtn" aria-label="Collapse chat">︿</button>
+    </div>
+    <div class="together-chat" id="floatChatLog"></div>
+    <div class="together-reacts" id="floatReacts">
+      <button type="button" data-emoji="🔥">🔥</button>
+      <button type="button" data-emoji="💪">💪</button>
+      <button type="button" data-emoji="👏">👏</button>
+      <button type="button" data-emoji="☕">☕</button>
+      <button type="button" data-emoji="😅">😅</button>
+      <button type="button" data-emoji="🎉">🎉</button>
+    </div>
+    <div class="task-add" style="margin-top:8px;">
+      <input id="floatChatInput" type="text" maxlength="200" placeholder="Say something…" autocomplete="off">
+      <button class="btn" id="floatChatSendBtn" style="padding:0 18px;">Send</button>
+    </div>
+  </div>
+  <button class="float-chat-toggle" id="floatChatToggleBtn">
+    💬 <span id="floatChatToggleLabel">Session chat</span>
+    <span class="float-chat-badge" id="floatChatBadge" style="display:none;">0</span>
+  </button>
+</div>
 
 <header>
   <div>
@@ -1026,6 +1082,7 @@ function beep(freq, dur=0.09, gain=0.05, type='sine', when=0){
 const chimeFocusEnd = ()=>{ beep(660,.12,.07); beep(880,.12,.07,'sine',.13); beep(1100,.2,.07,'sine',.26); };
 const chimeBreakEnd = ()=>{ beep(880,.1,.06); beep(660,.18,.06,'sine',.12); };
 const chimeProgDone = ()=>{ beep(523,.1,.07); beep(659,.1,.07,'sine',.1); beep(784,.1,.07,'sine',.2); beep(1047,.25,.08,'sine',.3); };
+const chimeChatMsg = ()=>{ beep(960,.06,.045,'sine'); beep(1280,.07,.04,'sine',.05); };
 const repTick = ()=> beep(1320,.04,.025,'square');
 /* proper bell: inharmonic partials with long decay, like a desk bell */
 function bell(strikes){
@@ -2133,12 +2190,15 @@ function showTogetherActive(){
   $('togetherIntro').style.display='none';
   $('togetherActive').style.display='block';
   $('togetherDoneRow').style.display='none';
+  $('floatChat').classList.add('show');
 }
 function showTogetherIntro(){
   $('togetherIntro').style.display='block';
   $('togetherActive').style.display='none';
   $('togetherDoneRow').style.display='flex';
   togetherMsg('');
+  $('floatChat').classList.remove('show');
+  setChatExpanded(false);
 }
 
 $('togetherBtn').onclick=()=>{
@@ -2204,6 +2264,7 @@ async function joinOrCreateSession(code, asHost){
 
   attachSessionListeners();
   $('sessionCodeDisplay').textContent = code;
+  $('floatChatCode').textContent = 'Session '+code;
   showTogetherActive();
   togetherMsg('');
 }
@@ -2286,9 +2347,9 @@ function renderMembers(members){
     : list.length+' people in this session.';
 }
 
-function renderChatMessage(m){
-  if(!m) return;
-  const log=$('togetherChat');
+let chatExpanded=false;
+let unreadCount=0;
+function buildChatRow(m){
   const row=document.createElement('div');
   if(m.type==='react'){
     row.className='chat-msg react';
@@ -2304,16 +2365,31 @@ function renderChatMessage(m){
     row.querySelector('.who').textContent=(m.name||'Someone')+':';
     row.querySelector('span:last-child').textContent=m.text||'';
   }
-  log.appendChild(row);
-  log.scrollTop=log.scrollHeight;
+  return row;
+}
+function renderChatMessage(m){
+  if(!m) return;
+  const sheetLog=$('togetherChat'), floatLog=$('floatChatLog');
+  sheetLog.appendChild(buildChatRow(m)); sheetLog.scrollTop=sheetLog.scrollHeight;
+  floatLog.appendChild(buildChatRow(m)); floatLog.scrollTop=floatLog.scrollHeight;
+
+  const fromOther = m.type!=='system' && m.uid && fb && m.uid!==fb.uid;
+  if(fromOther){
+    chimeChatMsg();
+    if(!chatExpanded){
+      unreadCount++;
+      const badge=$('floatChatBadge');
+      badge.textContent=unreadCount; badge.style.display='inline-block';
+    }
+  }
 }
 function sendChat(text){
   if(!mySession || !sessionRefs || !text.trim()) return;
-  sessionRefs.chatRef.push({ type:'text', name:myNickname(), text:text.trim().slice(0,200), at:firebase.database.ServerValue.TIMESTAMP });
+  sessionRefs.chatRef.push({ type:'text', name:myNickname(), text:text.trim().slice(0,200), uid:fb.uid, at:firebase.database.ServerValue.TIMESTAMP });
 }
 function sendReact(emoji){
   if(!mySession || !sessionRefs) return;
-  sessionRefs.chatRef.push({ type:'react', name:myNickname(), emoji, at:firebase.database.ServerValue.TIMESTAMP });
+  sessionRefs.chatRef.push({ type:'react', name:myNickname(), emoji, uid:fb.uid, at:firebase.database.ServerValue.TIMESTAMP });
 }
 $('chatSendBtn').onclick=()=>{ sendChat($('chatInput').value); $('chatInput').value=''; };
 $('chatInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ sendChat($('chatInput').value); $('chatInput').value=''; } });
@@ -2321,6 +2397,26 @@ $('togetherReacts').addEventListener('click', e=>{
   const b=e.target.closest('button[data-emoji]');
   if(b) sendReact(b.dataset.emoji);
 });
+
+/* floating chat widget (front page) */
+$('floatChatSendBtn').onclick=()=>{ sendChat($('floatChatInput').value); $('floatChatInput').value=''; };
+$('floatChatInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ sendChat($('floatChatInput').value); $('floatChatInput').value=''; } });
+$('floatReacts').addEventListener('click', e=>{
+  const b=e.target.closest('button[data-emoji]');
+  if(b) sendReact(b.dataset.emoji);
+});
+function setChatExpanded(v){
+  chatExpanded=v;
+  $('floatChat').classList.toggle('expanded', v);
+  if(v){
+    unreadCount=0;
+    const badge=$('floatChatBadge');
+    badge.style.display='none'; badge.textContent='0';
+    const log=$('floatChatLog'); log.scrollTop=log.scrollHeight;
+  }
+}
+$('floatChatToggleBtn').onclick=()=> setChatExpanded(!chatExpanded);
+$('floatChatCollapseBtn').onclick=()=> setChatExpanded(false);
 
 $('copyCodeBtn').onclick=async ()=>{
   if(!mySession) return;
@@ -2337,6 +2433,8 @@ $('leaveSessionBtn').onclick=async ()=>{
     detachSessionListeners();
   }
   mySession=null; sessionRefs=null; isHost=false;
+  $('togetherChat').innerHTML=''; $('floatChatLog').innerHTML='';
+  unreadCount=0; $('floatChatBadge').style.display='none';
   showTogetherIntro();
 };
 
@@ -2359,10 +2457,12 @@ function openSheet(id){
   document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));
   if(id==='profileSheet') renderProfile();
   $(id).classList.add('show'); sheetBg.classList.add('show');
+  $('floatChat').classList.add('sheet-open');
 }
 function closeSheets(){
   document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));
   sheetBg.classList.remove('show');
+  $('floatChat').classList.remove('sheet-open');
 }
 $('settingsBtn').onclick=()=>openSheet('settingsSheet');
 $('profileBtn').onclick=()=>openSheet('profileSheet');
