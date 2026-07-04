@@ -1134,7 +1134,7 @@ async function loadSettings(){
   if(typeof saved.longMin==='number') S.longMin = saved.longMin;
   if(typeof saved.longBreakEvery==='number') S.longBreakEvery = clamp(Math.round(saved.longBreakEvery),2,12);
   if(typeof saved.reminders==='boolean') S.reminders = saved.reminders;
-  if(typeof saved.remindersMin==='number') S.remindersMin = clamp(Math.round(saved.remindersMin),5,120);
+  if(typeof saved.remindersMin==='number') S.remindersMin = clamp(Math.round(saved.remindersMin),1,120);
   if(typeof saved.sound==='boolean') S.sound = saved.sound;
   if(typeof saved.autoBreak==='boolean') S.autoBreak = saved.autoBreak;
   if(typeof saved.autoFocus==='boolean') S.autoFocus = saved.autoFocus;
@@ -2663,10 +2663,14 @@ function makeStepper(elId, getVal, setVal, minV, maxV, step){
     if(save!==false) saveSettings();
   }
   wrap.querySelectorAll('button')[0].addEventListener('click',e=>{
-    e.stopPropagation(); v=Math.max(minV, v-step); show(); commit();
+    e.stopPropagation();
+    const dec = v <= 5 ? 1 : step;
+    v=Math.max(1, v-dec); show(); commit();
   });
   wrap.querySelectorAll('button')[1].addEventListener('click',e=>{
-    e.stopPropagation(); v=Math.min(maxV, v+step); show(); commit();
+    e.stopPropagation();
+    const inc = v < 5 ? 1 : step;
+    v=Math.min(maxV, v+inc); show(); commit();
   });
   inp.addEventListener('click',e=>{ e.stopPropagation(); inp.select(); });
   inp.addEventListener('input',()=>{
@@ -2686,10 +2690,10 @@ function makeStepper(elId, getVal, setVal, minV, maxV, step){
   el._syncStepper=(n)=>{ v=clamp(Math.round(n),minV,maxV); show(); commit(false); };
   if(elId==='focusSeg') syncFocusStepperDisplay=(n)=>el._syncStepper(n);
 }
-makeStepper('focusSeg', ()=>S.focusMin, v=>S.focusMin=v,  5, 180, 5);
+makeStepper('focusSeg', ()=>S.focusMin, v=>S.focusMin=v,  1, 180, 5);
 makeStepper('breakSeg', ()=>S.breakMin, v=>S.breakMin=v,  1,  60, 5);
-makeStepper('longSeg',  ()=>S.longMin,  v=>S.longMin=v,   5, 120, 5);
-makeStepper('remSeg',   ()=>S.remindersMin, v=>{ S.remindersMin=v; restartHydrateInterval(); }, 5, 120, 5);
+makeStepper('longSeg',  ()=>S.longMin,  v=>S.longMin=v,   1, 120, 5);
+makeStepper('remSeg',   ()=>S.remindersMin, v=>{ S.remindersMin=v; restartHydrateInterval(); }, 1, 120, 5);
 
 /* rounds before long break */
 function setLongBreakEvery(n){
