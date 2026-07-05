@@ -1378,14 +1378,14 @@ const clickSkip   = ()=>{ beep(880,.05,.03,'sine'); beep(1047,.07,.03,'sine',.05
 const clickSelect = ()=>  beep(660,.06,.03,'sine');
 const clickTap    = ()=>  beep(880,.04,.022,'sine'); // light tap for all other buttons
 
-// global button sound — fires for any button/select not already handled
+// global button sound — uses pointerdown so stopPropagation on click can't block it
 const HANDLED_IDS = new Set(['startBtn','skipBtn','backBtn']);
-document.addEventListener('click', e=>{
+document.addEventListener('pointerdown', e=>{
   if(!S.sound) return;
-  const t = e.target.closest('button, .prog-card, .emoji-opt, .lang-opt, .toggle-compact-btn, .icon-btn, .btn, .add-task, .close-sheet, .cowork-fab');
+  const t = e.target.closest('button, a.kofi-link, .prog-card, .emoji-opt, .lang-opt, .toggle-compact-btn, .icon-btn, .btn, .add-task, .close-sheet, .cowork-fab, #langCycleBtn');
   if(!t) return;
   const id = t.id || '';
-  if(HANDLED_IDS.has(id)) return; // already has its own sound
+  if(HANDLED_IDS.has(id)) return;
   clickTap();
 }, {passive:true});
 /* proper bell: inharmonic partials with long decay, like a desk bell */
