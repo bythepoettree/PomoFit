@@ -76,10 +76,18 @@
   button{touch-action:manipulation; user-select:none;}
   body{
     background:var(--bg); color:var(--fg);
-    font-family:'Space Grotesk', system-ui, sans-serif;
+    font-family:'Space Grotesk', system-ui, 'Segoe UI', 'Noto Sans Arabic', 'Noto Sans SC', sans-serif;
     transition: background .6s var(--ease), color .6s var(--ease);
     display:flex; flex-direction:column; align-items:center;
     min-height:100dvh; padding:0 16px 32px;
+  }
+  /* Arabic: disable letter-spacing (breaks glyph joining) and use system Arabic fonts */
+  :lang(ar), :lang(ar) *{
+    letter-spacing:0 !important;
+    font-family:'Noto Sans Arabic', 'Segoe UI', 'Arabic UI Text', system-ui, sans-serif;
+  }
+  :lang(ar) .wordmark, :lang(ar) .sheet h2, :lang(ar) .set-row .lab{
+    font-family:'Noto Sans Arabic', system-ui, sans-serif;
   }
   @media (prefers-reduced-motion: reduce){ body{transition:none;} }
 
@@ -333,6 +341,19 @@
     width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .prog-card:focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+  .split-btn-row{
+    display:flex; width:100%; max-width:530px; height:64px; box-sizing:border-box;
+    background:var(--chip); border-radius:14px; overflow:hidden; margin-top:10px;
+  }
+  .split-btn{
+    flex:1; height:100%; border:none; background:transparent; color:var(--fg);
+    font-family:inherit; font-size:14px; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .12s var(--ease);
+  }
+  .split-btn:first-child{border-right:1px solid var(--line);}
+  .split-btn:hover{opacity:.85;}
+  .split-btn:active{opacity:.7;}
 
   /* ---------- toast ---------- */
   .toast{
@@ -759,6 +780,7 @@
         <button class="lang-opt" data-lang="tr"><span class="lang-opt-flag">🇹🇷</span>Türkçe</button>
         <button class="lang-opt" data-lang="de"><span class="lang-opt-flag">🇩🇪</span>Deutsch</button>
         <button class="lang-opt" data-lang="ar"><span class="lang-opt-flag">🇸🇦</span>العربية</button>
+        <button class="lang-opt" data-lang="zh"><span class="lang-opt-flag">🇨🇳</span>中文</button>
       </div>
     </div>
     <button class="icon-btn header-desktop-only" id="themeToggleBtn" title="Switch theme" aria-label="Switch theme" style="width:34px;text-align:center;padding:7px 0;">◐</button>
@@ -807,7 +829,7 @@
 
     <!-- Pomofocus-style task list -->
     <div class="tasks-panel">
-      <div class="tp-head"><span>Tasks</span><span></span></div>
+      <div class="tp-head"><span id="tasksHeading">Tasks</span><span></span></div>
       <div id="taskListMain"></div>
       <button class="add-task" id="addTaskOpen">＋ Add Task</button>
       <div class="task-form" id="taskForm">
@@ -841,9 +863,9 @@
     <div class="traj" id="traj"></div>
     <button class="btn" id="progStartBtn" style="display:none;margin-top:12px;">START PROGRAMME</button>
     <div class="prog-list" id="progList"></div>
-    <div class="controls">
-      <button class="btn ghost" id="shuffleBtn">🎲 Surprise mix</button>
-      <button class="btn ghost" id="restBtn">Just rest</button>
+    <div class="split-btn-row">
+      <button id="shuffleBtn" class="split-btn">🎲 Surprise mix</button>
+      <button id="restBtn" class="split-btn">Just rest</button>
     </div>
     <div class="sub" id="breakClock" style="margin-top:12px;"></div>
   </div>
@@ -928,6 +950,7 @@
   <option value="tr">tr</option>
   <option value="de">de</option>
   <option value="ar">ar</option>
+  <option value="zh">zh</option>
 </select>
 
 <div class="sheet" id="profileSheet">
@@ -1256,10 +1279,10 @@ function authMsg(m){ $('authMsg').textContent=m; }
 async function signUp(){
   const u=$('userInput').value.trim(), pw=$('passInput').value;
   const secQ=$('secQuestion').value, secA=$('secAnswer').value.trim();
-  if(u.length<2) return authMsg('Username needs at least 2 characters.');
-  if(pw.length<4) return authMsg('Password needs at least 4 characters.');
-  if(ACCOUNTS[u]) return authMsg('That username is taken — try signing in instead.');
-  if(secA.length<2) return authMsg('Please add an answer to the security question, so you can recover your account later.');
+  if(u.length<2) return authMsg(T().errUsernameShort);
+  if(pw.length<4) return authMsg(T().errPasswordShort);
+  if(ACCOUNTS[u]) return authMsg(T().errUsernameTaken);
+  if(secA.length<2) return authMsg(T().errNoSecAnswer);
   const salt=Math.random().toString(36).slice(2,10);
   const secSalt=Math.random().toString(36).slice(2,10);
   ACCOUNTS[u]={
@@ -1277,8 +1300,8 @@ async function signUp(){
 async function signIn(){
   const u=$('userInput').value.trim(), pw=$('passInput').value;
   const acc=ACCOUNTS[u];
-  if(!acc) return authMsg('No account with that username — create one.');
-  if(acc.hash !== await sha(acc.salt+pw)) return authMsg('Wrong password — try again.');
+  if(!acc) return authMsg(T().errNoAccount);
+  if(acc.hash !== await sha(acc.salt+pw)) return authMsg(T().errWrongPassword);
   await store.set('pomofit:session', u);
   DATA = Object.assign(blankData(), acc.data||{});
   DATA.name=u;
@@ -1317,7 +1340,7 @@ $('resetContinueBtn').onclick=async ()=>{
   if(resetStage==='user'){
     const u=$('resetUserInput').value.trim();
     const acc=ACCOUNTS[u];
-    if(!acc) return resetMsg('No account with that username.');
+    if(!acc) return resetMsg(T().errNoAccountReset);
     if(!acc.secQ || !acc.secHash) return resetMsg('This account doesn\'t have a security question set up — sorry, recovery isn\'t available. You\'ll need to create a new account.');
     resetUser=u; resetStage='answer';
     $('resetQuestionLabel').textContent=SEC_QUESTIONS[acc.secQ]||'Security question';
@@ -1349,7 +1372,7 @@ $('resetContinueBtn').onclick=async ()=>{
     await store.set('pomofit:accounts', JSON.stringify(ACCOUNTS));
     showSigninBox();
     $('userInput').value=resetUser; $('passInput').value='';
-    authMsg('Password updated — sign in with your new password.');
+    authMsg(T().passwordUpdated);
     return;
   }
 };
@@ -1745,6 +1768,28 @@ function animate(){
 
 /* ---------- brain fuel + hydration ---------- */
 const FACTS_BY_LANG = {
+  zh: [
+    "轻度脱水——约体重的1-2%——就能明显影响注意力、工作记忆和情绪。渴了再喝就晚了。",
+    "仅10分钟的中等强度运动，就能让专注力和执行功能提升长达一小时——完美契合下一次专注时段。",
+    "运动能增加前额叶皮层的血流量，这一区域负责规划、专注和自我控制。",
+    "运动触发BDNF蛋白——常被称为'大脑的肥料'——促进学习和新神经连接的形成。",
+    "规律的有氧运动与更大的海马体相关，而海马体正是大脑的记忆中枢。你的跳绳也在陪你学习。",
+    "大脑约75%由水构成。头痛和注意力下降往往是早期缺水信号，而非需要更多咖啡因。",
+    "短暂的主动休息胜过刷手机：轻度运动能减少脑疲劳，比久坐更能恢复注意力。",
+    "运动提升多巴胺和去甲肾上腺素——这些正是调控警觉性和持续注意力的神经递质。",
+    "每25-50分钟站起来动一动，可对抗久坐带来的认知下降。",
+    "小口慢饮胜过猛灌：身体在一天中少量规律补水时吸收效果更好。",
+    "慢节奏的轻音乐能屏蔽干扰噪音，帮助在深度工作时保持专注。",
+    "深蹲和弓步蹲动用最大肌肉群，每次重复都能为大脑提供最佳血氧供应。",
+    "番茄钟有效，部分原因是截止时间能锐化注意力：25分钟倒计时让大脑难以走神。",
+    "记忆在睡眠时巩固——运动加充足睡眠，比死记硬背更能牢固记住所学内容。",
+    "学习时接触自然光有助于调节清醒度；出门快走既是运动，也是专注力的重置。",
+    "心跳加速的运动增加乳酸，大脑在高强度脑力劳动时会将其作为燃料燃烧。",
+    "分多次短暂学习比一次马拉松式学习更有效：间隔练习能显著提升长期记忆留存率。",
+    "久坐后拉伸髋屈肌和肩膀能改善姿势——呼吸更顺畅，大脑获得的氧气也更多。",
+    "研究表明，记忆新内容前进行轻度运动，比保持静止更能提高记忆效果。",
+    "长期慢性脱水会逐渐缩短注意力持续时间——人们常将其误解为无聊或倦怠。",
+  ],
   en: [
   "Even mild dehydration — around 1–2% of body weight — can measurably dull attention, working memory, and mood. Sip before you feel thirsty.",
   "A single 10-minute bout of moderate exercise can sharpen focus and executive function for up to an hour afterward — perfect timing for your next session.",
@@ -2087,8 +2132,8 @@ function renderProfile(){
   const isEmoji = DATA.avatar && DATA.avatar.startsWith('emoji:');
   const emojiChar = isEmoji ? DATA.avatar.slice(6) : null;
   const profileBtnEl=$('profileBtn');
-  profileBtnEl.title = signed ? nm : 'Sign in';
-  profileBtnEl.setAttribute('aria-label', signed ? 'Profile: '+nm : 'Sign in');
+  profileBtnEl.title = signed ? nm : T().signIn;
+  profileBtnEl.setAttribute('aria-label', signed ? 'Profile: '+nm : T().signIn);
   if(signed){
     if(isEmoji){
       profileBtnEl.innerHTML = `<span style="font-size:18px;line-height:1;">${emojiChar}</span>`;
@@ -2100,7 +2145,7 @@ function renderProfile(){
   } else {
     profileBtnEl.innerHTML = '👤';
   }
-  $('profileTitle').textContent = signed ? nm+"'s progress" : 'Sign in';
+  $('profileTitle').textContent = signed ? T().progressTitle(nm) : T().signIn;
   $('signinBox').style.display = signed?'none':'block';
   if(!signed) $('resetBox').style.display='none';
   $('statsBox').style.display = signed?'block':'none';
@@ -2299,7 +2344,7 @@ function start(){
   if(S.running) return;
   S.running=true;
   S.endAt=Date.now()+S.remaining;
-  startBtn.textContent='PAUSE';
+  startBtn.textContent=T().pauseBtn;
   // reset skip button in case it was showing "Workout →"
   delete $('skipBtn').dataset.workout;
   $('skipBtn').textContent=T().skipBtn;
@@ -2311,7 +2356,7 @@ function pause(){
   if(!S.running) return;
   S.running=false;
   S.remaining=Math.max(0,S.endAt-Date.now());
-  startBtn.textContent='RESUME';
+  startBtn.textContent=T().resumeBtn;
   clearInterval(tickInt);
   clickPause();
   broadcastTimer();
@@ -2345,7 +2390,7 @@ function nextPhase(natural){
         // auto break off — stay on focus screen, offer workout button
         S.remaining=0; render(0);
         startBtn.textContent=T().startBtn;
-        $('skipBtn').textContent='Workout →';
+        $('skipBtn').textContent=T().workoutBtn;
         $('skipBtn').dataset.workout='1';
       }
     } else {
@@ -2519,7 +2564,8 @@ function genSessionCode(){
 function togetherMsg(m){ $('togetherMsg').textContent=m; }
 function myNickname(){
   const typed=$('nicknameInput').value.trim();
-  return typed || displayName() || 'Someone';
+  // use typed name, then display name — never DATA.name (login username, could be email)
+  return typed || DATA.displayName || 'Someone';
 }
 
 function showTogetherActive(){
@@ -2545,13 +2591,13 @@ $('togetherBtn').onclick=()=>{
     togetherMsg('Shared sessions aren\'t set up on this site yet — check back soon!');
     $('createSessionBtn').disabled=true;
   } else if(displayName()){
-    $('nicknameInput').value = displayName();
+    $('nicknameInput').value = DATA.displayName || '';
   }
 };
 
 $('createSessionBtn').onclick=async ()=>{
   if(!FIREBASE_READY) return;
-  togetherMsg('Creating session…');
+  togetherMsg(T().creatingSession);
   try{
     await ensureFirebase();
     const code=genSessionCode();
@@ -2560,11 +2606,11 @@ $('createSessionBtn').onclick=async ()=>{
 };
 async function attemptJoin(code){
   if(!FIREBASE_READY || !code) return;
-  togetherMsg('Joining…');
+  togetherMsg(T().joiningSession);
   try{
     await ensureFirebase();
     const snap = await fb.db.ref('sessions/'+code+'/createdAt').get();
-    if(!snap.exists()) return togetherMsg('That invite link looks like it has expired or is invalid.');
+    if(!snap.exists()) return togetherMsg(T().expiredLink);
     await joinOrCreateSession(code, false);
   }catch(e){ togetherMsg('Couldn\'t join — check your connection and try again.'); }
 }
@@ -2653,10 +2699,10 @@ function applyRemoteTimer(v){
   setPhaseUIOnly(S.phase);
   if(S.running){
     clearInterval(tickInt); tickInt=setInterval(tick,200);
-    startBtn.textContent='PAUSE';
+    startBtn.textContent=T().pauseBtn;
   } else {
     clearInterval(tickInt);
-    startBtn.textContent = S.remaining<phaseDuration() ? 'RESUME' : 'START';
+    startBtn.textContent = S.remaining<phaseDuration() ? T().resumeBtn : T().startBtn;
   }
   render(S.remaining);
   suppressLocalBroadcast=false;
@@ -2825,7 +2871,7 @@ function checkJoinLink(){
     if(code){
       pendingJoinCode = code.toUpperCase();
       openSheet('togetherSheet');
-      if(displayName()) $('nicknameInput').value = displayName();
+      if(DATA.displayName) $('nicknameInput').value = DATA.displayName;
       $('createSessionBtn').style.display='none';
       $('joinFromLinkRow').style.display='flex';
       togetherMsg(T().invitedNote);
@@ -2858,6 +2904,16 @@ const LANGS = {
     timeToFocus:'Time to focus!', dir:'ltr',
     taskPlaceholder:'What are you working on?', estLabel:'Est. pomodoros 🍅',
     saveTask:'SAVE', cancelTask:'Cancel',
+    signOut:'Sign out', resetStats:'Reset statistics', resetStatsNote:'Clears your rounds, minutes, reps and history', resetBtn:'Reset', confirmReset:'Confirm?', progressTitle:(n)=>`${n}'s progress`,
+    usernamePlaceholder:'Username', passwordPlaceholder:'Password', securityNote:'Creating an account? Set a security question in case you forget your password:', secAnswerPlaceholder:'Your answer', forgotPassword:'Forgot password?', storageNote:'Accounts live in this browser — sign back in any time on this device.',
+    secQ:{pet:"What was the name of your first pet?",city:"What city were you born in?",school:"What was your first school?",word:"What's a word only you would remember?"},
+    resetIntro:'Answer your security question to set a new password.', resetUserPlaceholder:'Username', resetAnswerPlaceholder:'Your answer', saveNewPassword:'SAVE NEW PASSWORD', continueBtn:'CONTINUE',
+    errUsernameShort:'Username needs at least 2 characters.', errPasswordShort:'Password needs at least 4 characters.', errUsernameTaken:'That username is taken — try signing in instead.', errNoSecAnswer:'Please add a security question answer so you can recover your account later.',
+    errNoAccount:'No account with that username — create one.', errWrongPassword:'Wrong password — try again.',
+    errNoAccountReset:'No account with that username.', errNoSecQuestion:"This account doesn't have a security question set up — sorry, recovery isn't available.", errBadAnswer:"That answer doesn't match — try again.",
+    passwordUpdated:'Password updated — sign in with your new password.',
+    creatingSession:'Creating session…', joiningSession:'Joining…', expiredLink:'That invite link looks like it has expired or is invalid.', cantJoin:"Couldn't join — check the code and your connection.",
+    workoutBtn:'Workout →', cropCancel:'Cancel', cropUse:'USE PHOTO',
     timeToFocus:'Time to focus!', backToStudy:'← Back to study',
     pickProgramme:'Pick a programme', programmeNote:'Each programme is sized to fill your whole break.',
     startProgramme:'START PROGRAMME', surpriseMix:'🎲 Surprise mix', justRest:'Just rest',
@@ -2893,6 +2949,16 @@ const LANGS = {
     timeToFocus:'Odaklanma zamanı!', dir:'ltr',
     taskPlaceholder:'Ne üzerinde çalışıyorsun?', estLabel:'Tahmini pomodoro 🍅',
     saveTask:'KAYDET', cancelTask:'İptal',
+    signOut:'Çıkış yap', resetStats:'İstatistikleri sıfırla', resetStatsNote:'Turlar, dakikalar, tekrarlar ve geçmişi temizler', resetBtn:'Sıfırla', confirmReset:'Emin misin?', progressTitle:(n)=>`${n} ilerleme`,
+    usernamePlaceholder:'Kullanıcı adı', passwordPlaceholder:'Şifre', securityNote:'Hesap oluşturuyor musun? Şifreni unutursan kurtarmak için bir güvenlik sorusu belirle:', secAnswerPlaceholder:'Cevabın', forgotPassword:'Şifremi unuttum', storageNote:'Hesaplar bu tarayıcıda saklanır — istediğin zaman geri oturum aç.',
+    secQ:{pet:'İlk evcil hayvanının adı neydi?',city:'Hangi şehirde doğdun?',school:'İlk okulun hangisiydi?',word:'Sadece senin bileceğin bir kelime nedir?'},
+    resetIntro:'Yeni bir şifre belirlemek için güvenlik sorusunu yanıtla.', resetUserPlaceholder:'Kullanıcı adı', resetAnswerPlaceholder:'Cevabın', saveNewPassword:'YENİ ŞİFREYİ KAYDET', continueBtn:'DEVAM',
+    errUsernameShort:'Kullanıcı adı en az 2 karakter olmalıdır.', errPasswordShort:'Şifre en az 4 karakter olmalıdır.', errUsernameTaken:'Bu kullanıcı adı alınmış — oturum açmayı dene.', errNoSecAnswer:'Hesabını kurtarabilmek için güvenlik sorusu cevabı ekle.',
+    errNoAccount:'Bu kullanıcı adına sahip hesap yok — bir tane oluştur.', errWrongPassword:'Yanlış şifre — tekrar dene.',
+    errNoAccountReset:'Bu kullanıcı adına sahip hesap yok.', errNoSecQuestion:'Bu hesapta güvenlik sorusu yok — kurtarma mevcut değil.', errBadAnswer:'Cevap eşleşmiyor — tekrar dene.',
+    passwordUpdated:'Şifre güncellendi — yeni şifrenle giriş yap.',
+    creatingSession:'Seans oluşturuluyor…', joiningSession:'Katılınıyor…', expiredLink:'Davet bağlantısının süresi dolmuş veya geçersiz görünüyor.', cantJoin:'Katılınamadı — kodu ve bağlantını kontrol et.',
+    workoutBtn:'Egzersiz →', cropCancel:'İptal', cropUse:'FOTOĞRAFI KULLAN',
     timeToFocus:'Odaklanma zamanı!', backToStudy:'← Çalışmaya dön',
     pickProgramme:'Bir program seç', programmeNote:'Her program molana göre ayarlanmıştır.',
     startProgramme:'PROGRAMI BAŞLAT', surpriseMix:'🎲 Sürpriz karışım', justRest:'Sadece dinlen',
@@ -2928,6 +2994,16 @@ const LANGS = {
     timeToFocus:'Zeit zum Fokussieren!', dir:'ltr',
     taskPlaceholder:'Woran arbeitest du?', estLabel:'Geschätzte Pomodoros 🍅',
     saveTask:'SPEICHERN', cancelTask:'Abbrechen',
+    signOut:'Abmelden', resetStats:'Statistiken zurücksetzen', resetStatsNote:'Löscht Runden, Minuten, Wiederholungen und Verlauf', resetBtn:'Zurücksetzen', confirmReset:'Bestätigen?', progressTitle:(n)=>`${n}s Fortschritt`,
+    usernamePlaceholder:'Benutzername', passwordPlaceholder:'Passwort', securityNote:'Konto erstellen? Lege eine Sicherheitsfrage fest, falls du dein Passwort vergisst:', secAnswerPlaceholder:'Deine Antwort', forgotPassword:'Passwort vergessen', storageNote:'Konten werden in diesem Browser gespeichert — melde dich jederzeit wieder an.',
+    secQ:{pet:'Wie hieß dein erstes Haustier?',city:'In welcher Stadt wurdest du geboren?',school:'Wie hieß deine erste Schule?',word:'Ein Wort, das nur du kennen würdest?'},
+    resetIntro:'Beantworte deine Sicherheitsfrage, um ein neues Passwort zu setzen.', resetUserPlaceholder:'Benutzername', resetAnswerPlaceholder:'Deine Antwort', saveNewPassword:'NEUES PASSWORT SPEICHERN', continueBtn:'WEITER',
+    errUsernameShort:'Benutzername muss mindestens 2 Zeichen lang sein.', errPasswordShort:'Passwort muss mindestens 4 Zeichen lang sein.', errUsernameTaken:'Dieser Benutzername ist vergeben — versuche dich anzumelden.', errNoSecAnswer:'Bitte füge eine Sicherheitsantwort hinzu, damit du dein Konto wiederherstellen kannst.',
+    errNoAccount:'Kein Konto mit diesem Benutzernamen — erstelle eines.', errWrongPassword:'Falsches Passwort — versuche es erneut.',
+    errNoAccountReset:'Kein Konto mit diesem Benutzernamen.', errNoSecQuestion:'Dieses Konto hat keine Sicherheitsfrage — Wiederherstellung nicht möglich.', errBadAnswer:'Die Antwort stimmt nicht — versuche es erneut.',
+    passwordUpdated:'Passwort aktualisiert — melde dich mit deinem neuen Passwort an.',
+    creatingSession:'Sitzung wird erstellt…', joiningSession:'Beitreten…', expiredLink:'Dieser Einladungslink ist abgelaufen oder ungültig.', cantJoin:'Beitreten nicht möglich — überprüfe den Code und deine Verbindung.',
+    workoutBtn:'Training →', cropCancel:'Abbrechen', cropUse:'FOTO VERWENDEN',
     timeToFocus:'Zeit zum Fokussieren!', backToStudy:'← Zurück zum Lernen',
     pickProgramme:'Wähle ein Programm', programmeNote:'Jedes Programm ist auf deine Pause abgestimmt.',
     startProgramme:'PROGRAMM STARTEN', surpriseMix:'🎲 Überraschungs-Mix', justRest:'Einfach ausruhen',
@@ -2963,6 +3039,16 @@ const LANGS = {
     timeToFocus:'وقت التركيز!', dir:'rtl',
     taskPlaceholder:'ماذا تعمل الآن؟', estLabel:'بومودورو متوقعة 🍅',
     saveTask:'حفظ', cancelTask:'إلغاء',
+    signOut:'تسجيل الخروج', resetStats:'إعادة تعيين الإحصائيات', resetStatsNote:'يمسح الجولات والدقائق والتكرارات والسجل', resetBtn:'إعادة تعيين', confirmReset:'تأكيد؟', progressTitle:(n)=>`تقدم ${n}`,
+    usernamePlaceholder:'اسم المستخدم', passwordPlaceholder:'كلمة المرور', securityNote:'هل تنشئ حساباً؟ عيّن سؤال أمان لاستعادة حسابك:', secAnswerPlaceholder:'إجابتك', forgotPassword:'نسيت كلمة المرور', storageNote:'الحسابات مخزنة في هذا المتصفح — سجّل دخولك في أي وقت.',
+    secQ:{pet:'ما اسم حيوانك الأليف الأول؟',city:'في أي مدينة وُلدت؟',school:'ما اسم أول مدرسة دخلتها؟',word:'كلمة لا يعرفها إلا أنت؟'},
+    resetIntro:'أجب على سؤال الأمان لتعيين كلمة مرور جديدة.', resetUserPlaceholder:'اسم المستخدم', resetAnswerPlaceholder:'إجابتك', saveNewPassword:'حفظ كلمة المرور الجديدة', continueBtn:'متابعة',
+    errUsernameShort:'اسم المستخدم يحتاج إلى حرفين على الأقل.', errPasswordShort:'كلمة المرور تحتاج إلى 4 أحرف على الأقل.', errUsernameTaken:'اسم المستخدم مأخوذ — حاول تسجيل الدخول.', errNoSecAnswer:'يرجى إضافة إجابة سؤال الأمان لتتمكن من استعادة حسابك.',
+    errNoAccount:'لا يوجد حساب بهذا الاسم — أنشئ حساباً.', errWrongPassword:'كلمة المرور خاطئة — حاول مجدداً.',
+    errNoAccountReset:'لا يوجد حساب بهذا الاسم.', errNoSecQuestion:'هذا الحساب لا يحتوي على سؤال أمان — الاستعادة غير متاحة.', errBadAnswer:'الإجابة غير مطابقة — حاول مجدداً.',
+    passwordUpdated:'تم تحديث كلمة المرور — سجّل دخولك بكلمة مرورك الجديدة.',
+    creatingSession:'جارٍ إنشاء الجلسة…', joiningSession:'جارٍ الانضمام…', expiredLink:'يبدو أن رابط الدعوة منتهي أو غير صالح.', cantJoin:'تعذّر الانضمام — تحقق من الرمز والاتصال.',
+    workoutBtn:'تمرين →', cropCancel:'إلغاء', cropUse:'استخدم الصورة',
     timeToFocus:'وقت التركيز!', backToStudy:'← العودة للدراسة',
     pickProgramme:'اختر برنامجاً', programmeNote:'كل برنامج مُصمَّم ليناسب فترة استراحتك.',
     startProgramme:'ابدأ البرنامج', surpriseMix:'🎲 مزيج مفاجئ', justRest:'فقط استرح',
@@ -2974,6 +3060,51 @@ const LANGS = {
     reps:'تكرار', sec:'ثا', totalReps:'إجمالي التكرارات',
     ex:{jacks:'قفز المروحة',squats:'القرفصاء',pushups:'تمرين الضغط',knees:'رفع الركبتين',lunges:'الاندفاعة',plank:'البلانك'},
     prog:{cardio:'⚡ شرارة كارديو',strength:'🏋 دائرة القوة',core:'🧘 الجوهر والثبات',full:'🔥 الجسم كاملاً'},
+  },
+  zh: {
+    settings:'设置', focusLength:'专注时长', sweatBreak:'运动休息',
+    longBreak:'长休息', longBreakAfter:'长休息间隔（轮）',
+    hydrationInterval:'补水提醒间隔', autoBreaks:'自动休息',
+    autoBreaksDesc:'自动开始休息计时', autoFocus:'自动专注',
+    autoFocusDesc:'休息后自动重新专注', language:'语言',
+    tasks:'任务', addTask:'+ 添加任务', startBtn:'开始', pauseBtn:'暂停',
+    resumeBtn:'继续', skipBtn:'跳过 →', support:'支持',
+    cowork:'协作', signIn:'登录', done:'完成',
+    studyTogether:'一起学习', focusLabel:'', sweatLabel:'运动休息', restLabel:'长休息',
+    introBubble:'带运动休息的番茄钟 — 专注学习，休息时动起来。',
+    timeToFocus:'专注时间到！', backToStudy:'← 返回学习',
+    pickProgramme:'选择训练方案', programmeNote:'每个方案都适配你的休息时长。',
+    startProgramme:'开始训练', surpriseMix:'🎲 随机组合', justRest:'只是休息',
+    restingEasy:'休息中', programmeDone:'训练完成！💪',
+    programmeDoneNote:'活动一下，深呼吸 — 接下来是专注时间。',
+    sizednote:' 个动作 · 适配休息时长', restNote:'休息一下 — 深呼吸，准备好。',
+    sessionFooter:(s,r)=>`第 ${s} 轮 · 每 ${r} 轮后长休息`,
+    leftInBreak:'休息剩余', privacyPolicy:'隐私政策',
+    reps:'次', sec:'秒', totalReps:'总次数',
+    ex:{jacks:'开合跳',squats:'深蹲',pushups:'俯卧撑',knees:'高抬腿',lunges:'弓步蹲',plank:'平板支撑'},
+    prog:{cardio:'⚡ 有氧燃脂',strength:'🏋 力量训练',core:'🧘 核心保持',full:'🔥 全身训练'},
+    shareNote:'与朋友共享专注时段 — 计时器保持同步，无需账号。',
+    joinThisSession:'加入此次专注', copyInviteLink:'复制邀请链接',
+    leaveSession:'离开专注', sessionChat:'专注聊天',
+    saySomething:'说点什么…', justYou:'目前只有你 — 分享邀请码邀请他人。',
+    peopleInSession:(n)=>`${n} 人正在此次专注中。`,
+    invitedNote:'您已被邀请加入专注时段。',
+    nicknamePlaceholder:'你在此次专注中的名字',
+    startSession:'开始', joinCodePlaceholder:'有邀请码？在此输入',
+    joinSession:'加入专注',
+    taskPlaceholder:'你在做什么？', estLabel:'预计番茄数 🍅',
+    saveTask:'保存', cancelTask:'取消',
+    signOut:'退出登录', resetStats:'重置统计', resetStatsNote:'清除轮次、分钟、次数和历史记录', resetBtn:'重置', confirmReset:'确认？', progressTitle:(n)=>`${n} 的进度`,
+    usernamePlaceholder:'用户名', passwordPlaceholder:'密码', securityNote:'创建账户？设置一个安全问题以防忘记密码：', secAnswerPlaceholder:'你的答案', forgotPassword:'忘记密码', storageNote:'账户保存在此浏览器中 — 随时可以重新登录。',
+    secQ:{pet:'你的第一只宠物叫什么名字？',city:'你出生在哪个城市？',school:'你的第一所学校叫什么？',word:'只有你知道的一个词是什么？'},
+    resetIntro:'回答安全问题以设置新密码。', resetUserPlaceholder:'用户名', resetAnswerPlaceholder:'你的答案', saveNewPassword:'保存新密码', continueBtn:'继续',
+    errUsernameShort:'用户名至少需要2个字符。', errPasswordShort:'密码至少需要4个字符。', errUsernameTaken:'该用户名已被占用 — 请尝试登录。', errNoSecAnswer:'请添加安全问题答案，以便日后找回账户。',
+    errNoAccount:'未找到该用户名的账户 — 请创建一个。', errWrongPassword:'密码错误 — 请重试。',
+    errNoAccountReset:'未找到该用户名的账户。', errNoSecQuestion:'该账户未设置安全问题 — 无法恢复。', errBadAnswer:'答案不匹配 — 请重试。',
+    passwordUpdated:'密码已更新 — 请使用新密码登录。',
+    creatingSession:'正在创建专注…', joiningSession:'正在加入…', expiredLink:'该邀请链接似乎已过期或无效。', cantJoin:'无法加入 — 请检查邀请码和网络连接。',
+    workoutBtn:'训练 →', cropCancel:'取消', cropUse:'使用照片',
+    dir:'ltr',
   },
 };
 let currentLang = 'en';
@@ -3015,6 +3146,27 @@ function applyLang(lang){
   if(tasksHeading) tasksHeading.textContent=t.tasks;
   const addTaskEl2=$('addTaskOpen');
   if(addTaskEl2) addTaskEl2.textContent = t.addTask;
+  // tasks heading
+  const tasksHeadingEl=$('tasksHeading');
+  if(tasksHeadingEl) tasksHeadingEl.textContent=t.tasks;
+  // settings sheet heading (both desktop and mobile)
+  const settingsH2=document.querySelector('#settingsSheet h2');
+  if(settingsH2) settingsH2.textContent=t.settings;
+  // mobile settings shortcuts (Theme / Sound)
+  const THEME_LABELS={en:'Theme',tr:'Tema',de:'Design',ar:'المظهر',zh:'主题'};
+  const SOUND_LABELS={en:'Sound',tr:'Ses',de:'Ton',ar:'الصوت',zh:'声音'};
+  const THEME_DESC={en:'Switch colour theme',tr:'Renk temasını değiştir',de:'Farbthema wechseln',ar:'تغيير مظهر الألوان',zh:'切换颜色主题'};
+  const SOUND_DESC={en:'Toggle sound effects',tr:'Ses efektlerini aç/kapat',de:'Soundeffekte umschalten',ar:'تفعيل/إيقاف المؤثرات الصوتية',zh:'切换音效'};
+  const stTheme=$('settingsThemeBtn');
+  if(stTheme){
+    stTheme.querySelector('.toggle-compact-label').textContent=THEME_LABELS[lang]||'Theme';
+    stTheme.querySelector('.toggle-compact-desc').textContent=THEME_DESC[lang]||'Switch colour theme';
+  }
+  const stSfx=$('settingsSfxBtn');
+  if(stSfx){
+    stSfx.querySelector('.toggle-compact-label').textContent=SOUND_LABELS[lang]||'Sound';
+    stSfx.querySelector('.toggle-compact-desc').textContent=SOUND_DESC[lang]||'Toggle sound effects';
+  }
   const addTaskEl=document.querySelector('.task-add-placeholder');
   if(addTaskEl) addTaskEl.textContent=t.addTask;
   // timer buttons
@@ -3121,7 +3273,7 @@ function applyLang(lang){
     });
   }
   // Brain fuel eyebrow label
-  const BRAIN_FUEL_LABELS = {en:'Brain fuel', tr:'Beyin yakıtı', de:'Gehirnnahrung', ar:'وقود الدماغ'};
+  const BRAIN_FUEL_LABELS = {en:'Brain fuel', tr:'Beyin yakıtı', de:'Gehirnnahrung', ar:'وقود الدماغ', zh:'大脑燃料'};
   const eyebrow=document.querySelector('.fact .eyebrow');
   if(eyebrow) eyebrow.textContent = BRAIN_FUEL_LABELS[lang] || 'Brain fuel';
   // Swap the active facts array to the selected language
@@ -3131,9 +3283,53 @@ function applyLang(lang){
   // Show a fact in the new language immediately
   factIdx = Math.floor(Math.random() * FACTS.length);
   if(typeof factText !== 'undefined') factText.textContent = FACTS[factIdx];
+
+  // profile sheet
+  const profileTitleEl=$('profileTitle');
+  if(profileTitleEl && !DATA.name) profileTitleEl.textContent=t.signIn;
+  const userInputEl=$('userInput'); if(userInputEl) userInputEl.placeholder=t.usernamePlaceholder;
+  const passInputEl=$('passInput'); if(passInputEl) passInputEl.placeholder=t.passwordPlaceholder;
+  const secNoteEl=document.querySelector('#securityFields .signin-note');
+  if(secNoteEl) secNoteEl.textContent=t.securityNote;
+  const secAnswerEl=$('secAnswer'); if(secAnswerEl) secAnswerEl.placeholder=t.secAnswerPlaceholder;
+  const forgotLinkEl=$('forgotLink'); if(forgotLinkEl) forgotLinkEl.textContent=t.forgotPassword;
+  const storageNoteEl=$('storageNote'); if(storageNoteEl) storageNoteEl.textContent=t.storageNote;
+  // security questions dropdown
+  if(t.secQ){ const sq=$('secQuestion'); if(sq){ sq.querySelectorAll('option').forEach(o=>{ if(t.secQ[o.value]) o.textContent=t.secQ[o.value]; }); } }
+  // reset box
+  const resetIntroEl=document.querySelector('#resetBox .signin-note:first-child');
+  if(resetIntroEl) resetIntroEl.textContent=t.resetIntro;
+  const resetUserEl=$('resetUserInput'); if(resetUserEl) resetUserEl.placeholder=t.resetUserPlaceholder;
+  const resetAnswerEl=$('resetAnswerInput'); if(resetAnswerEl) resetAnswerEl.placeholder=t.resetAnswerPlaceholder;
+  const resetCancelEl=$('resetCancelBtn'); if(resetCancelEl) resetCancelEl.textContent=t.cancelTask;
+  // stats box
+  const resetStatsBtnEl=$('resetStatsBtn'); if(resetStatsBtnEl && resetStatsBtnEl.textContent!==t.confirmReset) resetStatsBtnEl.textContent=t.resetBtn;
+  const signOutEl=$('signOutBtn'); if(signOutEl) signOutEl.textContent=t.signOut;
+  const doneCloseEl=document.querySelector('#profileSheet .close-sheet'); if(doneCloseEl) doneCloseEl.textContent='✕';
+  // reset stats label
+  const resetStatsLab=document.querySelector('.lab2'); if(resetStatsLab) resetStatsLab.textContent=t.resetStats;
+  const resetStatsSub=document.querySelector('.sub2'); if(resetStatsSub) resetStatsSub.textContent=t.resetStatsNote;
+  // crop sheet
+  const cropCancelEl=$('cropCancelBtn'); if(cropCancelEl) cropCancelEl.textContent=t.cropCancel;
+  const cropUseEl=$('cropUseBtn'); if(cropUseEl) cropUseEl.textContent=t.cropUse;
+  // start/pause/resume button (only update if not mid-session to avoid disruption)
+  if(startBtn){
+    if(!S.running && S.remaining===phaseDuration()) startBtn.textContent=t.startBtn;
+    else if(!S.running) startBtn.textContent=t.resumeBtn;
+    else startBtn.textContent=t.pauseBtn;
+  }
+  // workout button (if currently showing)
+  const _sb=$('skipBtn');
+  if(_sb && _sb.dataset.workout) _sb.textContent=t.workoutBtn;
+  else if(_sb) _sb.textContent=t.skipBtn;
+
   // focus label text used in nextPhase/setPhaseUIOnly
   // RTL: flip the main content direction
   document.body.style.direction = t.dir;
+  // sync header language button and dropdowns
+  if(typeof syncLangUI==='function') syncLangUI(lang);
+  // re-render tasks so currentTaskLabel shows in new language
+  if(typeof renderTasks==='function') renderTasks();
   // save preference
   try{ localStorage.setItem('pomofit:lang', lang); }catch(e){}
 }
@@ -3159,16 +3355,15 @@ langDropdown.querySelectorAll('.lang-opt').forEach(btn=>{
 });
 document.addEventListener('click', ()=> langDropdown.classList.remove('show'));
 
-const LANG_FLAGS = {en:'🇬🇧', tr:'🇹🇷', de:'🇩🇪', ar:'🇸🇦'};
-const _origApplyLang = applyLang;
-applyLang = function(lang){
-  _origApplyLang(lang);
-  $('langCycleBtn').textContent = LANG_FLAGS[lang] || '🇬🇧';
+// sync header lang button and dropdowns — called from within applyLang
+function syncLangUI(lang){
+  const flags={en:'🇬🇧',tr:'🇹🇷',de:'🇩🇪',ar:'🇸🇦',zh:'🇨🇳'};
+  $('langCycleBtn').textContent = flags[lang]||'🇬🇧';
   $('langSelect').value = lang;
   langDropdown.querySelectorAll('.lang-opt').forEach(b=>{
     b.classList.toggle('active', b.dataset.lang===lang);
   });
-};
+}
 
 // restore saved language on load
 (function(){
