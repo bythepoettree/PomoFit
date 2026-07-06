@@ -954,7 +954,10 @@
 </select>
 
 <div class="sheet" id="profileSheet">
-  <h2 id="profileTitle">Sign in</h2>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <h2 id="profileTitle" style="margin:0;">Sign in</h2>
+    <button class="close-sheet" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1;" aria-label="Close">✕</button>
+  </div>
   <div id="signinBox">
     <div class="task-add" style="margin-bottom:8px;">
       <input id="userInput" type="text" maxlength="30" placeholder="Username" autocomplete="username">
@@ -1042,7 +1045,6 @@
     </div>
     <div class="controls" style="justify-content:center;">
       <button class="btn ghost" id="signOutBtn">Sign out</button>
-      <button class="btn close-sheet">DONE</button>
     </div>
   </div>
 </div>
@@ -3305,7 +3307,6 @@ function applyLang(lang){
   // stats box
   const resetStatsBtnEl=$('resetStatsBtn'); if(resetStatsBtnEl && resetStatsBtnEl.textContent!==t.confirmReset) resetStatsBtnEl.textContent=t.resetBtn;
   const signOutEl=$('signOutBtn'); if(signOutEl) signOutEl.textContent=t.signOut;
-  const doneCloseEl=document.querySelector('#profileSheet .close-sheet'); if(doneCloseEl) doneCloseEl.textContent='✕';
   // reset stats label
   const resetStatsLab=document.querySelector('.lab2'); if(resetStatsLab) resetStatsLab.textContent=t.resetStats;
   const resetStatsSub=document.querySelector('.sub2'); if(resetStatsSub) resetStatsSub.textContent=t.resetStatsNote;
