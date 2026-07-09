@@ -2716,10 +2716,12 @@ function attachSessionListeners(){
   const hostRef = sessionRefs.sessionRef.child('hostUid');
   const onHost = hostRef.on('value', snap=>{
     hostUid = snap.val();
-    // show settings notice for guests; hide for host
     const notice=$('coworkSettingsNotice');
     if(notice) notice.classList.toggle('show', !!mySession && isHost);
-    renderMembers({}); // will be refreshed by members listener shortly
+    // re-render members with correct HOST badge now we know hostUid
+    if(sessionRefs && sessionRefs.membersRef){
+      sessionRefs.membersRef.get().then(s=> renderMembers(s.val()||{}));
+    }
   });
   sessionListeners.push({ref:hostRef, event:'value', cb:onHost});
 
