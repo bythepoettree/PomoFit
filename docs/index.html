@@ -533,7 +533,26 @@
   }
   .member-chip .dot{width:8px; height:8px; border-radius:50%; background:var(--accent); flex:none;}
   .member-avatar{width:22px; height:22px; border-radius:50%; object-fit:cover; flex:none; background:var(--bg2);}
-  .together-status{
+  .host-badge{
+    font-size:8px; font-weight:800; letter-spacing:.06em;
+    background:var(--accent); color:var(--accent-ink);
+    border-radius:4px; padding:1px 4px; line-height:1.4;
+    vertical-align:middle; margin-left:2px;
+  }
+  .float-member{position:relative;}
+  .float-host-badge{
+    position:absolute; bottom:-2px; left:50%; transform:translateX(-50%);
+    font-size:7px; font-weight:800; letter-spacing:.04em;
+    background:var(--accent); color:var(--accent-ink);
+    border-radius:3px; padding:1px 3px; line-height:1.4;
+    white-space:nowrap;
+  }
+  .cowork-settings-notice{
+    display:none; background:var(--chip); border-radius:10px;
+    padding:10px 12px; font-size:12px; color:var(--muted);
+    margin-bottom:14px; text-align:center; line-height:1.5;
+  }
+  .cowork-settings-notice.show{display:block;}
     font-size:12.5px; color:var(--muted); text-align:center; background:var(--chip);
     border-radius:12px; padding:10px; margin-bottom:14px;
   }
@@ -889,6 +908,9 @@
   </div>
 
   
+  <div class="cowork-settings-notice" id="coworkSettingsNotice">
+    👑 You are the host — your timer settings apply to everyone in this session.
+  </div>
   <div class="toggle-row-compact settings-mobile-only" id="settingsMobileToggles">
     <button class="toggle-compact-btn" id="settingsThemeBtn">
       ◐<span class="toggle-compact-label">Theme</span>
@@ -2378,6 +2400,7 @@ function nextPhase(natural){
     logFocus(natural ? S.focusMin : (phaseDuration()-left)/60000, natural);
   }
   clearInterval(tickInt); S.running=false;
+  let didStart=false;
   if(S.phase==='focus'){
     if(natural){
       bell(2); chimeFocusEnd();
@@ -2385,26 +2408,22 @@ function nextPhase(natural){
       showMascot();
       S.completed++;
       if(S.completed>=S.longBreakEvery){
-        // long break — always switch immediately
         setPhase('rest'); S.completed=0;
-        if(S.autoBreak) start(); else startBtn.textContent=T().startBtn;
+        if(S.autoBreak){ start(); didStart=true; } else startBtn.textContent=T().startBtn;
       } else if(S.autoBreak){
-        // auto break on — go to workout immediately
         setPhase('sweat');
-        start();
+        start(); didStart=true;
       } else {
-        // auto break off — stay on focus screen, offer workout button
         S.remaining=0; render(0);
         startBtn.textContent=T().startBtn;
         $('skipBtn').textContent=T().workoutBtn;
         $('skipBtn').dataset.workout='1';
       }
     } else {
-      // manually skipped — always go to break
       S.completed++;
       if(S.completed>=S.longBreakEvery){ setPhase('rest'); S.completed=0; }
       else setPhase('sweat');
-      if(S.autoBreak) start(); else startBtn.textContent=T().startBtn;
+      if(S.autoBreak){ start(); didStart=true; } else startBtn.textContent=T().startBtn;
     }
   } else {
     if(natural){
@@ -2414,9 +2433,9 @@ function nextPhase(natural){
     S.session++;
     renderFooter();
     setPhase('focus');
-    if(S.autoFocus) start(); else startBtn.textContent=T().startBtn;
+    if(S.autoFocus){ start(); didStart=true; } else startBtn.textContent=T().startBtn;
   }
-  broadcastTimer();
+  if(!didStart) broadcastTimer(); // start() already broadcasts if it ran
   updateChatLockState();
 }
 function setPhase(p){
@@ -2538,6 +2557,7 @@ let sessionRefs = null;
 let sessionListeners = [];
 let renderedChatKeys = new Set();
 let isHost = false;
+let hostUid = null;
 let suppressLocalBroadcast = false;
 
 function loadScript(src){
@@ -2648,6 +2668,8 @@ async function joinOrCreateSession(code, asHost){
       updatedBy: fb.uid,
     });
     await sessionRef.child('createdAt').set(firebase.database.ServerValue.TIMESTAMP);
+    await sessionRef.child('hostUid').set(fb.uid);
+    hostUid = fb.uid;
   }
 
   await myMemberRef.set({
@@ -2690,6 +2712,16 @@ function attachSessionListeners(){
   });
   sessionListeners.push({ref:workoutRef, event:'value', cb:onWorkout});
 
+  const hostRef = sessionRefs.sessionRef.child('hostUid');
+  const onHost = hostRef.on('value', snap=>{
+    hostUid = snap.val();
+    // show settings notice for guests; hide for host
+    const notice=$('coworkSettingsNotice');
+    if(notice) notice.classList.toggle('show', !!mySession && isHost);
+    renderMembers({}); // will be refreshed by members listener shortly
+  });
+  sessionListeners.push({ref:hostRef, event:'value', cb:onHost});
+
   const onMembers = membersRef.on('value', snap=>{
     renderMembers(snap.val()||{});
   });
@@ -2711,6 +2743,8 @@ function attachSessionListeners(){
 function detachSessionListeners(){
   sessionListeners.forEach(({ref, event, cb})=> ref.off(event, cb));
   sessionListeners=[];
+  hostUid=null;
+  const notice=$('coworkSettingsNotice'); if(notice) notice.classList.remove('show');
 }
 
 function applyRemoteTimer(v){
@@ -2722,6 +2756,9 @@ function applyRemoteTimer(v){
   S.phase=v.phase; S.running=v.running; S.endAt=v.endAt; S.remaining=v.remaining;
   S.completed=v.completed; S.session=v.session; S.longBreakEvery=v.longBreakEvery;
   S.focusMin=v.focusMin; S.breakMin=v.breakMin; S.longMin=v.longMin;
+  // guests follow host's auto settings
+  if(typeof v.autoBreak==='boolean') S.autoBreak=v.autoBreak;
+  if(typeof v.autoFocus==='boolean') S.autoFocus=v.autoFocus;
 
   // fire completion sounds/mascot/notify for guests when the host's phase changes
   if(prevPhase !== S.phase){
@@ -2801,7 +2838,7 @@ function broadcastTimer(){
     phase:S.phase, running:S.running, endAt:S.endAt, remaining:S.remaining,
     completed:S.completed, session:S.session, longBreakEvery:S.longBreakEvery,
     focusMin:S.focusMin, breakMin:S.breakMin, longMin:S.longMin,
-
+    autoBreak:S.autoBreak, autoFocus:S.autoFocus,
     updatedBy: fb.uid,
   });
 }
@@ -2815,6 +2852,7 @@ function renderMembers(members){
   list.forEach(m=>{
     const isEmoji = m.avatar && m.avatar.startsWith('emoji:');
     const emojiChar = isEmoji ? m.avatar.slice(6) : null;
+    const isThisHost = hostUid && m.uid===hostUid;
 
     // sheet member chip
     const chip=document.createElement('div'); chip.className='member-chip';
@@ -2826,11 +2864,15 @@ function renderMembers(members){
       chip.innerHTML = '<span class="dot"></span><span></span>';
     }
     chip.querySelector('span:last-child').textContent = m.name || 'Someone';
+    if(isThisHost){
+      const badge=document.createElement('span'); badge.className='host-badge';
+      badge.textContent='HOST'; chip.appendChild(badge);
+    }
     wrap.appendChild(chip);
 
     // floating bubble
     const bubble=document.createElement('div'); bubble.className='float-member';
-    bubble.title = m.name || 'Someone';
+    bubble.title = (m.name || 'Someone') + (isThisHost ? ' (host)' : '');
     if(isEmoji){
       bubble.innerHTML = `<span style="font-size:22px;line-height:1;">${emojiChar}</span>`;
     } else if(m.avatar){
@@ -2844,11 +2886,18 @@ function renderMembers(members){
       const dot=document.createElement('span'); dot.className='you-dot';
       bubble.appendChild(dot);
     }
+    if(isThisHost){
+      const hbadge=document.createElement('span'); hbadge.className='float-host-badge';
+      hbadge.textContent='HOST'; bubble.appendChild(hbadge);
+    }
     floatWrap.appendChild(bubble);
   });
   $('togetherStatus').textContent = list.length<=1
     ? T().justYou
     : T().peopleInSession(list.length);
+  // update settings notice visibility
+  const notice=$('coworkSettingsNotice');
+  if(notice) notice.classList.toggle('show', !!mySession && isHost);
 }
 
 let chatExpanded=false;
@@ -2921,8 +2970,8 @@ function updateChatLockState(){
   fc.classList.toggle('host', isHost);
   fc.classList.toggle('guest', !isHost);
   $('floatChatIcon').textContent = locked ? '🔒' : '💬';
-  // guests: close the panel if it's open and we just locked
-  if(locked && !isHost && chatExpanded) setChatExpanded(false);
+  // close the panel for EVERYONE when locked (not just guests)
+  if(locked && chatExpanded) setChatExpanded(false);
 }
 $('floatChatToggleBtn').onclick=()=>{
   if(S.phase==='focus' && S.running) return;
