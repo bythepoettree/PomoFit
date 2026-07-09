@@ -2888,9 +2888,7 @@ function renderMembers(members){
       bubble.appendChild(initial);
     }
     if(fb && m.uid===fb.uid){
-      bubble.appendChild(dot);
-    }
-    if(isThisHost){
+      // current user's bubble — no extra indicator needed
     }
     floatWrap.appendChild(bubble);
   });
