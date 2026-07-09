@@ -541,11 +541,12 @@
   }
   .float-member{position:relative; overflow:visible;}
   .float-host-badge{
-    position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+    position:absolute; top:-5px; left:-5px;
     font-size:7px; font-weight:800; letter-spacing:.04em;
     background:var(--accent); color:var(--accent-ink);
     border-radius:4px; padding:1px 4px; line-height:1.5;
-    white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,.25);
+    white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,.3);
+    z-index:2;
   }
   .cowork-settings-notice{
     display:none; background:var(--chip); border-radius:10px;
