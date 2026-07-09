@@ -823,7 +823,7 @@
     <div class="timer" id="timer">25:00</div>
     <div class="controls">
       <button class="btn" id="startBtn" style="width:140px;font-size:14px;padding:13px 0;border-radius:12px;">START</button>
-      <button class="btn ghost" id="skipBtn" style="width:140px;font-size:14px;padding:13px 0;border-radius:12px;">Skip →</button>
+      <button class="btn ghost" id="skipBtn" style="width:140px;font-size:14px;padding:13px 0;border-radius:12px;">Workout →</button>
     </div>
 
     
@@ -1453,6 +1453,7 @@ function buildProgramme(pkey, keys){
 function selectProgramme(pkey, keys){
   PROG = buildProgramme(pkey, keys);
   PROG.mode='ready';
+  PROG._pkey=pkey||null; PROG._keys=keys||null;
   document.querySelectorAll('#progList .prog-card').forEach(c=>c.classList.toggle('active', c.dataset.key===pkey));
   exName.textContent=PROG.name;
   exNote.textContent=PROG.steps.length+(LANGS[currentLang]||LANGS.en).sizednote;
@@ -1461,12 +1462,14 @@ function selectProgramme(pkey, keys){
   $('progStartBtn').textContent=T().startProgramme;
   renderTraj();
   beep(880,.08,.05);
+  if(typeof broadcastWorkout==='function') broadcastWorkout({action:'select', key:PROG._pkey, keys:PROG._keys});
 }
 $('progStartBtn').onclick=()=>{
   if(!PROG) return;
   $('progStartBtn').style.display='none';
   beep(1100,.1,.05);
   beginStep();
+  if(typeof broadcastWorkout==='function') broadcastWorkout({action:'start', key:PROG._pkey, keys:PROG._keys});
 };
 function beginStep(){
   const st=PROG.steps[PROG.idx], ex=EX[st.key];
@@ -2504,6 +2507,7 @@ $('restBtn').onclick=()=>{
   document.querySelectorAll('#progList .prog-card').forEach(c=>c.classList.remove('active'));
   exName.textContent=T().restingEasy;
   exNote.textContent='';
+  if(typeof broadcastWorkout==='function') broadcastWorkout({action:'rest'});
 };
 
 /* ============================================================
@@ -2629,8 +2633,9 @@ async function joinOrCreateSession(code, asHost){
   const timerRef = sessionRef.child('timer');
   const membersRef = sessionRef.child('members');
   const chatRef = sessionRef.child('chat');
+  const workoutRef = sessionRef.child('workout');
   const myMemberRef = membersRef.child(fb.uid);
-  sessionRefs = { sessionRef, timerRef, membersRef, chatRef, myMemberRef };
+  sessionRefs = { sessionRef, timerRef, membersRef, chatRef, workoutRef, myMemberRef };
 
   if(asHost){
     await timerRef.set({
@@ -2660,7 +2665,7 @@ async function joinOrCreateSession(code, asHost){
 }
 
 function attachSessionListeners(){
-  const { timerRef, membersRef, chatRef } = sessionRefs;
+  const { timerRef, membersRef, chatRef, workoutRef } = sessionRefs;
 
   const onTimer = timerRef.on('value', snap=>{
     const v=snap.val();
@@ -2668,6 +2673,13 @@ function attachSessionListeners(){
     applyRemoteTimer(v);
   });
   sessionListeners.push({ref:timerRef, event:'value', cb:onTimer});
+
+  const onWorkout = workoutRef.on('value', snap=>{
+    const v=snap.val();
+    if(!v) return;
+    applyRemoteWorkout(v);
+  });
+  sessionListeners.push({ref:workoutRef, event:'value', cb:onWorkout});
 
   const onMembers = membersRef.on('value', snap=>{
     renderMembers(snap.val()||{});
@@ -2697,6 +2709,7 @@ function applyRemoteTimer(v){
   suppressLocalBroadcast=true;
 
   const prevPhase = S.phase;
+  const prevRunning = S.running;
   S.phase=v.phase; S.running=v.running; S.endAt=v.endAt; S.remaining=v.remaining;
   S.completed=v.completed; S.session=v.session; S.longBreakEvery=v.longBreakEvery;
   S.focusMin=v.focusMin; S.breakMin=v.breakMin; S.longMin=v.longMin;
@@ -2711,6 +2724,13 @@ function applyRemoteTimer(v){
       bell(1); chimeBreakEnd();
       notify('⏰ Break over', 'Back to the books — you\'ve got this.');
     }
+  } else if(prevPhase==='focus' && prevRunning && !S.running && S.remaining<=0){
+    // host has auto-break off: round finished but phase stayed 'focus'
+    bell(2); chimeFocusEnd();
+    notify('🍅 Focus complete!', 'Nice work — time for your sweat break.');
+    showMascot();
+    $('skipBtn').textContent=T().workoutBtn;
+    $('skipBtn').dataset.workout='1';
   }
 
   renderFooter();
@@ -2725,6 +2745,37 @@ function applyRemoteTimer(v){
   render(S.remaining);
   suppressLocalBroadcast=false;
   updateChatLockState();
+}
+
+/* ---------- collaborative workouts: host's programme mirrors to guests ---------- */
+let suppressWorkoutBroadcast=false;
+function broadcastWorkout(payload){
+  if(!mySession || !sessionRefs || !isHost || suppressWorkoutBroadcast) return;
+  sessionRefs.workoutRef.set({ ...payload, updatedBy: fb.uid, at: firebase.database.ServerValue.TIMESTAMP });
+}
+function applyRemoteWorkout(v){
+  if(!v || v.updatedBy===fb.uid) return;
+  suppressWorkoutBroadcast=true;
+  try{
+    if(v.action==='select'){
+      selectProgramme(v.key||null, v.keys||undefined);
+    } else if(v.action==='start'){
+      selectProgramme(v.key||null, v.keys||undefined);
+      $('progStartBtn').style.display='none';
+      beep(1100,.1,.05);
+      beginStep();
+    } else if(v.action==='rest'){
+      PROG=null; S.reps=0;
+      counterRow.style.visibility='hidden';
+      $('progStartBtn').style.display='none';
+      renderTraj();
+      document.querySelectorAll('#progList .prog-card').forEach(c=>c.classList.remove('active'));
+      exName.textContent=T().restingEasy;
+      exNote.textContent='';
+    }
+  } finally {
+    suppressWorkoutBroadcast=false;
+  }
 }
 // like setPhase() but skips resetting timer fields, since those come from the remote snapshot
 function setPhaseUIOnly(p){
@@ -2917,7 +2968,7 @@ const LANGS = {
     autoBreaksDesc:'Starts break timer automatically', autoFocus:'Auto focus',
     autoFocusDesc:'Restarts focus after each break', language:'Language',
     tasks:'Tasks', addTask:'+ Add Task', startBtn:'START', pauseBtn:'PAUSE',
-    resumeBtn:'RESUME', skipBtn:'Skip →', support:'Support',
+    resumeBtn:'RESUME', skipBtn:'Workout →', support:'Support',
     cowork:'Co-work', signIn:'Sign in', done:'DONE',
     studyTogether:'Study Together', focusLabel:'', sweatLabel:'Sweat Break', restLabel:'Long Break',
     shareNote:'Share a focus session with a friend — your timers stay in sync, no account needed.',
@@ -2962,7 +3013,7 @@ const LANGS = {
     autoBreaksDesc:'Molayı otomatik başlatır', autoFocus:'Otomatik odak',
     autoFocusDesc:'Moladan sonra odağı yeniden başlatır', language:'Dil',
     tasks:'Görevler', addTask:'+ Görev Ekle', startBtn:'BAŞLAT', pauseBtn:'DURAKLAT',
-    resumeBtn:'DEVAM', skipBtn:'Atla →', support:'Destek',
+    resumeBtn:'DEVAM', skipBtn:'Egzersiz →', support:'Destek',
     cowork:'Birlikte', signIn:'Giriş yap', done:'TAMAM',
     studyTogether:'Birlikte Çalış', focusLabel:'', sweatLabel:'Ter Molası', restLabel:'Uzun Mola',
     shareNote:'Bir arkadaşınla odak seansı paylaş — zamanlayıcılar senkronize kalır, hesap gerekmez.',
@@ -3007,7 +3058,7 @@ const LANGS = {
     autoBreaksDesc:'Startet die Pause automatisch', autoFocus:'Auto Fokus',
     autoFocusDesc:'Startet den Fokus nach der Pause', language:'Sprache',
     tasks:'Aufgaben', addTask:'+ Aufgabe', startBtn:'START', pauseBtn:'PAUSE',
-    resumeBtn:'WEITER', skipBtn:'Überspringen →', support:'Unterstützen',
+    resumeBtn:'WEITER', skipBtn:'Training →', support:'Unterstützen',
     cowork:'Zusammen', signIn:'Anmelden', done:'FERTIG',
     studyTogether:'Zusammen Lernen', focusLabel:'', sweatLabel:'Sport-Pause', restLabel:'Lange Pause',
     shareNote:'Teile eine Fokus-Sitzung mit einem Freund — eure Timer bleiben synchron, kein Konto nötig.',
@@ -3052,7 +3103,7 @@ const LANGS = {
     autoBreaksDesc:'يبدأ الاستراحة تلقائياً', autoFocus:'بدء تلقائي للتركيز',
     autoFocusDesc:'يعيد التركيز بعد الاستراحة', language:'اللغة',
     tasks:'المهام', addTask:'+ إضافة مهمة', startBtn:'ابدأ', pauseBtn:'إيقاف',
-    resumeBtn:'استمر', skipBtn:'تخطي →', support:'دعم',
+    resumeBtn:'استمر', skipBtn:'تمرين →', support:'دعم',
     cowork:'معاً', signIn:'تسجيل الدخول', done:'تم',
     studyTogether:'الدراسة معاً', focusLabel:'', sweatLabel:'استراحة رياضية', restLabel:'استراحة طويلة',
     shareNote:'شارك جلسة تركيز مع صديق — تظل المؤقتات متزامنة، لا حاجة لحساب.',
@@ -3097,7 +3148,7 @@ const LANGS = {
     autoBreaksDesc:'自动开始休息计时', autoFocus:'自动专注',
     autoFocusDesc:'休息后自动重新专注', language:'语言',
     tasks:'任务', addTask:'+ 添加任务', startBtn:'开始', pauseBtn:'暂停',
-    resumeBtn:'继续', skipBtn:'跳过 →', support:'支持',
+    resumeBtn:'继续', skipBtn:'训练 →', support:'支持',
     cowork:'协作', signIn:'登录', done:'完成',
     studyTogether:'一起学习', focusLabel:'', sweatLabel:'运动休息', restLabel:'长休息',
     introBubble:'带运动休息的番茄钟 — 专注学习，休息时动起来。',
