@@ -2768,9 +2768,10 @@ function applyRemoteTimer(v){
   // fire completion sounds/mascot/notify for guests when the host's phase changes
   if(prevPhase !== S.phase){
     if(prevPhase==='focus' && (S.phase==='sweat'||S.phase==='rest')){
+      const wasNatural = v.remaining <= 2000; // natural if timer ran out (allow 2s buffer)
       bell(2); chimeFocusEnd();
       notify('🍅 Focus complete!', 'Nice work — time for your sweat break.');
-      showMascot();
+      if(wasNatural) showMascot();
     } else if((prevPhase==='sweat'||prevPhase==='rest') && S.phase==='focus'){
       bell(1); chimeBreakEnd();
       notify('⏰ Break over', 'Back to the books — you\'ve got this.');
