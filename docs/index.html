@@ -1,0 +1,3990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PomoFit — Pomodoro Focus Timer with Workout Breaks</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzFCM0EyRCIvPgogIDxsaW5lIHgxPSIxNiIgeTE9IjgiIHgyPSIxNiIgeTI9IjYiIHN0cm9rZT0iIzRBOEMzOCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxlbGxpcHNlIGN4PSIxNCIgY3k9IjYiIHJ4PSIzIiByeT0iMS41IiBmaWxsPSIjNEE4QzM4IiB0cmFuc2Zvcm09InJvdGF0ZSgtMzAgMTQgNikiLz4KICA8ZWxsaXBzZSBjeD0iMTgiIGN5PSI1LjUiIHJ4PSIyLjUiIHJ5PSIxLjIiIGZpbGw9IiM1QUFBNDQiIHRyYW5zZm9ybT0icm90YXRlKDIwIDE4IDUuNSkiLz4KICA8Y2lyY2xlIGN4PSIxNiIgY3k9IjE5IiByPSIxMCIgZmlsbD0iI0U4NDUyQSIvPgogIDxlbGxpcHNlIGN4PSIxMi41IiBjeT0iMTQiIHJ4PSIyLjUiIHJ5PSIxLjgiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsLjI1KSIgdHJhbnNmb3JtPSJyb3RhdGUoLTIwIDEyLjUgMTQpIi8+Cjwvc3ZnPg==">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzFCM0EyRCIvPgogIDxsaW5lIHgxPSIxNiIgeTE9IjgiIHgyPSIxNiIgeTI9IjYiIHN0cm9rZT0iIzRBOEMzOCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxlbGxpcHNlIGN4PSIxNCIgY3k9IjYiIHJ4PSIzIiByeT0iMS41IiBmaWxsPSIjNEE4QzM4IiB0cmFuc2Zvcm09InJvdGF0ZSgtMzAgMTQgNikiLz4KICA8ZWxsaXBzZSBjeD0iMTgiIGN5PSI1LjUiIHJ4PSIyLjUiIHJ5PSIxLjIiIGZpbGw9IiM1QUFBNDQiIHRyYW5zZm9ybT0icm90YXRlKDIwIDE4IDUuNSkiLz4KICA8Y2lyY2xlIGN4PSIxNiIgY3k9IjE5IiByPSIxMCIgZmlsbD0iI0U4NDUyQSIvPgogIDxlbGxpcHNlIGN4PSIxMi41IiBjeT0iMTQiIHJ4PSIyLjUiIHJ5PSIxLjgiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsLjI1KSIgdHJhbnNmb3JtPSJyb3RhdGUoLTIwIDEyLjUgMTQpIi8+Cjwvc3ZnPg==">
+<meta name="description" content="PomoFit is a free Pomodoro focus timer that turns your breaks into quick workouts. Stay on task, then move — with custom timers, exercise programmes, and progress tracking.">
+<link rel="canonical" href="https://www.pomofit.fit/">
+<meta name="robots" content="index, follow">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="PomoFit — Pomodoro Focus Timer with Workout Breaks">
+<meta property="og:description" content="A free Pomodoro timer that turns your breaks into quick workouts. Stay on task, then get moving.">
+<meta property="og:url" content="https://www.pomofit.fit/">
+<meta property="og:site_name" content="PomoFit">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PomoFit — Pomodoro Focus Timer with Workout Breaks">
+<meta name="twitter:description" content="A free Pomodoro timer that turns your breaks into quick workouts.">
+
+<meta name="theme-color" content="#171C2B">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "PomoFit",
+  "url": "https://www.pomofit.fit/",
+  "description": "A free Pomodoro focus timer that turns your breaks into quick workouts.",
+  "applicationCategory": "ProductivityApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ease: cubic-bezier(.22,.9,.3,1); --entry-glow-col: rgba(255,255,255,.16); }
+  /* ---------- THEME: Field Green & White ---------- */
+  body[data-mode="focus"]{
+    --bg:#1B3A2D; --bg2:#224535; --fg:#F8FBF8; --muted:#7AAE90;
+    --accent:#FFFFFF; --accent-ink:#1B3A2D; --line:rgba(255,255,255,.12); --chip:#27503C;
+  }
+  body[data-mode="sweat"]{
+    --bg:#163224; --bg2:#1D3D2C; --fg:#F8FBF8; --muted:#6A9E80;
+    --accent:#FFFFFF; --accent-ink:#163224; --line:rgba(255,255,255,.12); --chip:#1F4430;
+  }
+  body[data-mode="rest"]{
+    --bg:#1F4235; --bg2:#274E3E; --fg:#F8FBF8; --muted:#80B898;
+    --accent:#FFFFFF; --accent-ink:#1F4235; --line:rgba(255,255,255,.12); --chip:#2D5A46;
+  }
+  /* ---------- THEME: Black & White ---------- */
+  body[data-theme="mono"][data-mode="focus"]{
+    --bg:#000000; --bg2:#111111; --fg:#FFFFFF; --muted:#777777;
+    --accent:#FFFFFF; --accent-ink:#000000; --line:rgba(255,255,255,.10); --chip:#1A1A1A;
+  }
+  body[data-theme="mono"][data-mode="sweat"]{
+    --bg:#000000; --bg2:#0D0D0D; --fg:#FFFFFF; --muted:#777777;
+    --accent:#FFFFFF; --accent-ink:#000000; --line:rgba(255,255,255,.10); --chip:#181818;
+  }
+  body[data-theme="mono"][data-mode="rest"]{
+    --bg:#000000; --bg2:#111111; --fg:#FFFFFF; --muted:#777777;
+    --accent:#FFFFFF; --accent-ink:#000000; --line:rgba(255,255,255,.10); --chip:#1A1A1A;
+  }
+  /* ---------- THEME: Pink & White ---------- */
+  body[data-theme="pink"][data-mode="focus"]{
+    --bg:#EF8AAE; --bg2:#E8799F; --fg:#FFFFFF; --muted:rgba(255,255,255,.7);
+    --accent:#FFFFFF; --accent-ink:#C4527A; --line:rgba(255,255,255,.2); --chip:#D4607E;
+  }
+  body[data-theme="pink"][data-mode="sweat"]{
+    --bg:#E8799F; --bg2:#DA6590; --fg:#FFFFFF; --muted:rgba(255,255,255,.7);
+    --accent:#FFFFFF; --accent-ink:#B04268; --line:rgba(255,255,255,.2); --chip:#C55280;
+  }
+  body[data-theme="pink"][data-mode="rest"]{
+    --bg:#F59BBB; --bg2:#EF8AAE; --fg:#FFFFFF; --muted:rgba(255,255,255,.7);
+    --accent:#FFFFFF; --accent-ink:#C4527A; --line:rgba(255,255,255,.2); --chip:#D4607E;
+  }
+  /* ---------- THEME: Warm Brown & Cream ---------- */
+  body[data-theme="cream"][data-mode="focus"]{
+    --bg:#6B5B47; --bg2:#5F5040; --fg:#F4EDE0; --muted:rgba(244,237,224,.65);
+    --accent:#F4EDE0; --accent-ink:#5C4B38; --line:rgba(244,237,224,.15); --chip:#524436;
+  }
+  body[data-theme="cream"][data-mode="sweat"]{
+    --bg:#5F5040; --bg2:#544639; --fg:#F4EDE0; --muted:rgba(244,237,224,.65);
+    --accent:#F4EDE0; --accent-ink:#4E402F; --line:rgba(244,237,224,.15); --chip:#463A2E;
+  }
+  body[data-theme="cream"][data-mode="rest"]{
+    --bg:#75634E; --bg2:#695849; --fg:#F4EDE0; --muted:rgba(244,237,224,.65);
+    --accent:#F4EDE0; --accent-ink:#5C4B38; --line:rgba(244,237,224,.15); --chip:#524436;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  button{touch-action:manipulation; user-select:none;}
+  /* prevent iOS Safari auto-zoom on input focus */
+  input, select, textarea{ font-size:16px; }
+  body{
+    background:var(--bg); color:var(--fg);
+    font-family:'Space Grotesk', system-ui, 'Segoe UI', 'Noto Sans Arabic', 'Noto Sans SC', sans-serif;
+    transition: background .6s var(--ease), color .6s var(--ease);
+    display:flex; flex-direction:column; align-items:center;
+    min-height:100dvh; padding:0 16px 32px;
+  }
+  /* Arabic: disable letter-spacing (breaks glyph joining) and use system Arabic fonts */
+  :lang(ar), :lang(ar) *{
+    letter-spacing:0 !important;
+    font-family:'Noto Sans Arabic', 'Segoe UI', 'Arabic UI Text', system-ui, sans-serif;
+  }
+  :lang(ar) .wordmark, :lang(ar) .sheet h2, :lang(ar) .set-row .lab{
+    font-family:'Noto Sans Arabic', system-ui, sans-serif;
+  }
+  @media (prefers-reduced-motion: reduce){ body{transition:none;} }
+
+  /* ---------- focus mode (timer centred, everything else hidden) ---------- */
+  body.focus-mode .timer{
+    position:fixed; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    z-index:1000;
+    transition:none;
+  }
+  body.focus-mode .current-task,
+  body.focus-mode .controls,
+  body.focus-mode #focusModeBtn,
+  body.focus-mode .tasks-panel,
+  body.focus-mode .fact,
+  body.focus-mode .phase-strip,
+  body.focus-mode header,
+  body.focus-mode footer,
+  body.focus-mode .ad-slot,
+  body.focus-mode .float-chat,
+  body.focus-mode .intro-bubble{
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+    transition:opacity .6s ease, visibility .6s ease !important;
+  }
+  body.focus-mode .float-members{
+    opacity:1; /* keep co-work bubbles visible */
+  }
+  .focus-hint{
+    position:fixed; bottom:40px; left:50%; transform:translateX(-50%);
+    font-size:11px; letter-spacing:.12em; color:var(--muted);
+    opacity:0; pointer-events:none; z-index:1001;
+    transition:opacity .4s ease;
+    white-space:nowrap;
+  }
+  .focus-hint.show{ opacity:.6; }
+  /* ---------- icon control row (bare symbols, no boxes) ---------- */
+  .ctl-ic{
+    background:none; border:none; cursor:pointer;
+    color:var(--muted); padding:8px;
+    display:flex; align-items:center; justify-content:center;
+    transition:color .15s var(--ease), transform .12s var(--ease), opacity .12s var(--ease);
+  }
+  .ctl-ic:hover{color:var(--fg); transform:scale(1.1);}
+  .ctl-ic:active{transform:scale(.92);}
+  .ctl-main{color:var(--fg);}
+  /* play/pause swap */
+  #startBtn .ic-pause{display:none;}
+  body.timer-running #startBtn .ic-play{display:none;}
+  body.timer-running #startBtn .ic-pause{display:block;}
+
+  /* ---------- entry page ---------- */
+  #entryPage{
+    position:fixed; inset:0; z-index:10000;
+    background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition:opacity .8s cubic-bezier(.4,0,.2,1);
+    user-select:none; -webkit-user-select:none;
+  }
+  #entryPage.fade-out{ opacity:0; pointer-events:none; }
+  .entry-wordmark{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(36px, 9vw, 72px);
+    letter-spacing:.12em;
+    color:var(--fg);
+    line-height:1;
+    margin-bottom:56px;
+    user-select:none;
+  }
+  .entry-wordmark em{ font-style:normal; color:var(--accent); }
+  .entry-btn{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(12px, 2.5vw, 16px);
+    letter-spacing:.2em;
+    color:var(--accent-ink);
+    background:var(--accent);
+    border:none; border-radius:999px;
+    padding:16px 52px;
+    cursor:pointer;
+    transition:transform .15s ease, opacity .15s ease;
+    user-select:none;
+  }
+  .entry-btn:hover{ transform:scale(1.05); }
+  .entry-btn:active{ transform:scale(.97); opacity:.85; }
+  .entry-glow{
+    position:fixed; pointer-events:none;
+    width:220px; height:220px; border-radius:50%;
+    background:radial-gradient(circle, var(--entry-glow-col, rgba(168,204,170,.15)) 0%, transparent 65%);
+    transform:translate(-50%,-50%);
+    filter:blur(24px);
+    will-change:left,top;
+    animation:entryPulse 3s ease-in-out infinite;
+  }
+  @keyframes entryPulse{
+    0%,100%{ opacity:.5; transform:translate(-50%,-50%) scale(1); }
+    50%{ opacity:.9; transform:translate(-50%,-50%) scale(1.2); }
+  }
+  .entry-ripple{
+    position:fixed; pointer-events:none; z-index:10001;
+    border-radius:50%;
+    background:radial-gradient(circle, var(--entry-glow-col, rgba(168,204,170,.22)) 0%, transparent 65%);
+    border:2px solid var(--accent);
+    transform:translate(-50%,-50%);
+    animation:entryRipple .8s ease-out forwards;
+  }
+  @keyframes entryRipple{
+    0%{ width:20px; height:20px; opacity:.9; }
+    100%{ width:240px; height:240px; opacity:0; }
+  }
+  @media (prefers-reduced-motion:reduce){ .entry-glow{display:none;} }
+  @media (hover:none){ .entry-glow{display:none;} }
+
+  header{
+    width:100%; max-width:560px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 2px 0;
+  }
+  .wordmark{ font-family:'Anton', sans-serif; font-size:20px; letter-spacing:.06em; }
+  .wordmark em{font-style:normal; color:var(--accent);}
+  .intro-bubble{
+    position:relative; width:100%; max-width:560px; margin:18px 0 0;
+    background:var(--chip); color:var(--muted); border-radius:16px;
+    padding:12px 40px 12px 18px; font-size:12.5px; line-height:1.5; text-align:center;
+    transition:opacity .25s var(--ease), transform .25s var(--ease);
+  }
+  .intro-bubble::before{
+    content:''; position:absolute; left:50%; top:-6px; transform:translateX(-50%);
+    width:12px; height:12px; background:var(--chip);
+    clip-path:polygon(0 100%, 100% 100%, 50% 0);
+  }
+  .intro-bubble.hide{display:none;}
+  .intro-close{
+    position:absolute; top:8px; right:8px; width:24px; height:24px;
+    background:transparent; border:none; color:var(--muted); font-size:13px;
+    border-radius:50%; cursor:pointer; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .intro-close:hover{background:rgba(128,128,128,.18); color:var(--fg);}
+  .intro-close:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  .icon-btn{
+    background:var(--chip); color:var(--fg); border:none;
+    border-radius:12px; padding:9px 13px; font-family:inherit; font-size:13px;
+    cursor:pointer; transition:transform .12s var(--ease), opacity .12s var(--ease); white-space:nowrap;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .icon-btn:hover{opacity:.85;}
+  .icon-btn:active{transform:scale(.95);}
+  .icon-btn[aria-pressed="true"]{outline:2px solid var(--accent);}
+  /* language button + custom dropdown */
+  .lang-wrap{position:relative;}
+  .lang-dropdown{
+    position:absolute; top:calc(100% + 6px); left:0;
+    background:var(--bg2); border-radius:14px;
+    box-shadow:0 8px 24px rgba(0,0,0,.3);
+    display:none; flex-direction:column; overflow:hidden; z-index:60; min-width:120px;
+  }
+  .lang-dropdown.show{display:flex;}
+  .lang-opt{
+    display:flex; align-items:center; gap:10px;
+    padding:11px 16px; font-size:14px; font-weight:500;
+    background:none; border:none; color:var(--fg);
+    cursor:pointer; text-align:left; white-space:nowrap; font-family:inherit;
+  }
+  .lang-opt:hover{background:var(--chip);}
+  .lang-opt.active{color:var(--accent);}
+  .lang-opt-flag{font-size:18px; line-height:1; display:flex; align-items:center; justify-content:center;}
+  /* sound button: red diagonal slash when muted (aria-pressed=false) */
+  #sfxToggle, #settingsSfxBtn{position:relative;}
+  #sfxToggle[aria-pressed="false"]::after,
+  #settingsSfxBtn[aria-pressed="false"]::after{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(to top-right,
+      transparent calc(50% - 1px),
+      #E8604C calc(50% - 1px),
+      #E8604C calc(50% + 1px),
+      transparent calc(50% + 1px));
+    border-radius:inherit;
+    pointer-events:none;
+  }
+
+  .phase-strip{
+    width:100%; max-width:560px; margin-top:20px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .phase-label{
+    font-family:'Anton', sans-serif; font-size:14px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--accent);
+  }
+  .dots{display:flex; gap:7px;}
+  .dot{width:9px; height:9px; border-radius:50%; border:1.5px solid var(--muted); transition:all .3s;}
+  .dot.done{background:var(--accent); border-color:var(--accent);}
+  .dot.now{border-color:var(--accent); transform:scale(1.25);}
+
+  main{
+    width:100%; max-width:560px;
+    display:flex; flex-direction:column; align-items:center;
+    gap:8px; padding:14px 0 0;
+  }
+  .current-task{color:var(--muted); font-size:14.5px; margin-bottom:2px; text-align:center; max-width:40ch;}
+  .current-task b{color:var(--fg); font-weight:600;}
+  .timer{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(86px, 28vw, 160px);
+    line-height:1; letter-spacing:.01em;
+    font-variant-numeric: tabular-nums; user-select:none;
+  }
+  .sub{color:var(--muted); font-size:15px; text-align:center; max-width:36ch;}
+  .controls{display:flex; gap:26px; margin-top:14px; align-items:center; flex-wrap:wrap; justify-content:center;}
+  .btn{
+    font-family:'Anton', sans-serif; letter-spacing:.08em; font-size:18px;
+    padding:14px 36px; border-radius:16px; border:none; cursor:pointer;
+    background:var(--accent); color:var(--accent-ink);
+    transition:transform .12s var(--ease), opacity .12s var(--ease);
+  }
+  .btn:active{transform:scale(.97); opacity:.92;}
+  .btn.ghost{
+    background:var(--chip); color:var(--fg); border:none;
+    font-size:14px; padding:12px 20px; letter-spacing:.04em;
+  }
+  .btn:focus-visible,.icon-btn:focus-visible,.chip:focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+
+  /* ---------- tasks (Pomofocus style) ---------- */
+  .tasks-panel{width:100%; max-width:430px; margin-top:28px;}
+  .tp-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:2px solid var(--line); padding-bottom:8px;
+    font-weight:700; font-size:16px;
+  }
+  .tp-head span:last-child{font-size:12px; color:var(--muted); font-weight:500;}
+  .task-item{
+    display:flex; align-items:center; gap:10px;
+    background:var(--bg2); border-radius:10px; margin-top:8px; padding:12px;
+    border-left:5px solid transparent; cursor:pointer;
+    transition:border-color .15s;
+  }
+  .task-item.selected{border-left-color:var(--accent);}
+  .task-item .t-check{
+    width:22px; height:22px; border-radius:50%; border:2px solid var(--muted);
+    flex:none; display:flex; align-items:center; justify-content:center; font-size:13px;
+    background:transparent; color:var(--accent-ink); cursor:pointer;
+  }
+  .task-item.done .t-check{background:var(--accent); border-color:var(--accent);}
+  .task-item .t-body{flex:1; min-width:0;}
+  .task-item .t-title{font-size:15px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .task-item.done .t-title{text-decoration:line-through; color:var(--muted);}
+  .task-item .t-meta{font-size:11.5px; color:var(--muted); margin-top:1px;}
+  /* progress pill inside the task */
+  .t-progress{
+    display:inline-flex; align-items:center; gap:6px; margin-top:5px;
+    background:var(--bg); border-radius:999px; padding:3px 9px 3px 4px;
+    font-size:10.5px; color:var(--muted); font-weight:600;
+  }
+  .t-progress-bar{
+    width:52px; height:6px; border-radius:999px; background:var(--chip);
+    overflow:hidden; flex:none;
+  }
+  .t-progress-fill{
+    height:100%; background:var(--accent); border-radius:999px;
+    transition:width .4s var(--ease);
+  }
+  .task-item.done .t-progress-fill{background:var(--accent);}
+  /* inline editor — hidden by default, shown only when task is selected */
+  .t-edit-row{
+    display:none; align-items:center; gap:6px; margin-top:6px;
+    font-size:11.5px; color:var(--muted);
+  }
+  .task-item.selected .t-edit-row{display:none;}
+  .task-item.editing .t-edit-row{display:flex;}
+  .t-edit-group{display:inline-flex; align-items:center; gap:4px; background:var(--bg); border-radius:8px; padding:3px 8px;}
+  .t-edit-lbl{font-size:10.5px; color:var(--muted);}
+  .t-edit-btn{
+    background:none; border:none; color:var(--muted); font-size:14px;
+    cursor:pointer; line-height:1; padding:0 1px;
+    display:inline-flex; align-items:center;
+  }
+  .t-edit-btn:hover{color:var(--fg);}
+  .t-edit-val{font-size:12px; font-weight:700; min-width:14px; text-align:center; color:var(--fg);}
+  .t-right{display:flex; align-items:center; gap:6px; flex:none;}
+  .task-item .t-editbtn, .task-item .t-del{
+    flex:none; background:var(--bg); border:1px solid var(--line);
+    color:var(--muted); font-size:13px; cursor:pointer;
+    width:30px; height:30px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    transition:color .15s, border-color .15s, background .15s;
+  }
+  .task-item .t-editbtn:hover{color:var(--fg); border-color:var(--muted);}
+  .task-item.editing .t-editbtn{color:var(--accent); border-color:var(--accent);}
+  .task-item .t-del:hover{color:#E8604C; border-color:#E8604C;}
+  .add-task{
+    width:100%; margin-top:10px; padding:14px;
+    border:1.5px dashed var(--line); background:transparent; color:var(--muted);
+    border-radius:14px; font-family:inherit; font-size:15px; font-weight:500; cursor:pointer;
+  }
+  .add-task:hover{color:var(--fg);}
+  .task-form{display:none; background:var(--bg2); border-radius:12px; padding:14px; margin-top:10px;}
+  .task-form.show{display:block;}
+  .task-form input{
+    width:100%; background:var(--chip); border:none; color:var(--fg);
+    border-radius:10px; padding:12px 15px; font-family:inherit; font-size:15px;
+  }
+  .task-form input:focus{outline:2px solid var(--accent);}
+  .task-form input::placeholder{color:var(--muted);}
+  .tf-actions{display:flex; justify-content:flex-end; gap:8px; margin-top:12px;}
+  .est-row{display:flex; justify-content:space-between; align-items:center; margin-top:12px;}
+  .est-row > span{font-size:13px; color:var(--muted);}
+  .est-ctrl{display:flex; align-items:center; gap:12px;}
+  .est-ctrl button{
+    width:34px; height:34px; border-radius:10px; border:none;
+    background:var(--chip); color:var(--fg); font-size:17px; cursor:pointer;
+  }
+  .est-ctrl b{font-family:'Anton',sans-serif; font-size:18px; min-width:24px; text-align:center;}
+  .empty-note{color:var(--muted); font-size:13.5px; padding:12px 2px 2px; text-align:center;}
+
+  /* ---------- workout ---------- */
+  .workout{display:none; flex-direction:column; align-items:center; width:100%;}
+  .workout.show{display:flex;}
+  .back-row{width:100%; display:flex; justify-content:flex-start; margin-bottom:2px;}
+  .ex-name{
+    font-family:'Anton', sans-serif; font-size:clamp(28px, 8vw, 44px);
+    letter-spacing:.02em; text-transform:uppercase; text-align:center;
+  }
+  .ex-note{font-size:13px; color:var(--muted); margin-top:2px; min-height:18px; text-align:center;}
+  canvas{display:block;}
+  .counter{display:flex; align-items:baseline; gap:8px; margin-top:-8px;}
+  .counter .big{font-family:'Anton',sans-serif; font-size:50px; line-height:1;}
+  .counter .of{font-size:15px; color:var(--muted);}
+  .traj{
+    display:flex; flex-wrap:wrap; gap:6px; justify-content:center; align-items:center;
+    margin-top:12px; max-width:530px;
+  }
+  .tstep{
+    background:var(--chip); border:none; border-radius:11px;
+    padding:8px 12px; text-align:center;
+  }
+  .tstep b{display:block; font-size:12.5px;}
+  .tstep span{color:var(--muted); font-size:11px;}
+  .tstep.current{background:var(--fg); color:var(--bg);}
+  .tstep.current span{color:var(--bg); opacity:.65;}
+  .tstep.done{opacity:.4;}
+  .tstep.done b{text-decoration:line-through;}
+  .tarrow{color:var(--muted); font-size:13px;}
+  .chip{
+    background:var(--chip); border:none; color:var(--fg);
+    border-radius:999px; padding:10px 17px; font-family:inherit; font-weight:500;
+    font-size:14px; cursor:pointer; transition:all .15s var(--ease);
+  }
+  .chip:hover{opacity:.85;}
+  .chip:active{transform:scale(.95);}
+  .chip.active{background:var(--fg); color:var(--bg); opacity:1;}
+  .stepper-chip{display:flex; align-items:center; gap:10px; padding:10px 14px; width:100%; background:var(--chip); border-radius:14px;}
+  .stepper-chip button{
+    width:32px; height:32px; border-radius:9px; border:none;
+    background:var(--bg2); color:inherit; font-size:16px; cursor:pointer; line-height:1; flex:none;
+  }
+  .stepper-chip button:hover{opacity:.85;}
+  .stepper-chip button:active{transform:scale(.92);}
+  .stepper-chip input{
+    flex:1; background:transparent; border:none; color:inherit;
+    font-family:'Anton',sans-serif; font-size:18px; text-align:center; padding:0;
+    -moz-appearance:textfield; min-width:0; line-height:1; display:block;
+  }
+  .stepper-chip input:focus{outline:2px solid var(--accent); border-radius:6px;}
+  .stepper-chip input::-webkit-outer-spin-button, .stepper-chip input::-webkit-inner-spin-button{-webkit-appearance:none;}
+  .stepper-chip.active button{background:rgba(0,0,0,.14); color:inherit;}
+
+  /* ---------- programme picker (vertical list) ---------- */
+  .prog-list{width:100%; max-width:530px; margin-top:14px; display:flex; flex-direction:column; gap:10px;}
+  .prog-card{
+    width:100%; height:64px; flex:none; box-sizing:border-box;
+    background:var(--chip); border:none; color:var(--fg);
+    border-radius:14px; padding:0 18px; font-family:inherit; text-align:left;
+    cursor:pointer; display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+    border-left:4px solid transparent; transition:transform .12s var(--ease), border-color .15s var(--ease);
+    overflow:hidden;
+  }
+  .prog-card:hover{opacity:.92;}
+  .prog-card:active{transform:scale(.985);}
+  .prog-card.active{border-left-color:var(--accent); background:var(--fg); color:var(--bg);}
+  .prog-card.active .prog-meta{color:var(--bg); opacity:.7;}
+  .prog-card .prog-name{font-size:15px; font-weight:600;}
+  .prog-card .prog-meta{
+    font-size:12px; color:var(--muted); margin-top:2px;
+    width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .prog-card:focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+  .split-btn-row{
+    display:flex; width:100%; max-width:530px; height:64px; box-sizing:border-box;
+    background:var(--chip); border-radius:14px; overflow:hidden; margin-top:10px;
+  }
+  .split-btn{
+    flex:1; height:100%; border:none; background:transparent; color:var(--fg);
+    font-family:inherit; font-size:14px; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .12s var(--ease);
+  }
+  .split-btn:first-child{border-right:1px solid var(--line);}
+  .split-btn:hover{opacity:.85;}
+  .split-btn:active{opacity:.7;}
+
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed; top:14px; left:50%; transform:translate(-50%,-160%);
+    background:var(--fg); color:var(--bg); border-radius:999px;
+    padding:11px 20px; font-size:14px; font-weight:500; z-index:30;
+    box-shadow:0 8px 24px rgba(0,0,0,.3); cursor:pointer;
+    transition:transform .45s var(--ease); max-width:92vw; text-align:center;
+  }
+  .toast.show{transform:translate(-50%,0);}
+
+  .fact{ display:none !important; }
+  .fact.fade{opacity:0;}
+  body[data-mode="sweat"] .fact, body[data-mode="rest"] .fact{display:none;}
+  .fact .eyebrow{
+    font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; margin-bottom:4px;
+  }
+  .fact p{font-size:13.5px; line-height:1.45;}
+
+  /* ---------- session-complete mascot ---------- */
+  .mascot{
+    position:fixed; bottom:-180px; left:50%; transform:translateX(-50%);
+    z-index:200; pointer-events:none;
+    transition:bottom .55s cubic-bezier(.22,1.4,.36,1);
+    text-align:center;
+  }
+  .mascot.show{ bottom:24px; }
+  .mascot svg{ filter:drop-shadow(0 8px 24px rgba(0,0,0,.35)); }
+  .mascot-msg{
+    background:var(--fg); color:var(--bg);
+    border-radius:999px; padding:7px 18px;
+    font-size:13px; font-weight:700;
+    display:inline-block; margin-bottom:10px;
+    box-shadow:0 4px 14px rgba(0,0,0,.25);
+    animation:mascotMsgPop .4s .3s both cubic-bezier(.22,1.4,.36,1);
+  }
+  @keyframes mascotMsgPop{
+    from{opacity:0; transform:scale(.6) translateY(10px);}
+    to{opacity:1; transform:scale(1) translateY(0);}
+  }
+  @keyframes mascotWave{
+    0%,100%{transform:rotate(0deg); transform-origin:bottom center;}
+    20%{transform:rotate(-28deg) translate(-2px,-2px);}
+    40%{transform:rotate(16deg);}
+    60%{transform:rotate(-22deg) translate(-1px,-1px);}
+    80%{transform:rotate(10deg);}
+  }
+  .mascot .wave-arm{ animation:mascotWave 1.1s .5s ease-in-out 2; transform-origin:52px 68px; }
+  @media (prefers-reduced-motion: reduce){
+    .mascot{ transition:none; }
+    .mascot .wave-arm{ animation:none; }
+  }
+  .sheet-bg{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; z-index:10;}
+  .sheet-bg.show{display:block;}
+  .sheet{
+    position:fixed; left:50%; bottom:0; transform:translateX(-50%);
+    width:100%; max-width:560px; background:var(--bg2); color:var(--fg);
+    border-radius:26px 26px 0 0; padding:24px 22px 36px; z-index:11;
+    display:none; max-height:86dvh; overflow-y:auto;
+  }
+  .sheet.show{display:block;}
+  .sheet h2{font-family:'Anton',sans-serif; letter-spacing:.04em; font-size:20px; margin-bottom:14px;}
+  .set-row{margin-bottom:16px;}
+  .set-row .lab{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:8px;}
+  .seg{display:flex; gap:8px; flex-wrap:wrap;}
+  .toggle-row{display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-top:1px solid var(--line); gap:12px;}
+  .toggle-row span{font-size:15px;}
+
+  .toggle-row-compact{display:flex; gap:10px;}
+  .settings-mobile-only{display:flex;}
+  .settings-mobile-only.settings-divider{display:block;}
+  .header-desktop-only{display:none !important;}
+  .lang-select-wrap{position:relative; margin-top:4px;}
+  .lang-select{
+    width:100%; appearance:none; -webkit-appearance:none;
+    background:var(--chip); color:var(--fg); border:none;
+    border-radius:14px; padding:14px 44px 14px 16px;
+    font-family:inherit; font-size:15px; font-weight:500; cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='%238A93A8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat; background-position:right 16px center;
+  }
+  .lang-select:focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+  .lang-select option{color:#111; background:#fff; font-size:15px;}
+  .toggle-compact-btn{
+    position:relative; flex:1; background:var(--chip); border:none; color:var(--fg);
+    border-radius:14px; padding:12px 0 10px; font-size:22px; cursor:pointer; line-height:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    transition:opacity .12s var(--ease), transform .12s var(--ease);
+  }
+  .toggle-compact-label{font-size:10.5px; font-weight:500; letter-spacing:.02em; color:var(--muted); line-height:1;}
+  .toggle-compact-desc{font-size:9.5px; color:var(--muted); line-height:1.3; text-align:center; padding:0 4px; opacity:.7;}
+  .toggle-compact-btn[aria-pressed="true"] .toggle-compact-label{color:var(--fg);}
+  .toggle-compact-btn:hover{opacity:.85;}
+  .toggle-compact-btn:active{transform:scale(.95);}
+  .toggle-compact-btn[aria-pressed="true"]{outline:2px solid var(--accent);}
+  .toggle-compact-btn[aria-pressed="false"]::after{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(to top-right,
+      transparent calc(50% - 1.5px),
+      #E8604C calc(50% - 1.5px),
+      #E8604C calc(50% + 1.5px),
+      transparent calc(50% + 1.5px));
+    border-radius:inherit;
+    pointer-events:none;
+  }
+
+  .stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0;}
+  .stat{background:var(--chip); border:none; border-radius:16px; padding:14px;}
+  .stat .num{font-family:'Anton',sans-serif; font-size:26px;}
+  .stat .lab{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:2px;}
+
+  /* ---------- profile editor (avatar + display name) ---------- */
+  .profile-edit{display:flex; align-items:center; gap:14px; margin-bottom:6px;}
+  .avatar-btn{
+    position:relative; flex:none; width:64px; height:64px; border-radius:50%;
+    border:none; padding:0; cursor:pointer; background:var(--chip);
+    overflow:hidden; display:flex; align-items:center; justify-content:center;
+  }
+  .avatar-btn img{width:100%; height:100%; object-fit:cover; display:block;}
+  .avatar-btn .avatar-fallback{font-family:'Anton',sans-serif; font-size:22px; color:var(--muted);}
+  .avatar-btn .avatar-edit{
+    position:absolute; inset:auto 0 0 0; background:rgba(0,0,0,.55); color:#fff;
+    font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; text-align:center; padding:4px 0;
+  }
+  .avatar-btn:focus-visible{outline:3px solid var(--accent); outline-offset:2px;}
+  .emoji-picker{margin-top:14px;}
+  .emoji-grid{display:flex; flex-wrap:wrap; gap:8px;}
+  .emoji-opt{
+    width:52px; height:52px; background:var(--chip); border:none; border-radius:14px;
+    font-size:26px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:transform .12s var(--ease), background .12s;
+  }
+  .emoji-opt:hover{background:var(--bg); opacity:.85;}
+  .emoji-opt:active{transform:scale(.92);}
+  .emoji-opt.active{background:var(--fg); outline:2px solid var(--accent);}
+  .profile-edit .name-field{flex:1; min-width:0;}
+  .profile-edit .name-field label{display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:6px;}
+  .profile-edit .name-field input{
+    width:100%; background:var(--chip); border:none; color:var(--fg);
+    border-radius:10px; padding:11px 13px; font-family:inherit; font-size:15px; font-weight:600;
+  }
+  .profile-edit .name-field input:focus{outline:2px solid var(--accent);}
+
+  /* ---------- danger zone (reset stats) ---------- */
+  .danger-row{display:flex; justify-content:space-between; align-items:center; padding-top:14px; margin-top:4px; border-top:1px solid var(--line); gap:12px;}
+  .danger-row .lab2{font-size:13.5px;}
+  .danger-row .sub2{font-size:11.5px; color:var(--muted); margin-top:1px;}
+  .btn.danger{background:var(--chip); color:#E8604C;}
+  .btn.danger.armed{background:#E8604C; color:#fff;}
+
+  /* ---------- photo cropper ---------- */
+  .crop-stage{
+    position:relative; width:260px; height:260px; margin:6px auto 4px;
+    border-radius:50%; overflow:hidden; background:var(--chip);
+    touch-action:none; cursor:grab;
+  }
+  .crop-stage.grabbing{cursor:grabbing;}
+  .crop-stage img{position:absolute; top:0; left:0; transform-origin:0 0; user-select:none; -webkit-user-drag:none; max-width:none;}
+  .crop-stage .crop-ring{position:absolute; inset:0; border-radius:50%; border:2px solid var(--line); pointer-events:none;}
+  .crop-zoom{display:flex; align-items:center; gap:10px; max-width:260px; margin:14px auto 0;}
+  .crop-zoom span{font-size:15px; color:var(--muted); flex:none;}
+  .crop-zoom input{flex:1; accent-color:var(--accent);}
+  .crop-hint{text-align:center; font-size:12px; color:var(--muted); margin-top:10px;}
+
+  /* ---------- study together (shared sessions) ---------- */
+  .together-code-row{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px;}
+  .together-code{
+    font-family:'Anton',sans-serif; font-size:22px; letter-spacing:.12em;
+    background:var(--chip); border-radius:12px; padding:8px 14px; display:inline-block; margin-top:2px;
+  }
+  .together-members{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .member-chip{
+    display:inline-flex; align-items:center; gap:6px; background:var(--chip);
+    border-radius:999px; padding:6px 12px 6px 6px; font-size:13px; font-weight:500;
+  }
+  .member-chip .dot{width:8px; height:8px; border-radius:50%; background:var(--accent); flex:none;}
+  .member-avatar{width:22px; height:22px; border-radius:50%; object-fit:cover; flex:none; background:var(--bg2);}
+  .host-badge{
+    font-size:8px; font-weight:800; letter-spacing:.06em;
+    background:var(--accent); color:var(--accent-ink);
+    border-radius:4px; padding:1px 4px; line-height:1.4;
+    vertical-align:middle; margin-left:2px;
+  }
+  .cowork-settings-notice{
+    display:none; background:var(--chip); border-radius:10px;
+    padding:10px 12px; font-size:12px; color:var(--muted);
+    margin-bottom:14px; text-align:center; line-height:1.5;
+  }
+  .cowork-settings-notice.show{display:block;}
+    font-size:12.5px; color:var(--muted); text-align:center; background:var(--chip);
+    border-radius:12px; padding:10px; margin-bottom:14px;
+  }
+  .together-chat{
+    max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;
+    margin-bottom:10px; padding-right:2px;
+  }
+  .chat-msg{font-size:13.5px; line-height:1.4;}
+  .chat-msg .who{font-weight:700; color:var(--accent); margin-right:6px;}
+  .chat-msg.system{color:var(--muted); font-style:italic; font-size:12.5px;}
+  .chat-msg.react{font-size:20px;}
+  .chat-msg.react .who{font-size:12.5px;}
+  .together-reacts{display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;}
+  .together-reacts button{
+    background:var(--chip); border:none; border-radius:10px; font-size:18px;
+    padding:6px 10px; cursor:pointer; transition:transform .12s var(--ease);
+  }
+  .together-reacts button:hover{opacity:.85;}
+  .together-reacts button:active{transform:scale(1.15);}
+
+  /* ---------- floating chat widget (front page, while in a session) ---------- */
+  /* ---------- co-work button ---------- */
+  .cowork-fab{
+    background:var(--chip); border:none; color:var(--fg);
+    border-radius:999px; padding:0; width:38px; height:38px;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:inherit; font-size:13px; font-weight:600; cursor:pointer;
+    transition:opacity .12s var(--ease), transform .12s var(--ease);
+    outline:none;
+  }
+  .cowork-fab:hover{opacity:.88;}
+  .cowork-fab:active{transform:scale(.96);}
+  .cowork-fab-label{display:none;}
+  .kofi-text{display:none;}
+  .cowork-fab.active{
+    animation:coworkRing 2s linear infinite;
+  }
+  @keyframes coworkRing{
+    0%  { box-shadow: 0 0 0 3px #FF6B6B; }
+    25% { box-shadow: 0 0 0 3px #FFD93D; }
+    50% { box-shadow: 0 0 0 3px #6BCB77; }
+    75% { box-shadow: 0 0 0 3px #4D96FF; }
+    100%{ box-shadow: 0 0 0 3px #FF6B6B; }
+  }
+  @media (prefers-reduced-motion: reduce){ .cowork-fab.active{ animation:none; box-shadow:0 0 0 3px var(--accent); } }
+
+  .float-chat{
+    position:fixed; bottom:16px; z-index:999;
+    /* On narrow screens the content column fills the viewport, so this sits
+       in the bottom-right corner same as before. On wide screens it tracks
+       the right edge of the centered 560px content column instead of
+       drifting off to the actual edge of the browser window. */
+    right:max(16px, calc(50vw - 280px));
+    width:min(340px, calc(100vw - 32px));
+    display:none;
+  }
+  .float-chat.show{display:block;}
+  .float-chat.sheet-open{display:none;}
+  .float-chat-toggle{
+    position:relative;
+    display:flex; align-items:center; gap:8px; background:var(--accent); color:var(--accent-ink);
+    border:none; border-radius:999px; padding:12px 18px; font-weight:700; font-size:13.5px;
+    cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,.25); margin-left:auto;
+    transition:transform .12s var(--ease);
+  }
+  .float-chat.expanded .float-chat-toggle{display:none;}
+  .float-chat-toggle:hover{opacity:.9;}
+  .float-chat-toggle:active{transform:scale(.97);}
+  .float-chat-badge{
+    position:absolute; top:-6px; right:-6px;
+    background:#E8604C; color:#fff;
+    border-radius:999px; min-width:20px; height:20px;
+    padding:0 5px; font-size:11px; font-weight:800;
+    display:none; align-items:center; justify-content:center;
+    border:2px solid var(--bg2);
+    pointer-events:none;
+  }
+  .float-chat-panel{
+    display:none; background:var(--bg2); border-radius:18px; padding:14px;
+    box-shadow:0 12px 32px rgba(0,0,0,.3); max-height:60vh;
+    flex-direction:column;
+  }
+  .float-chat.expanded .float-chat-panel{display:flex;}
+  .float-chat-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+  .float-chat-head .code{font-size:11.5px; color:var(--muted); letter-spacing:.08em;}
+  .float-chat-head button{background:none; border:none; color:var(--muted); font-size:16px; cursor:pointer; padding:2px 6px;}
+  .float-chat .together-chat{flex:1; min-height:120px;}
+  .float-chat .together-reacts button{padding:5px 8px; font-size:16px;}
+  /* locked state during focus */
+  .float-chat-lock-notice{display:none; text-align:center; font-size:12px; color:var(--muted); padding:2px 0;}
+  .float-chat.focus-locked .float-chat-lock-notice{display:block;}
+  .float-chat.focus-locked .float-chat-input-row{display:none;}
+
+  /* ---------- floating member avatars (bottom-left, mirrors float-chat) ---------- */
+  .float-members{
+    position:fixed; bottom:16px; z-index:998;
+    left:max(16px, calc(50vw - 280px));
+    display:none; align-items:flex-end; gap:8px;
+    isolation:isolate;
+  }
+  .float-members.show{display:flex;}
+  .float-members.sheet-open{display:none;}
+  .float-member{
+    position:relative; width:42px; height:42px; flex:none;
+    border-radius:50%; overflow:hidden; background:var(--chip);
+    border:2px solid var(--bg); box-shadow:0 6px 18px rgba(0,0,0,.3);
+    display:flex; align-items:center; justify-content:center;
+    animation:memberGyrate 6s ease-in-out infinite;
+  }
+  .float-member:nth-child(2n){ animation-duration:7.5s; animation-delay:-1.4s; }
+  .float-member:nth-child(3n){ animation-duration:5.2s; animation-delay:-2.8s; }
+  .float-member:nth-child(4n){ animation-duration:8.4s; animation-delay:-0.6s; }
+  .float-member img{width:100%; height:100%; object-fit:cover; display:block;}
+  .float-member .initial{font-family:'Anton',sans-serif; font-size:15px; color:var(--muted);}
+  @keyframes memberGyrate{
+    0%{ transform:rotate(0deg) translateY(0); }
+    25%{ transform:rotate(-4deg) translateY(-1px); }
+    50%{ transform:rotate(0deg) translateY(-2px); }
+    75%{ transform:rotate(4deg) translateY(-1px); }
+    100%{ transform:rotate(0deg) translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .float-member{ animation:none; }
+  }
+  .hist-item{display:flex; justify-content:space-between; gap:10px; padding:9px 2px; border-top:1px solid var(--line); font-size:13.5px;}
+  .hist-item .when{color:var(--muted); flex:none;}
+  .signin-note{font-size:12.5px; color:var(--muted); line-height:1.5; margin-top:10px;}
+  .task-add{display:flex; gap:8px; margin-bottom:14px;}
+  .task-add input{
+    flex:1; background:var(--chip); border:none; color:var(--fg);
+    border-radius:12px; padding:12px 15px; font-family:inherit; font-size:15px;
+  }
+  .task-add input:focus{outline:2px solid var(--accent);}
+
+  footer{
+    width:100%; max-width:560px; text-align:center;
+    color:var(--muted); font-size:12px; letter-spacing:.05em; padding-top:16px;
+  }
+  footer b{color:var(--accent); font-weight:600;}
+  .kofi-link{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px; margin:0;
+    background:var(--accent); color:var(--accent-ink); text-decoration:none;
+    border-radius:999px; padding:0; width:38px; height:38px; font-size:17px; font-weight:700;
+    white-space:nowrap; transition:transform .12s var(--ease), opacity .12s var(--ease);
+  }
+  .kofi-link:hover{opacity:.85;}
+  .kofi-link:active{transform:scale(.96);}
+  .ad-slot{
+    width:100%; max-width:560px; margin-top:18px;
+    min-height:90px; display:flex; align-items:center; justify-content:center;
+    background:var(--bg2); border-radius:14px; color:var(--muted); font-size:11px;
+  }
+  .footer-links{margin-top:10px; font-size:11.5px;}
+  .footer-links a{color:var(--muted); text-decoration:underline; text-decoration-color:rgba(128,128,128,.4);}
+</style>
+</head>
+<body data-mode="focus" data-theme="ember">
+<script>
+  // apply saved theme immediately so the entry page matches the user's preference
+  try{
+    const s = JSON.parse(localStorage.getItem('pomofit:settings')||'null');
+    if(s && s.theme) document.body.dataset.theme = s.theme;
+  }catch(e){}
+</script>
+
+<div id="entryPage" aria-label="Enter Pomofit">
+  <div class="entry-glow" id="entryGlow"></div>
+  <div class="entry-wordmark">POMO<em>FIT</em></div>
+  <button class="entry-btn" id="entryBtn">ENTER</button>
+</div>
+
+<div class="focus-hint" id="focusHint">TAP ANYWHERE TO EXIT FOCUS</div>
+<div class="toast" id="toast" role="status">💧 Hydration check</div>
+<div class="mascot" id="mascot" aria-hidden="true">
+  <div class="mascot-msg" id="mascotMsg">Great work! 🍅</div>
+  <svg width="110" height="130" viewBox="0 0 110 130" xmlns="http://www.w3.org/2000/svg">
+    
+    <path d="M55 18 C55 18 52 8 44 5" stroke="#4A7C3F" stroke-width="3" stroke-linecap="round" fill="none"/>
+    
+    <ellipse cx="49" cy="9" rx="9" ry="5" fill="#5A9E47" transform="rotate(-30 49 9)"/>
+    <ellipse cx="58" cy="7" rx="8" ry="4" fill="#4A8C38" transform="rotate(15 58 7)"/>
+    
+    <ellipse cx="55" cy="72" rx="38" ry="40" fill="#E8452A"/>
+    
+    <ellipse cx="40" cy="52" rx="9" ry="6" fill="rgba(255,255,255,.22)" transform="rotate(-20 40 52)"/>
+    
+    <g class="wave-arm">
+      <path d="M20 78 C10 72 4 62 8 54" stroke="#D63B22" stroke-width="7" stroke-linecap="round" fill="none"/>
+      
+      <circle cx="8" cy="51" r="6" fill="#E8452A"/>
+      <path d="M5 46 C4 40 7 37 9 40" stroke="#D63B22" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M9 45 C9 39 12 37 13 40" stroke="#D63B22" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M13 46 C14 40 16 39 16 42" stroke="#D63B22" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </g>
+    
+    <ellipse cx="43" cy="68" rx="5" ry="6" fill="#1A0A00"/>
+    <ellipse cx="67" cy="68" rx="5" ry="6" fill="#1A0A00"/>
+    
+    <circle cx="45" cy="65" r="2" fill="white"/>
+    <circle cx="69" cy="65" r="2" fill="white"/>
+    
+    <path d="M38 84 Q55 96 72 84" stroke="#1A0A00" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    
+    <ellipse cx="35" cy="80" rx="7" ry="4" fill="rgba(255,150,130,.45)"/>
+    <ellipse cx="75" cy="80" rx="7" ry="4" fill="rgba(255,150,130,.45)"/>
+  </svg>
+</div>
+
+<div class="float-members" id="floatMembers"></div>
+
+<div class="float-chat" id="floatChat">
+  <div class="float-chat-panel" id="floatChatPanel">
+    <div class="float-chat-head">
+      <div class="code" id="floatChatCode">Session ——————</div>
+      <button type="button" id="floatChatCollapseBtn" aria-label="Close chat">✕</button>
+    </div>
+    <div class="together-chat" id="floatChatLog"></div>
+    <div class="float-chat-lock-notice" id="floatChatLockNotice">🔒 Chat locked while timer is running — unlocks on pause or break</div>
+    <div class="together-reacts" id="floatReacts">
+      <button type="button" data-emoji="🔥">🔥</button>
+      <button type="button" data-emoji="💪">💪</button>
+      <button type="button" data-emoji="👏">👏</button>
+      <button type="button" data-emoji="☕">☕</button>
+      <button type="button" data-emoji="😅">😅</button>
+      <button type="button" data-emoji="🎉">🎉</button>
+    </div>
+    <div class="float-chat-input-row task-add" style="margin-top:8px;">
+      <input id="floatChatInput" type="text" maxlength="200" placeholder="Say something…" autocomplete="off">
+      <button class="btn" id="floatChatSendBtn" style="padding:0 18px;">Send</button>
+    </div>
+  </div>
+  <button class="float-chat-toggle" id="floatChatToggleBtn">
+    <span id="floatChatIcon">💬</span> <span id="floatChatToggleLabel">Session chat</span>
+    <span class="float-chat-badge" id="floatChatBadge" style="display:none;">0</span>
+  </button>
+</div>
+
+<header>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="wordmark">POMO<em>FIT</em></div>
+    <a class="kofi-link" id="supportLink" href="https://ko-fi.com/pomofit" target="_blank" rel="noopener noreferrer" title="Support" aria-label="Support">☕</a>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;justify-content:flex-end;">
+    <button class="cowork-fab" id="togetherBtn" aria-label="Co-work" title="Study together">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m11 17l2 2a1 1 0 1 0 3-3"/>
+        <path d="m14 14l2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/>
+        <path d="m21 3l1 11h-2M3 3L2 14l6.5 6.5a1 1 0 1 0 3-3M3 4h8"/>
+      </svg>
+    </button>
+    <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+    <button class="icon-btn" id="profileBtn" title="Sign in" aria-label="Sign in" style="width:38px;text-align:center;padding:8px 0;">👤</button>
+  </div>
+</header>
+
+<!-- hidden lang controls kept for JS compatibility -->
+<div style="display:none;">
+  <button id="langCycleBtn">🇬🇧</button>
+  <div class="lang-dropdown" id="langDropdown">
+    <button class="lang-opt active" data-lang="en"><span class="lang-opt-flag">🇬🇧</span>English</button>
+    <button class="lang-opt" data-lang="tr"><span class="lang-opt-flag">🇹🇷</span>Türkçe</button>
+    <button class="lang-opt" data-lang="de"><span class="lang-opt-flag">🇩🇪</span>Deutsch</button>
+    <button class="lang-opt" data-lang="ar"><span class="lang-opt-flag">🇸🇦</span>العربية</button>
+    <button class="lang-opt" data-lang="zh"><span class="lang-opt-flag">🇨🇳</span>中文</button>
+  </div>
+  <button id="themeToggleBtn">◐</button>
+  <button id="sfxToggle" aria-pressed="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+    </svg>
+  </button>
+</div>
+
+<div class="phase-strip">
+  <div class="phase-label" id="phaseLabel"></div>
+  <div class="dots" id="dots"></div>
+</div>
+
+<div class="intro-bubble" id="introBubble">
+  <span>Pomodoro focus timer with workout breaks — stay on task, then get moving when it's time to rest.</span>
+  <button class="intro-close" id="introCloseBtn" aria-label="Dismiss this note" title="Dismiss">✕</button>
+</div>
+
+<main>
+  
+  <div id="timerBlock" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+    <div class="current-task" id="currentTaskLabel"></div>
+    <div class="timer" id="timer">25:00</div>
+    <div class="controls">
+      <button class="ctl-ic ctl-main" id="startBtn" title="Start / Pause" aria-label="Start or pause timer">
+        <svg class="ic-play" width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="ic-pause" width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+      </button>
+      <button class="ctl-ic" id="resetBtn" title="Reset timer" aria-label="Reset timer">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      </button>
+      <button class="ctl-ic" id="focusModeBtn" title="Enter focus mode" aria-label="Enter focus mode" style="display:none;font-size:22px;line-height:1;">⛶</button>
+      <button class="ctl-ic" id="skipBtn" title="Workout" aria-label="Go to workout">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="4.5" r="2"/>
+          <path d="M5 8.5l7 2 7-2"/>
+          <path d="M12 10.5V15"/>
+          <path d="M8.5 21l3.5-6 3.5 6"/>
+        </svg>
+      </button>
+    </div>
+
+    
+    <div class="tasks-panel">
+      <div class="tp-head"><span id="tasksHeading">Tasks</span><span></span></div>
+      <div id="taskListMain"></div>
+      <button class="add-task" id="addTaskOpen">＋ Add Task</button>
+      <div class="task-form" id="taskForm">
+        <input id="newTaskInput" type="text" maxlength="80" placeholder="What are you working on?">
+        <div class="est-row">
+          <span>Estimated pomodoros</span>
+          <div class="est-ctrl">
+            <button type="button" id="estMinus" aria-label="Fewer">−</button><b id="estVal">1</b><button type="button" id="estPlus" aria-label="More">＋</button>
+          </div>
+        </div>
+        <div class="tf-actions">
+          <button class="icon-btn" id="cancelTaskBtn">Cancel</button>
+          <button class="btn" id="saveTaskBtn" style="font-size:14px;padding:10px 24px;">SAVE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="workout" id="workoutBlock">
+    <div class="back-row">
+      <button class="btn ghost" id="backBtn">← Back to study</button>
+    </div>
+    <div class="ex-name" id="exName">Pick a programme</div>
+    <div class="ex-note" id="exNote">Each programme is sized to fill your whole break.</div>
+    <canvas id="cv" width="340" height="250"></canvas>
+    <div class="counter" id="counterRow" style="visibility:hidden;">
+      <div class="big" id="repNum">0</div>
+      <div class="of" id="repOf">/ 20 reps</div>
+    </div>
+    <div class="traj" id="traj"></div>
+    <button class="btn" id="progStartBtn" style="display:none;margin-top:12px;">START PROGRAMME</button>
+    <div class="prog-list" id="progList"></div>
+    <div class="split-btn-row">
+      <button id="shuffleBtn" class="split-btn">🎲 Surprise mix</button>
+      <button id="restBtn" class="split-btn">Just rest</button>
+    </div>
+    <div class="sub" id="breakClock" style="margin-top:12px;"></div>
+  </div>
+</main>
+
+<div class="fact" id="factCard">
+  <div class="eyebrow">Brain fuel</div>
+  <p id="factText"></p>
+</div>
+
+<footer>
+  <span id="footerSession">Session <b id="sesNum">1</b> · long break after <b id="longEveryLabel">4</b> rounds</span>
+  <div class="footer-links"><a href="privacy.html" id="privacyLink">Privacy Policy</a></div>
+</footer>
+
+<div class="ad-slot" id="adSlot">Ad space</div>
+
+<div class="sheet-bg" id="sheetBg"></div>
+
+<div class="sheet" id="settingsSheet">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+    <h2 style="margin:0;">Settings</h2>
+    <button class="close-sheet" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1;" aria-label="Close">✕</button>
+  </div>
+
+  
+  <div class="cowork-settings-notice" id="coworkSettingsNotice">
+    👑 You are the host — your timer settings apply to everyone in this session.
+  </div>
+  <div class="toggle-row-compact settings-mobile-only" id="settingsMobileToggles">
+    <button class="toggle-compact-btn" id="settingsThemeBtn">
+      ◐<span class="toggle-compact-label">Theme</span>
+      <span class="toggle-compact-desc">Switch colour theme</span>
+    </button>
+    <button class="toggle-compact-btn" id="settingsSfxBtn" aria-pressed="true">
+      🔊<span class="toggle-compact-label">Sound</span>
+      <span class="toggle-compact-desc">Toggle sound effects</span>
+    </button>
+  </div>
+  <div class="settings-mobile-only settings-divider" style="height:1px;background:var(--line);margin:18px 0;"></div>
+
+  <div class="set-row"><div class="lab">Focus length</div><div class="seg" id="focusSeg"></div></div>
+  <div class="set-row"><div class="lab">Sweat break</div><div class="seg" id="breakSeg"></div></div>
+  <div class="set-row"><div class="lab">Long break</div><div class="seg" id="longSeg"></div></div>
+  <div class="set-row" style="margin-bottom:0;">
+    <div class="lab">Long break after (rounds)</div>
+    <div class="chip stepper-chip">
+      <button type="button" id="rndMinus" aria-label="Fewer rounds">−</button>
+      <span style="font-family:'Anton',sans-serif;font-size:18px;flex:1;text-align:center;display:block;line-height:1;" id="rndVal">4</span>
+      <button type="button" id="rndPlus" aria-label="More rounds">＋</button>
+    </div>
+  </div>
+
+  <div style="height:1px;background:var(--line);margin:18px 0;"></div>
+
+  <div class="set-row" style="margin-bottom:0;">
+    <div class="lab">Hydration Reminder Interval</div>
+    <div class="seg" id="remSeg"></div>
+  </div>
+
+  <div style="height:1px;background:var(--line);margin:18px 0;"></div>
+
+  <div class="toggle-row-compact">
+    <button class="toggle-compact-btn" id="autoFocus" aria-pressed="false" title="Auto-start focus">
+      🎯<span class="toggle-compact-label">Auto focus</span>
+      <span class="toggle-compact-desc">Restarts focus after each break</span>
+    </button>
+    <button class="toggle-compact-btn" id="autoBreak" aria-pressed="true" title="Auto-start breaks">
+      ⏩<span class="toggle-compact-label">Auto breaks</span>
+      <span class="toggle-compact-desc">Starts break timer automatically</span>
+    </button>
+  </div>
+</div>
+
+<select id="langSelect" aria-hidden="true" style="display:none;">
+  <option value="en">en</option>
+  <option value="tr">tr</option>
+  <option value="de">de</option>
+  <option value="ar">ar</option>
+  <option value="zh">zh</option>
+</select>
+
+<div class="sheet" id="profileSheet">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <h2 id="profileTitle" style="margin:0;">Sign in</h2>
+    <button class="close-sheet" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1;" aria-label="Close">✕</button>
+  </div>
+  <div id="signinBox">
+    <div class="task-add" style="margin-bottom:8px;">
+      <input id="userInput" type="text" maxlength="30" placeholder="Username" autocomplete="username">
+    </div>
+    <div class="task-add">
+      <input id="passInput" type="password" maxlength="50" placeholder="Password" autocomplete="current-password">
+    </div>
+    <div id="securityFields">
+      <p class="signin-note" style="margin-top:0;">Creating an account? Set a security question in case you forget your password:</p>
+      <div class="task-add" style="margin-bottom:8px;">
+        <select id="secQuestion" style="width:100%;background:var(--chip);border:none;color:var(--fg);border-radius:12px;padding:12px 15px;font-family:inherit;font-size:15px;">
+          <option value="pet">What was the name of your first pet?</option>
+          <option value="city">What city were you born in?</option>
+          <option value="school">What was your first school?</option>
+          <option value="word">What's a word only you would remember?</option>
+        </select>
+      </div>
+      <div class="task-add">
+        <input id="secAnswer" type="text" maxlength="50" placeholder="Your answer" autocomplete="off">
+      </div>
+    </div>
+    <p class="signin-note" id="authMsg" style="min-height:16px;margin:0 0 6px;"></p>
+    <div class="controls" style="justify-content:flex-start;gap:8px;margin-top:0;">
+      <button class="btn" id="signInBtn" style="flex:1;max-width:150px;font-size:12px;padding:9px 0;letter-spacing:.03em;">SIGN IN</button>
+      <button class="btn ghost" id="signUpBtn" style="flex:1;max-width:150px;font-size:12px;padding:9px 0;letter-spacing:.03em;">Create account</button>
+    </div>
+    <p class="signin-note" id="forgotNote" style="margin-top:8px;"><a href="#" id="forgotLink" style="color:var(--accent);text-decoration:none;font-weight:600;">Forgot password?</a></p>
+    <p class="signin-note" id="storageNote">Accounts live in this browser — sign back in any time on this device. Passwords are stored only as a secure hash.</p>
+  </div>
+  <div id="resetBox" style="display:none;">
+    <p class="signin-note" style="margin-top:0;">Answer your security question to set a new password.</p>
+    <div class="task-add" style="margin-bottom:8px;">
+      <input id="resetUserInput" type="text" maxlength="30" placeholder="Username" autocomplete="username">
+    </div>
+    <p class="signin-note" id="resetQuestionLabel" style="display:none;margin-top:0;"></p>
+    <div class="task-add" id="resetAnswerRow" style="display:none;">
+      <input id="resetAnswerInput" type="text" maxlength="50" placeholder="Your answer" autocomplete="off">
+    </div>
+    <div class="task-add" id="resetNewPassRow" style="display:none;">
+      <input id="resetNewPassInput" type="password" maxlength="50" placeholder="New password" autocomplete="new-password">
+    </div>
+    <p class="signin-note" id="resetMsg" style="min-height:16px;margin:0 0 6px;"></p>
+    <div class="controls" style="justify-content:flex-start;gap:8px;margin-top:0;">
+      <button class="btn" id="resetContinueBtn" style="font-size:14px;padding:11px 22px;">CONTINUE</button>
+      <button class="btn ghost" id="resetCancelBtn">Cancel</button>
+    </div>
+  </div>
+  <div id="statsBox" style="display:none;">
+    <div class="profile-edit">
+      <button class="avatar-btn" id="avatarBtn" type="button" title="Change profile picture" aria-label="Change profile picture">
+        <span class="avatar-fallback" id="avatarFallback">＋</span>
+        <img id="avatarImg" style="display:none;" alt="">
+        <span class="avatar-edit">Edit</span>
+      </button>
+      <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+      <div class="name-field">
+        <label for="displayNameInput">Display name</label>
+        <input id="displayNameInput" type="text" maxlength="24" placeholder="What should we call you?">
+      </div>
+    </div>
+    <div class="emoji-picker" id="emojiPicker">
+      <div class="lab" style="margin-bottom:8px;">Or pick an emoji</div>
+      <div class="emoji-grid">
+        <button class="emoji-opt" data-emoji="😈">😈</button>
+        <button class="emoji-opt" data-emoji="🤖">🤖</button>
+        <button class="emoji-opt" data-emoji="👾">👾</button>
+        <button class="emoji-opt" data-emoji="🦊">🦊</button>
+        <button class="emoji-opt" data-emoji="🐼">🐼</button>
+        <button class="emoji-opt" data-emoji="🐸">🐸</button>
+        <button class="emoji-opt" data-emoji="🥸">🥸</button>
+        <button class="emoji-opt" data-emoji="👻">👻</button>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><div class="num" id="stSessions">0</div><div class="lab">Focus rounds</div></div>
+      <div class="stat"><div class="num" id="stMinutes">0</div><div class="lab">Minutes studied</div></div>
+      <div class="stat"><div class="num" id="stReps">0</div><div class="lab">Total reps</div></div>
+    </div>
+    <div class="set-row"><div class="lab">Recent activity</div><div id="histList"></div></div>
+    <div class="danger-row">
+      <div>
+        <div class="lab2">Reset statistics</div>
+        <div class="sub2">Clears your rounds, minutes, reps and history</div>
+      </div>
+      <button class="btn danger" id="resetStatsBtn" style="flex:1;max-width:150px;font-size:12px;padding:9px 0;letter-spacing:.03em;white-space:nowrap;">Reset</button>
+    </div>
+    <div class="controls" style="justify-content:center;gap:8px;">
+      <button class="btn ghost" id="signOutBtn" style="flex:1;max-width:150px;font-size:12px;padding:9px 0;letter-spacing:.03em;">Sign out</button>
+      <button class="btn ghost" id="deleteAccountBtn" style="flex:1;max-width:150px;font-size:12px;padding:9px 0;letter-spacing:.03em;color:#E8604C;">Delete account</button>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="cropSheet">
+  <h2>Position your photo</h2>
+  <div class="crop-stage" id="cropStage">
+    <img id="cropImg" alt="">
+    <div class="crop-ring"></div>
+  </div>
+  <div class="crop-zoom">
+    <span>－</span>
+    <input type="range" id="cropZoom" min="100" max="300" value="100" aria-label="Zoom">
+    <span>＋</span>
+  </div>
+  <p class="crop-hint">Drag to reposition · pinch or use the slider to zoom</p>
+  <div class="controls" style="justify-content:center;">
+    <button class="btn ghost" id="cropCancelBtn">Cancel</button>
+    <button class="btn" id="cropUseBtn">USE PHOTO</button>
+  </div>
+</div>
+
+<div class="sheet" id="togetherSheet">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <h2 style="margin:0;">Study Together</h2>
+    <button class="close-sheet" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1;" aria-label="Close">✕</button>
+  </div>
+
+  <div id="togetherIntro">
+    <div id="togetherStart">
+      <p class="signin-note" style="margin-top:0;">Share a focus session with a friend — your timers stay in sync, no account needed.</p>
+      <div class="task-add" style="margin-bottom:8px;">
+        <input id="nicknameInput" type="text" maxlength="20" placeholder="Your name in the session" autocomplete="off">
+        <button class="btn" id="createSessionBtn" style="font-size:14px;padding:11px 16px;white-space:nowrap;">START</button>
+      </div>
+      <div class="controls" id="joinFromLinkRow" style="display:none;justify-content:flex-start;gap:8px;margin-top:0;flex-wrap:wrap;">
+        <button class="btn" id="joinFromLinkBtn" style="font-size:14px;padding:11px 22px;">JOIN THIS SESSION</button>
+      </div>
+      <p class="signin-note">Already have a link from a friend? Just open it — you'll be dropped straight in here.</p>
+      <p class="signin-note" id="togetherMsg" style="min-height:16px;"></p>
+    </div>
+  </div>
+
+  <div id="togetherActive" style="display:none;">
+    <div class="together-code-row">
+      <div>
+        <div class="signin-note" style="margin:0 0 2px;">Invite a friend</div>
+        <div class="signin-note" style="margin:0; font-size:11px;" id="sessionCodeDisplay">Session ——————</div>
+      </div>
+      <button class="btn" id="copyCodeBtn" style="font-size:13px;padding:10px 16px;">Copy invite link</button>
+    </div>
+
+    <div class="together-members" id="togetherMembers"></div>
+
+    <div class="together-status" id="togetherStatus">Waiting for everyone to be ready…</div>
+
+    <div class="controls" style="justify-content:center;margin-top:18px;">
+      <button class="btn ghost" id="leaveSessionBtn">Leave session</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================
+   PomoFit — pomodoro focus with workout breaks
+   ===================================================== */
+const S = {
+  focusMin: 25, breakMin: 5, longMin: 15, longBreakEvery: 4,
+
+  autoBreak: true, autoFocus: false, sound: true, reminders: false, remindersMin: 45,
+  phase: 'focus', running: false,
+  endAt: 0, remaining: 25*60*1000,
+  session: 1, completed: 0,
+  reps: 0, activeTask: null,
+};
+let DATA = { name:null, displayName:null, avatar:null, tasks:[], history:[], totals:{sessions:0, minutes:0, reps:0} };
+let storageOK = false;
+
+const $ = id => document.getElementById(id);
+const timerEl=$('timer'), startBtn=$('startBtn');
+const phaseLabel=$('phaseLabel'), dotsEl=$('dots'), sesNum=$('sesNum');
+const workoutBlock=$('workoutBlock'), timerBlock=$('timerBlock');
+const exName=$('exName'), exNote=$('exNote'), repNum=$('repNum'), repOf=$('repOf');
+const counterRow=$('counterRow'), progList=$('progList'), breakClock=$('breakClock');
+const trajEl=$('traj'), toast=$('toast');
+const cv=$('cv'), ctx=cv.getContext('2d');
+
+const DPR = Math.min(window.devicePixelRatio||1, 2);
+const CW=340, CH=250;
+cv.width=CW*DPR; cv.height=CH*DPR; cv.style.width=CW+'px'; cv.style.height=CH+'px';
+ctx.scale(DPR,DPR);
+
+/* ---------- persistence ---------- */
+/* storage adapter: writes to every store available (browser localStorage +
+   Claude artifact storage) and reads from whichever has the data */
+const store = {
+  hasLocal:false, hasArt:false, mem:{},
+  async init(){
+    try{ localStorage.setItem('__t','1'); localStorage.removeItem('__t'); this.hasLocal=true; }catch(e){}
+    try{ this.hasArt = !!(window.storage && typeof window.storage.get==='function'); }catch(e){}
+  },
+  async get(k){
+    if(this.hasArt){
+      try{ const r=await window.storage.get(k); if(r && r.value!=null) return r.value; }catch(e){}
+    }
+    if(this.hasLocal){
+      try{ const v=localStorage.getItem(k); if(v!=null) return v; }catch(e){}
+    }
+    return this.mem[k]||null;
+  },
+  async set(k,v){
+    this.mem[k]=v;
+    if(this.hasLocal){ try{ localStorage.setItem(k,v); }catch(e){} }
+    if(this.hasArt){ try{ await window.storage.set(k,v); }catch(e){} }
+  }
+};
+let ACCOUNTS={};
+const blankData=()=>({name:null, displayName:null, avatar:null, tasks:[], history:[], totals:{sessions:0, minutes:0, reps:0}});
+async function sha(text){
+  try{
+    const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }catch(e){
+    let x=0; for(const c of text){ x=(x*31 + c.charCodeAt(0))>>>0; } return 'x'+x;
+  }
+}
+async function loadData(){
+  await store.init();
+  storageOK = store.hasLocal || store.hasArt;
+  if(!storageOK) $('storageNote').textContent =
+    'Saving isn\'t available here, so accounts will only last this visit.';
+  try{ ACCOUNTS = JSON.parse((await store.get('pomofit:accounts'))||'{}'); }catch(e){ ACCOUNTS={}; }
+  const ses = await store.get('pomofit:session');
+  if(ses && ACCOUNTS[ses]){
+    DATA = Object.assign(blankData(), ACCOUNTS[ses].data||{});
+    DATA.name = ses;
+  }
+  renderProfile(); renderTasks();
+}
+let saveQueued=false;
+function saveData(){
+  if(saveQueued) return;
+  saveQueued=true;
+  setTimeout(async ()=>{
+    saveQueued=false;
+    if(DATA.name && ACCOUNTS[DATA.name]){
+      ACCOUNTS[DATA.name].data = {displayName:DATA.displayName, avatar:DATA.avatar, tasks:DATA.tasks, history:DATA.history, totals:DATA.totals};
+      await store.set('pomofit:accounts', JSON.stringify(ACCOUNTS));
+    }
+  }, 300);
+}
+
+/* ---------- settings persistence (theme, durations, toggles) ---------- */
+let settingsSaveQueued=false;
+function saveSettings(){
+  if(settingsSaveQueued) return;
+  settingsSaveQueued=true;
+  setTimeout(async ()=>{
+    settingsSaveQueued=false;
+    const snap={
+      theme: document.body.dataset.theme,
+      focusMin: S.focusMin, breakMin: S.breakMin, longMin: S.longMin,
+
+      longBreakEvery: S.longBreakEvery,
+      reminders: S.reminders, remindersMin: S.remindersMin, sound: S.sound, autoBreak: S.autoBreak, autoFocus: S.autoFocus,
+    };
+    await store.set('pomofit:settings', JSON.stringify(snap));
+  }, 300);
+}
+async function loadSettings(){
+  let saved=null;
+  try{ saved = JSON.parse((await store.get('pomofit:settings'))||'null'); }catch(e){ saved=null; }
+  if(!saved) return;
+  if(saved.theme){ document.body.dataset.theme = saved.theme; }
+  if(typeof saved.focusMin==='number') S.focusMin = saved.focusMin;
+  if(typeof saved.breakMin==='number') S.breakMin = saved.breakMin;
+  if(typeof saved.longMin==='number') S.longMin = saved.longMin;
+  if(typeof saved.longBreakEvery==='number') S.longBreakEvery = clamp(Math.round(saved.longBreakEvery),2,12);
+  if(typeof saved.reminders==='boolean') S.reminders = saved.reminders;
+  if(typeof saved.remindersMin==='number') S.remindersMin = clamp(Math.round(saved.remindersMin),1,120);
+  if(typeof saved.sound==='boolean') S.sound = saved.sound;
+  if(typeof saved.autoBreak==='boolean') S.autoBreak = saved.autoBreak;
+  if(typeof saved.autoFocus==='boolean') S.autoFocus = saved.autoFocus;
+  syncSettingsUI();
+  if(typeof restartHydrateInterval==='function') restartHydrateInterval();
+  if(!S.running){ S.remaining=phaseDuration(); render(S.remaining); }
+}
+
+/* ---------- intro note dismissal ---------- */
+const introBubble=$('introBubble');
+$('introCloseBtn').onclick=()=>{
+  introBubble.classList.add('hide');
+  store.set('pomofit:introDismissed', '1');
+};
+async function loadIntroState(){
+  const dismissed = await store.get('pomofit:introDismissed');
+  if(dismissed==='1') introBubble.classList.add('hide');
+}
+function syncSettingsUI(){
+  $('rndVal').textContent = S.longBreakEvery;
+  $('longEveryLabel').textContent = S.longBreakEvery;
+  renderFooter();
+  // theme button
+  if(typeof applyTheme==='function') applyTheme(document.body.dataset.theme);
+  // duration steppers — each exposes a sync function via the seg element's dataset
+  [['focusSeg',S.focusMin],['breakSeg',S.breakMin],['longSeg',S.longMin],['remSeg',S.remindersMin]].forEach(([elId,val])=>{
+    const el=$(elId);
+    if(el && el._syncStepper) el._syncStepper(val);
+  });
+  // toggles — CSS-driven slash/outline, just sync aria-pressed
+  [['autoBreak','autoBreak'],['autoFocus','autoFocus']].forEach(([id,key])=>{
+    $(id).setAttribute('aria-pressed', S[key]);
+  });
+  // sound button uses icon + CSS slash, not text
+  $('sfxToggle').setAttribute('aria-pressed', S.sound);
+  $('settingsSfxBtn').setAttribute('aria-pressed', S.sound);
+}
+function authMsg(m){ $('authMsg').textContent=m; }
+async function signUp(){
+  const u=$('userInput').value.trim(), pw=$('passInput').value;
+  const secQ=$('secQuestion').value, secA=$('secAnswer').value.trim();
+  if(u.length<2) return authMsg(T().errUsernameShort);
+  if(pw.length<4) return authMsg(T().errPasswordShort);
+  if(ACCOUNTS[u]) return authMsg(T().errUsernameTaken);
+  if(secA.length<2) return authMsg(T().errNoSecAnswer);
+  const salt=Math.random().toString(36).slice(2,10);
+  const secSalt=Math.random().toString(36).slice(2,10);
+  ACCOUNTS[u]={
+    salt, hash:await sha(salt+pw),
+    secQ, secSalt, secHash:await sha(secSalt+secA.toLowerCase()),
+    data:{tasks:[], history:[], totals:{sessions:0, minutes:0, reps:0}}
+  };
+  await store.set('pomofit:accounts', JSON.stringify(ACCOUNTS));
+  await store.set('pomofit:session', u);
+  DATA=blankData(); DATA.name=u;
+  S.activeTask=null; $('passInput').value=''; $('secAnswer').value='';
+  authMsg(storageOK ? '' : 'Heads up: saving isn\'t available in this preview — on the published site your account will persist.');
+  renderProfile(); renderTasks();
+}
+async function signIn(){
+  const u=$('userInput').value.trim(), pw=$('passInput').value;
+  const acc=ACCOUNTS[u];
+  if(!acc) return authMsg(T().errNoAccount);
+  if(acc.hash !== await sha(acc.salt+pw)) return authMsg(T().errWrongPassword);
+  await store.set('pomofit:session', u);
+  DATA = Object.assign(blankData(), acc.data||{});
+  DATA.name=u;
+  S.activeTask=null; $('passInput').value=''; authMsg('');
+  renderProfile(); renderTasks();
+}
+
+/* ---------- forgot password / account recovery ---------- */
+const SEC_QUESTIONS={
+  pet:'What was the name of your first pet?',
+  city:'What city were you born in?',
+  school:'What was your first school?',
+  word:"What's a word only you would remember?",
+};
+let resetStage='user'; // 'user' -> 'answer' -> 'newpass'
+let resetUser=null;
+function resetMsg(m){ $('resetMsg').textContent=m; }
+function showResetBox(){
+  resetStage='user'; resetUser=null;
+  $('signinBox').style.display='none';
+  $('resetBox').style.display='block';
+  $('resetUserInput').value=''; $('resetAnswerInput').value=''; $('resetNewPassInput').value='';
+  $('resetQuestionLabel').style.display='none';
+  $('resetAnswerRow').style.display='none';
+  $('resetNewPassRow').style.display='none';
+  $('resetContinueBtn').textContent='CONTINUE';
+  resetMsg('');
+}
+function showSigninBox(){
+  $('resetBox').style.display='none';
+  $('signinBox').style.display='block';
+}
+$('forgotLink').onclick=(e)=>{ e.preventDefault(); showResetBox(); };
+$('resetCancelBtn').onclick=showSigninBox;
+$('resetContinueBtn').onclick=async ()=>{
+  if(resetStage==='user'){
+    const u=$('resetUserInput').value.trim();
+    const acc=ACCOUNTS[u];
+    if(!acc) return resetMsg(T().errNoAccountReset);
+    if(!acc.secQ || !acc.secHash) return resetMsg('This account doesn\'t have a security question set up — sorry, recovery isn\'t available. You\'ll need to create a new account.');
+    resetUser=u; resetStage='answer';
+    $('resetQuestionLabel').textContent=SEC_QUESTIONS[acc.secQ]||'Security question';
+    $('resetQuestionLabel').style.display='block';
+    $('resetAnswerRow').style.display='flex';
+    $('resetContinueBtn').textContent='VERIFY ANSWER';
+    resetMsg('');
+    return;
+  }
+  if(resetStage==='answer'){
+    const acc=ACCOUNTS[resetUser];
+    const a=$('resetAnswerInput').value.trim().toLowerCase();
+    if(!a) return resetMsg('Please enter your answer.');
+    if(await sha(acc.secSalt+a) !== acc.secHash) return resetMsg('That answer doesn\'t match — try again.');
+    resetStage='newpass';
+    $('resetAnswerRow').style.display='none';
+    $('resetQuestionLabel').style.display='none';
+    $('resetNewPassRow').style.display='flex';
+    $('resetContinueBtn').textContent='SAVE NEW PASSWORD';
+    resetMsg('');
+    return;
+  }
+  if(resetStage==='newpass'){
+    const pw=$('resetNewPassInput').value;
+    if(pw.length<4) return resetMsg('Password needs at least 4 characters.');
+    const acc=ACCOUNTS[resetUser];
+    const salt=Math.random().toString(36).slice(2,10);
+    acc.salt=salt; acc.hash=await sha(salt+pw);
+    await store.set('pomofit:accounts', JSON.stringify(ACCOUNTS));
+    showSigninBox();
+    $('userInput').value=resetUser; $('passInput').value='';
+    authMsg(T().passwordUpdated);
+    return;
+  }
+};
+
+/* ---------- sound effects ---------- */
+let AC=null;
+function ac(){ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended')AC.resume(); return AC; }
+function beep(freq, dur=0.09, gain=0.05, type='sine', when=0){
+  if(!S.sound) return;
+  try{
+    const a=ac(), t=a.currentTime+when, o=a.createOscillator(), g=a.createGain();
+    o.type=type; o.frequency.value=freq;
+    g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.02);
+  }catch(e){}
+}
+const chimeFocusEnd = ()=>{ beep(660,.12,.07); beep(880,.12,.07,'sine',.13); beep(1100,.2,.07,'sine',.26); };
+const chimeBreakEnd = ()=>{ beep(880,.1,.06); beep(660,.18,.06,'sine',.12); };
+const chimeProgDone = ()=>{ beep(523,.1,.07); beep(659,.1,.07,'sine',.1); beep(784,.1,.07,'sine',.2); beep(1047,.25,.08,'sine',.3); };
+const chimeChatMsg = ()=>{ beep(960,.06,.045,'sine'); beep(1280,.07,.04,'sine',.05); };
+const repTick = ()=> beep(1320,.04,.025,'square');
+// light UI interaction sounds
+const clickStart  = ()=>{ beep(523,.07,.04,'sine'); beep(659,.09,.04,'sine',.07); };
+const clickPause  = ()=>{ beep(440,.07,.03,'sine'); beep(349,.09,.03,'sine',.07); };
+const clickSkip   = ()=>{ beep(880,.05,.03,'sine'); beep(1047,.07,.03,'sine',.05); };
+const clickSelect = ()=>  beep(660,.06,.03,'sine');
+const clickTap    = ()=>  beep(880,.04,.022,'sine'); // light tap for all other buttons
+
+// global button sound — uses pointerdown so stopPropagation on click can't block it
+const HANDLED_IDS = new Set(['startBtn','skipBtn','backBtn']);
+document.addEventListener('pointerdown', e=>{
+  if(!S.sound) return;
+  const t = e.target.closest('button, a.kofi-link, .prog-card, .emoji-opt, .lang-opt, .toggle-compact-btn, .icon-btn, .btn, .add-task, .close-sheet, .cowork-fab, #langCycleBtn');
+  if(!t) return;
+  const id = t.id || '';
+  if(HANDLED_IDS.has(id)) return;
+  clickTap();
+}, {passive:true});
+/* proper bell: inharmonic partials with long decay, like a desk bell */
+function bell(strikes){
+  if(!S.sound) return;
+  try{
+    const a=ac();
+    for(let s=0; s<(strikes||1); s++){
+      const t=a.currentTime + s*0.9;
+      [[880,1,3.5],[1760,0.5,2.6],[2217,0.28,2.0],[660,0.32,4.2]].forEach(pt=>{
+        const o=a.createOscillator(), g=a.createGain();
+        o.frequency.value=pt[0];
+        g.gain.setValueAtTime(0.0001,t);
+        g.gain.exponentialRampToValueAtTime(0.14*pt[1], t+0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001, t+pt[2]);
+        o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+pt[2]+0.1);
+      });
+    }
+  }catch(e){}
+}
+function notify(title, body){
+  try{
+    if('Notification' in window && Notification.permission==='granted'){
+      new Notification(title, {body:body, tag:'pomofit'});
+    }
+  }catch(e){}
+}
+
+/* =====================================================
+   EXERCISES + PROGRAMMES
+   ===================================================== */
+const EX = {
+  jacks:  {name:'Jumping Jacks', period:0.9,  minR:10, maxR:20},
+  squats: {name:'Squats',        period:2.6,  minR:6,  maxR:12},
+  pushups:{name:'Push-ups',      period:2.2,  minR:5,  maxR:10},
+  knees:  {name:'High Knees',    period:0.42, minR:16, maxR:30},
+  lunges: {name:'Lunges',        period:2.0,  minR:6,  maxR:10, note:'Switches sides halfway'},
+  plank:  {name:'Plank',         period:1, timeBased:true, minR:15, maxR:40, note:'Keep your back flat'},
+};
+const PROGRAMMES = {
+  cardio:  {name:'⚡ Cardio Spark',     steps:['jacks','knees','squats']},
+  strength:{name:'🏋 Strength Circuit', steps:['squats','pushups','lunges']},
+  core:    {name:'🧘 Core & Hold',      steps:['plank','pushups','knees']},
+  full:    {name:'🔥 Full Body',        steps:['jacks','squats','pushups','knees']},
+};
+let PROG=null; // {name, steps:[{key,target,unit}], idx, mode:'ex'|'rest'|'done', tStart, rest}
+
+function buildProgramme(pkey, keys){
+  const leftSec = Math.max(60, (S.running ? S.endAt-Date.now() : S.remaining)/1000);
+  const ks = keys || PROGRAMMES[pkey].steps;
+  const n = ks.length, rest = 10;
+  const per = Math.max(20, (leftSec - 12 - rest*(n-1)) / n);
+  // ~45% of each slot is active reps; the rest is natural pacing room
+  const steps = ks.map(k=>{
+    const ex=EX[k];
+    if(ex.timeBased) return {key:k, target:clamp(Math.round(per*0.5), ex.minR, ex.maxR), unit:'sec'};
+    return {key:k, target:clamp(Math.round(per*0.45/ex.period), ex.minR, ex.maxR), unit:'reps'};
+  });
+  return {name: keys ? '🎲 Surprise Mix' : PROGRAMMES[pkey].name, steps, idx:0, mode:'ex', tStart:performance.now(), rest};
+}
+function selectProgramme(pkey, keys){
+  PROG = buildProgramme(pkey, keys);
+  PROG.mode='ready';
+  PROG._pkey=pkey||null; PROG._keys=keys||null;
+  document.querySelectorAll('#progList .prog-card').forEach(c=>c.classList.toggle('active', c.dataset.key===pkey));
+  exName.textContent=PROG.name;
+  exNote.textContent=PROG.steps.length+(LANGS[currentLang]||LANGS.en).sizednote;
+  counterRow.style.visibility='hidden';
+  $('progStartBtn').style.display='inline-block';
+  $('progStartBtn').textContent=T().startProgramme;
+  renderTraj();
+  beep(880,.08,.05);
+  // broadcast card selection (not start) so others see the same card highlighted
+  if(typeof broadcastWorkout==='function' && !suppressWorkoutBroadcast)
+    broadcastWorkout({action:'select', key:PROG._pkey, keys:PROG._keys});
+}
+$('progStartBtn').onclick=()=>{
+  if(!PROG) return;
+  $('progStartBtn').style.display='none';
+  beep(1100,.1,.05);
+  beginStep();
+  if(typeof broadcastWorkout==='function')
+    broadcastWorkout({action:'start', key:PROG._pkey, keys:PROG._keys});
+};
+function beginStep(){
+  const st=PROG.steps[PROG.idx], ex=EX[st.key];
+  PROG.mode='ex'; PROG.tStart=performance.now(); S.reps=0;
+  exName.textContent=(ex._tname||ex.name);
+  exNote.textContent=`Step ${PROG.idx+1} of ${PROG.steps.length} · ${PROG.name}`+(ex.note?' · '+ex.note:'');
+  counterRow.style.visibility='visible';
+  repNum.textContent='0'; repOf.textContent='/ '+st.target+' '+(T()[st.unit]||st.unit);
+  renderTraj();
+}
+function stepDone(){
+  const st=PROG.steps[PROG.idx];
+  if(st.unit==='reps') DATA.totals.reps += st.target;
+  logEntry({type:'workout', ex:(EX[st.key]._tname||EX[st.key].name), reps:st.target, unit:st.unit});
+  saveData();
+  if(PROG.idx >= PROG.steps.length-1){
+    PROG.mode='done';
+    chimeProgDone();
+    exName.textContent=T().programmeDone;
+    exNote.textContent=T().programmeDoneNote;
+    counterRow.style.visibility='hidden';
+    renderTraj(true);
+  } else {
+    PROG.mode='rest'; PROG.tStart=performance.now();
+    beep(660,.1,.05);
+    counterRow.style.visibility='hidden';
+    renderTraj();
+  }
+}
+function renderTraj(allDone){
+  trajEl.innerHTML='';
+  if(!PROG) return;
+  PROG.steps.forEach((st,i)=>{
+    const d=document.createElement('div');
+    let cls='tstep';
+    if(allDone || i<PROG.idx || (i===PROG.idx && PROG.mode==='rest')) cls+=' done';
+    else if(i===PROG.idx && PROG.mode==='ex') cls+=' current';
+    d.className=cls;
+    d.innerHTML=`<b></b><span>${st.target} ${T()[st.unit]||st.unit}</span>`;
+    d.querySelector('b').textContent=(EX[st.key]._tname||EX[st.key].name);
+    trajEl.appendChild(d);
+    if(i<PROG.steps.length-1){
+      const a=document.createElement('div'); a.className='tarrow'; a.textContent='→';
+      trajEl.appendChild(a);
+    }
+  });
+}
+
+/* ---------- figure rendering ---------- */
+const B = { head:13, neck:11, torso:52, uArm:33, fArm:31, thigh:44, shin:42, foot:13 };
+const GROUND = 214, CX = 170;
+const easeLoop = t => (1-Math.cos(2*Math.PI*t))/2;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function ik(root, target, l1, l2, bend){
+  let dx=target.x-root.x, dy=target.y-root.y;
+  let d=clamp(Math.hypot(dx,dy), Math.abs(l1-l2)+0.5, l1+l2-0.5);
+  const base=Math.atan2(dy,dx);
+  const cos=clamp((l1*l1+d*d-l2*l2)/(2*l1*d),-1,1);
+  const a=base+bend*Math.acos(cos);
+  return {x:root.x+l1*Math.cos(a), y:root.y+l1*Math.sin(a)};
+}
+const fk=(p,len,ang)=>({x:p.x+len*Math.sin(ang), y:p.y+len*Math.cos(ang)});
+let _col='#EFEAE3';
+function col(){ return _col; }
+function colFar(){ return getComputedStyle(document.body).getPropertyValue('--muted').trim() || '#999'; }
+function limb(a,b,c, far){
+  ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); if(c) ctx.lineTo(c.x,c.y);
+  ctx.lineWidth = far?6:7.5;
+  ctx.strokeStyle = far ? colFar() : col();
+  ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+}
+function head(c){ ctx.beginPath(); ctx.arc(c.x,c.y,B.head,0,7); ctx.fillStyle=col(); ctx.fill(); }
+function torso(pel,sh){
+  ctx.beginPath(); ctx.moveTo(pel.x,pel.y); ctx.lineTo(sh.x,sh.y);
+  ctx.lineWidth=8.5; ctx.strokeStyle=col(); ctx.lineCap='round'; ctx.stroke();
+}
+function shadow(x, w){
+  ctx.beginPath(); ctx.ellipse(x, GROUND+8, w, 6, 0, 0, 7);
+  ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fill();
+}
+function groundLine(){
+  ctx.beginPath(); ctx.moveTo(20,GROUND+9); ctx.lineTo(CW-20,GROUND+9);
+  ctx.lineWidth=2; ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--line').trim();
+  ctx.stroke();
+}
+function drawSquat(t){
+  const s = easeLoop(t);
+  const pel = {x:CX-10*s, y:GROUND-(B.thigh+B.shin-4)+ s*44};
+  const lean = s*0.55;
+  const sh = {x:pel.x + B.torso*Math.sin(lean), y:pel.y - B.torso*Math.cos(lean)};
+  const hd = {x:sh.x + (B.neck+B.head)*Math.sin(lean*0.7), y:sh.y-(B.neck+B.head)*Math.cos(lean*0.7)+2};
+  const footN={x:CX+14,y:GROUND}, footF={x:CX+2,y:GROUND};
+  const kneeN=ik(pel,footN,B.thigh,B.shin,-1), kneeF=ik(pel,footF,B.thigh,B.shin,-1);
+  const armA = 1.45*s + 0.12;
+  const elbF=fk(sh,B.uArm,armA+0.05), hanF=fk(elbF,B.fArm,armA+0.2*s);
+  const elbN=fk(sh,B.uArm,armA), hanN=fk(elbN,B.fArm,armA+0.15*s);
+  shadow(CX, 42);
+  limb(pel,kneeF,{x:footF.x+B.foot,y:footF.y},true);
+  limb(sh,elbF,hanF,true);
+  limb(pel,kneeN,{x:footN.x+B.foot,y:footN.y});
+  torso(pel,sh);
+  limb(sh,elbN,hanN);
+  head(hd);
+}
+function drawPushup(t){
+  const s = easeLoop(t);
+  const toe = {x:CX-98, y:GROUND-3};
+  const sh  = {x:CX+36, y:GROUND-60 + s*30};
+  const dx=sh.x-toe.x, dy=sh.y-toe.y, L=Math.hypot(dx,dy);
+  const ux=dx/L, uy=dy/L;
+  const P=u=>({x:toe.x+dx*u, y:toe.y+dy*u});
+  const pel=P(0.50), knee=P(0.26);
+  const hd={x:sh.x+ux*(B.neck+B.head-2), y:sh.y+uy*(B.neck+B.head-2)-3};
+  const hand={x:sh.x+4, y:GROUND};
+  const elbN=ik(sh,hand,B.uArm,B.fArm,1);
+  const elbF=ik({x:sh.x-4,y:sh.y+3},{x:hand.x-5,y:GROUND},B.uArm,B.fArm,1);
+  shadow(CX-20, 92);
+  limb({x:pel.x-3,y:pel.y+3},{x:knee.x-3,y:knee.y+3},{x:toe.x-3,y:GROUND},true);
+  limb({x:sh.x-4,y:sh.y+3},elbF,{x:hand.x-5,y:GROUND},true);
+  ctx.beginPath(); ctx.moveTo(toe.x,toe.y); ctx.lineTo(pel.x,pel.y); ctx.lineTo(sh.x,sh.y);
+  ctx.lineWidth=8.5; ctx.strokeStyle=col(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+  limb(sh,elbN,hand);
+  head(hd);
+}
+function drawPlank(time){
+  const br = Math.sin(time*1.4)*1.5;
+  const toe={x:CX-100, y:GROUND-3};
+  const sh ={x:CX+38, y:GROUND-46+br};
+  const dx=sh.x-toe.x, dy=sh.y-toe.y, L=Math.hypot(dx,dy);
+  const ux=dx/L, uy=dy/L;
+  const P=u=>({x:toe.x+dx*u, y:toe.y+dy*u});
+  const pel=P(0.50), knee=P(0.26);
+  const hd ={x:sh.x+ux*(B.neck+B.head-2), y:sh.y+uy*(B.neck+B.head-2)-3};
+  const elbN={x:sh.x-2,y:GROUND}, hanN={x:sh.x+28,y:GROUND};
+  const elbF={x:sh.x-7,y:GROUND-1}, hanF={x:sh.x+23,y:GROUND-1};
+  shadow(CX-22, 92);
+  limb({x:pel.x-3,y:pel.y+3},{x:knee.x-3,y:knee.y+3},{x:toe.x-3,y:GROUND},true);
+  limb({x:sh.x-4,y:sh.y+3},elbF,hanF,true);
+  ctx.beginPath(); ctx.moveTo(toe.x,toe.y); ctx.lineTo(pel.x,pel.y); ctx.lineTo(sh.x,sh.y);
+  ctx.lineWidth=8.5; ctx.strokeStyle=col(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+  limb(sh,elbN,hanN);
+  head(hd);
+}
+function drawHighKnees(t){
+  const half = t<0.5 ? 0 : 1;
+  const u = (t%0.5)/0.5;
+  const drive = Math.sin(Math.PI*u);
+  const pel = {x:CX, y:GROUND-(B.thigh+B.shin-6) - drive*5};
+  const sh = {x:pel.x+B.torso*0.08, y:pel.y-B.torso};
+  const hd = {x:sh.x+4, y:sh.y-B.neck-B.head+3};
+  const th = 0.15 + drive*1.55, kb = 0.2 + drive*1.5;
+  const kneeD = fk(pel,B.thigh,th);
+  const footD = fk(kneeD,B.shin, th-kb);
+  const footP = {x:CX+2, y:GROUND};
+  const kneeP = ik(pel,footP,B.thigh,B.shin,-1);
+  const swing = (half?1:-1)*(drive-0.5)*1.5;
+  const elbN=fk(sh,B.uArm,swing), hanN=fk(elbN,B.fArm,swing+1.5);
+  const elbF=fk({x:sh.x-3,y:sh.y+2},B.uArm,-swing), hanF=fk(elbF,B.fArm,-swing+1.5);
+  shadow(CX, 36);
+  if(half===0){
+    limb({x:pel.x-3,y:pel.y+1},kneeP,{x:footP.x+B.foot,y:footP.y},true);
+    limb({x:sh.x-3,y:sh.y+2},elbF,hanF,true);
+    torso(pel,sh); limb(pel,kneeD,footD); limb(sh,elbN,hanN);
+  } else {
+    limb({x:pel.x-3,y:pel.y+1},kneeD,footD,true);
+    limb({x:sh.x-3,y:sh.y+2},elbF,hanF,true);
+    torso(pel,sh); limb(pel,kneeP,{x:footP.x+B.foot,y:footP.y}); limb(sh,elbN,hanN);
+  }
+  head(hd);
+}
+function drawLunge(t, mirrored){
+  const s = easeLoop(t);
+  ctx.save();
+  if(mirrored){ ctx.translate(CW,0); ctx.scale(-1,1); }
+  const pel = {x:CX-6, y:GROUND-(B.thigh+B.shin-12) + s*30};
+  const sh = {x:pel.x+2, y:pel.y-B.torso};
+  const hd = {x:sh.x+3, y:sh.y-B.neck-B.head+3};
+  const footFr={x:CX+46,y:GROUND}, toeBk={x:CX-56,y:GROUND-2};
+  const kneeFr = ik(pel,footFr,B.thigh,B.shin,-1);
+  const kneeBk = ik(pel,toeBk,B.thigh,B.shin,-1);
+  const elb=fk(sh,B.uArm,0.55), han={x:pel.x+6,y:pel.y-4};
+  const elbF=fk({x:sh.x-3,y:sh.y+2},B.uArm,-0.5), hanF={x:pel.x-8,y:pel.y-2};
+  shadow(CX, 64);
+  limb(pel,kneeBk,{x:toeBk.x-2,y:GROUND},true);
+  limb({x:sh.x-3,y:sh.y+2},elbF,hanF,true);
+  torso(pel,sh);
+  limb(pel,kneeFr,{x:footFr.x+B.foot,y:footFr.y});
+  limb(sh,elb,han);
+  head(hd);
+  ctx.restore();
+}
+function drawJacks(t){
+  const s = easeLoop(t);
+  const legA = s*0.5, armA = 0.12 + s*2.6;
+  const Lleg = B.thigh+B.shin-2;
+  const hop = Math.sin(Math.PI*easeLoop(t))*5;
+  const pelY = GROUND - Lleg*Math.cos(legA) - hop;
+  const shY = pelY - B.torso+4;
+  const hd = {x:CX, y:shY-B.neck-B.head+4};
+  const shL={x:CX-15,y:shY}, shR={x:CX+15,y:shY};
+  const hipL={x:CX-9,y:pelY}, hipR={x:CX+9,y:pelY};
+  const footL={x:hipL.x-Lleg*Math.sin(legA), y:hipL.y+Lleg*Math.cos(legA)};
+  const footR={x:hipR.x+Lleg*Math.sin(legA), y:hipR.y+Lleg*Math.cos(legA)};
+  const kneeL={x:(hipL.x+footL.x)/2-1,y:(hipL.y+footL.y)/2};
+  const kneeR={x:(hipR.x+footR.x)/2+1,y:(hipR.y+footR.y)/2};
+  const aL = {x:-Math.sin(armA), y:Math.cos(armA)};
+  const elbL={x:shL.x+aL.x*B.uArm, y:shL.y+aL.y*B.uArm};
+  const hanL={x:elbL.x+aL.x*B.fArm, y:elbL.y+aL.y*B.fArm};
+  const elbR={x:shR.x-aL.x*B.uArm, y:shR.y+aL.y*B.uArm};
+  const hanR={x:elbR.x-aL.x*B.fArm, y:elbR.y+aL.y*B.fArm};
+  shadow(CX, 34+ s*26);
+  ctx.beginPath(); ctx.moveTo(CX,pelY); ctx.lineTo(CX,shY);
+  ctx.lineWidth=10; ctx.strokeStyle=col(); ctx.lineCap='round'; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(shL.x,shL.y); ctx.lineTo(shR.x,shR.y); ctx.lineWidth=7.5; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(hipL.x,hipL.y); ctx.lineTo(hipR.x,hipR.y); ctx.lineWidth=7.5; ctx.stroke();
+  limb(hipL,kneeL,footL); limb(hipR,kneeR,footR);
+  limb(shL,elbL,hanL);    limb(shR,elbR,hanR);
+  head(hd);
+}
+function drawIdle(){
+  const time=performance.now()/1000;
+  const sway=Math.sin(time*1.2)*0.03;
+  const pel={x:CX, y:GROUND-(B.thigh+B.shin-4)};
+  const sh={x:pel.x + sway*22, y:pel.y - B.torso};
+  const hd={x:sh.x+sway*30,y:sh.y-B.neck-B.head+3};
+  const kneeN=ik(pel,{x:CX+10,y:GROUND},B.thigh,B.shin,-1);
+  const kneeF=ik(pel,{x:CX-2,y:GROUND},B.thigh,B.shin,-1);
+  const elb=fk(sh,B.uArm,0.18+sway), han=fk(elb,B.fArm,0.3);
+  const elbF=fk({x:sh.x-3,y:sh.y+2},B.uArm,-0.15), hanF=fk(elbF,B.fArm,-0.05);
+  shadow(CX,38);
+  limb(pel,kneeF,{x:CX-2+B.foot,y:GROUND},true);
+  limb({x:sh.x-3,y:sh.y+2},elbF,hanF,true);
+  torso(pel,sh);
+  limb(pel,kneeN,{x:CX+10+B.foot,y:GROUND});
+  limb(sh,elb,han);
+  head(hd);
+}
+function drawEx(key, t, el){
+  switch(key){
+    case 'jacks':  drawJacks(t); break;
+    case 'squats': drawSquat(t); break;
+    case 'pushups':drawPushup(t); break;
+    case 'knees':  drawHighKnees(el); break;
+    case 'lunges': drawLunge(t, PROG && S.reps >= PROG.steps[PROG.idx].target/2); break;
+    case 'plank':  drawPlank(el); break;
+  }
+}
+
+/* ---------- animation loop (programme engine) ---------- */
+function animate(){
+  requestAnimationFrame(animate);
+  _col = getComputedStyle(document.body).getPropertyValue('--fg').trim();
+  ctx.clearRect(0,0,CW,CH);
+  groundLine();
+  if(!PROG || PROG.mode==='done' || PROG.mode==='ready'){ drawIdle(); return; }
+  const el=(performance.now()-PROG.tStart)/1000;
+
+  if(PROG.mode==='rest'){
+    drawIdle();
+    const next=EX[PROG.steps[PROG.idx+1].key];
+    exName.textContent='Rest';
+    exNote.textContent='Next: '+next.name+' in '+Math.max(0,Math.ceil(PROG.rest-el))+'s';
+    if(el>=PROG.rest){ PROG.idx++; beginStep(); }
+    return;
+  }
+  const st=PROG.steps[PROG.idx], ex=EX[st.key];
+  if(ex.timeBased){
+    drawPlank(el);
+    const sec=Math.min(st.target, Math.floor(el));
+    if(sec!==S.reps){ S.reps=sec; repNum.textContent=sec; if(sec && sec%5===0) repTick(); }
+    if(el>=st.target) stepDone();
+    return;
+  }
+  const t=(st.key==='knees') ? ((el/(ex.period*2))%1) : ((el/ex.period)%1);
+  const rep=Math.min(st.target, Math.floor(el/ex.period));
+  if(rep!==S.reps){ S.reps=rep; repNum.textContent=rep; repTick(); }
+  drawEx(st.key, t, (st.key==='knees')?((el/(ex.period*2))%1):el);
+  if(rep>=st.target) stepDone();
+}
+
+/* ---------- brain fuel + hydration ---------- */
+const FACTS_BY_LANG = {
+  zh: [
+    "轻度脱水——约体重的1-2%——就能明显影响注意力、工作记忆和情绪。渴了再喝就晚了。",
+    "仅10分钟的中等强度运动，就能让专注力和执行功能提升长达一小时——完美契合下一次专注时段。",
+    "运动能增加前额叶皮层的血流量，这一区域负责规划、专注和自我控制。",
+    "运动触发BDNF蛋白——常被称为'大脑的肥料'——促进学习和新神经连接的形成。",
+    "规律的有氧运动与更大的海马体相关，而海马体正是大脑的记忆中枢。你的跳绳也在陪你学习。",
+    "大脑约75%由水构成。头痛和注意力下降往往是早期缺水信号，而非需要更多咖啡因。",
+    "短暂的主动休息胜过刷手机：轻度运动能减少脑疲劳，比久坐更能恢复注意力。",
+    "运动提升多巴胺和去甲肾上腺素——这些正是调控警觉性和持续注意力的神经递质。",
+    "每25-50分钟站起来动一动，可对抗久坐带来的认知下降。",
+    "小口慢饮胜过猛灌：身体在一天中少量规律补水时吸收效果更好。",
+    "慢节奏的轻音乐能屏蔽干扰噪音，帮助在深度工作时保持专注。",
+    "深蹲和弓步蹲动用最大肌肉群，每次重复都能为大脑提供最佳血氧供应。",
+    "番茄钟有效，部分原因是截止时间能锐化注意力：25分钟倒计时让大脑难以走神。",
+    "记忆在睡眠时巩固——运动加充足睡眠，比死记硬背更能牢固记住所学内容。",
+    "学习时接触自然光有助于调节清醒度；出门快走既是运动，也是专注力的重置。",
+    "心跳加速的运动增加乳酸，大脑在高强度脑力劳动时会将其作为燃料燃烧。",
+    "分多次短暂学习比一次马拉松式学习更有效：间隔练习能显著提升长期记忆留存率。",
+    "久坐后拉伸髋屈肌和肩膀能改善姿势——呼吸更顺畅，大脑获得的氧气也更多。",
+    "研究表明，记忆新内容前进行轻度运动，比保持静止更能提高记忆效果。",
+    "长期慢性脱水会逐渐缩短注意力持续时间——人们常将其误解为无聊或倦怠。",
+  ],
+  en: [
+  "Even mild dehydration — around 1–2% of body weight — can measurably dull attention, working memory, and mood. Sip before you feel thirsty.",
+  "A single 10-minute bout of moderate exercise can sharpen focus and executive function for up to an hour afterward — perfect timing for your next session.",
+  "Exercise increases blood flow to the prefrontal cortex, the brain region that handles planning, focus, and self-control.",
+  "Movement triggers BDNF — a protein often called 'fertilizer for the brain' — which supports learning and new neural connections.",
+  "Regular aerobic exercise is linked to a larger hippocampus, the brain's memory hub. Your jumping jacks are studying with you.",
+  "Your brain is roughly 75% water. Headaches and fading concentration are often early thirst signals, not a need for more caffeine.",
+  "Short active breaks beat passive scrolling: light movement reduces mental fatigue and restores attention better than staying seated.",
+  "Exercise raises dopamine and norepinephrine — the same neurotransmitters that govern alertness and sustained attention.",
+  "Standing up and moving every 25–50 minutes counteracts the cognitive dip that comes from prolonged sitting.",
+  "Steady sipping beats chugging: your body absorbs water better in small, regular amounts across the day.",
+  "Slow, instrumental music at a calm tempo can mask distracting noise and help sustain attention during deep work.",
+  "Squats and lunges recruit your biggest muscles, giving you the most circulation boost — and brain oxygen — per rep.",
+  "The Pomodoro technique works partly because deadlines sharpen attention: a ticking 25-minute window keeps your brain from drifting.",
+  "Sleep is when memories consolidate — a workout plus a good night's rest cements what you studied far better than cramming.",
+  "Natural light exposure during study hours helps regulate alertness; a quick walk outside doubles as exercise and a focus reset.",
+  "Heart-pumping movement increases lactate, which your brain happily burns as fuel during demanding mental work.",
+  "Studying in multiple short sessions beats one marathon: spaced practice can dramatically improve long-term retention.",
+  "Stretching tight hip flexors and shoulders after sitting improves posture — and easier breathing means better oxygen flow to the brain.",
+  "Mild exercise before memorising new material has been shown to improve recall compared to staying sedentary.",
+  "Chronic dehydration shrinks attention span gradually — people often misread it as boredom or burnout.",
+  "Green tea pairs caffeine with L-theanine, giving a smoother, jitter-free alertness than coffee for many people.",
+  "Your brain uses about 20% of your body's energy at rest — feed it: steady meals beat sugar spikes for sustained focus.",
+  "Laughing, like exercise, increases blood flow and lowers stress hormones — a funny clip on a long break isn't wasted time.",
+  "Handwriting notes activates more motor and memory circuits than typing, which can deepen understanding of tricky material.",
+  ],
+  tr: [
+  "Hafif bile olsa susuzluk — vücut ağırlığının %1–2'si — dikkat, çalışma belleği ve ruh halini ölçülebilir şekilde zayıflatır. Susamadan önce su iç.",
+  "10 dakikalık orta tempolu egzersiz bile odaklanmayı ve yönetici işlevi bir saate kadar keskinleştirebilir.",
+  "Egzersiz, planlama, odaklanma ve öz denetimden sorumlu prefrontal kortekse kan akışını artırır.",
+  "Hareket, öğrenmeyi ve yeni sinirsel bağlantıları destekleyen 'beyin gübresi' olarak adlandırılan BDNF proteinini tetikler.",
+  "Düzenli aerobik egzersiz, beynin bellek merkezi olan daha büyük bir hipokampüs ile ilişkilidir.",
+  "Beyniniz yaklaşık %75 sudur. Baş ağrısı ve konsantrasyon kaybı genellikle susuzluğun erken belirtileridir.",
+  "Kısa aktif molalar pasif kaydırmadan üstündür: hafif hareket zihinsel yorgunluğu azaltır ve dikkati yeniden kazandırır.",
+  "Egzersiz, uyanıklığı ve sürekli dikkati yöneten aynı nörotransmiterler olan dopamin ve norepinefrini artırır.",
+  "Her 25–50 dakikada bir ayağa kalkmak ve hareket etmek, uzun süre oturmadan kaynaklanan bilişsel düşüşü engeller.",
+  "Düzenli yudum içmek en iyisidir: vücudunuz suyu gün boyunca küçük, düzenli miktarlarda daha iyi emer.",
+  "Sakin tempolu enstrümantal müzik dikkat dağıtıcı sesleri maskeler ve derin çalışmada dikkati sürdürmeye yardımcı olur.",
+  "Squat ve akciğerler en büyük kasları çalıştırır, her tekrarda en fazla kan dolaşımı ve beyin oksijenini sağlar.",
+  "Pomodoro tekniği kısmen son tarihlerin dikkati keskinleştirmesi nedeniyle işe yarar: 25 dakikalık pencere beyni odaklı tutar.",
+  "Hafıza pekişmesi uyku sırasında gerçekleşir — egzersiz artı iyi bir uyku, ezberlemeyle öğrenilen materyali çok daha iyi pekiştirir.",
+  "Çalışma saatlerinde doğal ışık maruziyeti uyanıklığı düzenlemeye yardımcı olur; kısa bir yürüyüş hem egzersiz hem de odak sıfırlamasıdır.",
+  "Kalp atışını hızlandıran hareket, beynin zorlu zihinsel çalışmada yakıt olarak kullandığı laktatı artırır.",
+  "Birden fazla kısa oturumda çalışmak maraton oturumlardan üstündür: aralıklı pratik uzun vadeli hafıza tutmayı artırır.",
+  "Oturmadan sonra sıkı kalça fleksörleri ve omuzları germek duruşu iyileştirir — daha kolay nefes beyin için daha iyi oksijen demektir.",
+  "Yeni materyali ezberlemeden önce hafif egzersizin, hareketsiz kalmaya kıyasla hatırlamayı iyileştirdiği gösterilmiştir.",
+  "Kronik susuzluk dikkat süresini yavaş yavaş azaltır — insanlar bunu çoğunlukla can sıkıntısı veya tükenme olarak yorumlar.",
+  ],
+  de: [
+  "Schon leichte Dehydrierung — rund 1–2 % des Körpergewichts — kann Aufmerksamkeit, Arbeitsgedächtnis und Stimmung messbar beeinträchtigen.",
+  "Schon 10 Minuten moderate Bewegung können Fokus und exekutive Funktion für bis zu eine Stunde danach schärfen.",
+  "Bewegung erhöht die Durchblutung des präfrontalen Kortex, der für Planung, Fokus und Selbstkontrolle zuständig ist.",
+  "Bewegung aktiviert BDNF — ein oft als 'Dünger fürs Gehirn' bezeichnetes Protein — das Lernen und neue neuronale Verbindungen unterstützt.",
+  "Regelmäßige aerobe Bewegung ist mit einem größeren Hippocampus verbunden, dem Gedächtniszentrum des Gehirns.",
+  "Dein Gehirn besteht zu etwa 75 % aus Wasser. Kopfschmerzen und nachlassende Konzentration sind oft frühe Durstzeichen.",
+  "Kurze aktive Pausen schlagen passives Scrollen: leichte Bewegung reduziert mentale Erschöpfung und stellt die Aufmerksamkeit besser wieder her.",
+  "Bewegung hebt Dopamin und Noradrenalin — dieselben Neurotransmitter, die Wachheit und anhaltende Aufmerksamkeit steuern.",
+  "Alle 25–50 Minuten aufstehen und bewegen wirkt dem kognitiven Einbruch durch langes Sitzen entgegen.",
+  "Regelmäßig in kleinen Schlucken trinken ist besser: Dein Körper nimmt Wasser in kleinen, regelmäßigen Mengen besser auf.",
+  "Ruhige instrumentale Musik kann ablenkende Geräusche überdecken und die Aufmerksamkeit bei Tiefenarbeit aufrechterhalten.",
+  "Kniebeugen und Ausfallschritte beanspruchen die größten Muskeln und liefern pro Wiederholung den besten Kreislaufboost für das Gehirn.",
+  "Die Pomodoro-Technik funktioniert, weil Fristen die Aufmerksamkeit schärfen: ein 25-Minuten-Fenster hält das Gehirn fokussiert.",
+  "Gedächtniskonsolidierung findet im Schlaf statt — Sport plus guter Schlaf festigt den Lernstoff viel besser als Pauken.",
+  "Tageslichtexposition während der Lernzeiten reguliert die Wachheit; ein kurzer Spaziergang ist gleichzeitig Bewegung und Fokus-Reset.",
+  "Intensive Bewegung erhöht Laktat, das das Gehirn bei anspruchsvoller geistiger Arbeit gerne als Brennstoff verbrennt.",
+  "In mehreren kurzen Sitzungen lernen schlägt einen Marathon: verteiltes Üben kann die Langzeitbehaltensleistung dramatisch steigern.",
+  "Das Dehnen enger Hüftbeuger und Schultern nach dem Sitzen verbessert die Körperhaltung — besseres Atmen bedeutet mehr Sauerstoff fürs Gehirn.",
+  "Leichte Bewegung vor dem Einprägen neuen Lernstoffs hat sich im Vergleich zu Bewegungsmangel als gedächtnisfördernd erwiesen.",
+  "Chronische Dehydrierung verringert die Aufmerksamkeitsspanne allmählich — Menschen verwechseln das oft mit Langeweile oder Burnout.",
+  ],
+  ar: [
+  "حتى الجفاف الخفيف — حوالي 1–2٪ من وزن الجسم — يمكن أن يُضعف الانتباه والذاكرة العاملة والمزاج بشكل ملحوظ.",
+  "جلسة واحدة من الرياضة المعتدلة لمدة 10 دقائق يمكن أن تُحدد التركيز لمدة ساعة بعدها — توقيت مثالي لجلستك التالية.",
+  "تزيد الرياضة من تدفق الدم إلى قشرة الفص الجبهي، المنطقة المسؤولة عن التخطيط والتركيز وضبط النفس.",
+  "تُفعّل الحركة بروتين BDNF الذي يُسمى 'سماد الدماغ'، والذي يدعم التعلم والاتصالات العصبية الجديدة.",
+  "تُرتبط التمارين الهوائية المنتظمة بحصين أكبر، وهو مركز الذاكرة في الدماغ.",
+  "دماغك يتكون من ما يقارب 75٪ ماء. الصداع وضعف التركيز غالباً ما يكونان علامات عطش مبكرة.",
+  "الاستراحات النشطة القصيرة أفضل من التمرير السلبي: تُقلل الحركة الخفيفة الإرهاق الذهني وتُعيد الانتباه.",
+  "تُرفع الرياضة مستويات الدوبامين والنورإبينفرين — نفس الناقلات العصبية التي تتحكم في اليقظة والانتباه المستدام.",
+  "الوقوف والتحرك كل 25–50 دقيقة يُقاوم التراجع المعرفي الناتج عن الجلوس المطوّل.",
+  "الشرب المنتظم بكميات صغيرة أفضل: جسمك يمتص الماء بشكل أفضل في كميات صغيرة ومنتظمة على مدار اليوم.",
+  "الموسيقى الهادئة يمكن أن تُخفف الضوضاء المشتتة وتُساعد على الحفاظ على الانتباه خلال العمل العميق.",
+  "القرفصاء والاندفاعات تستخدم عضلاتك الأكبر، مما يمنح أكبر دفعة للدورة الدموية وأكسجين الدماغ.",
+  "تقنية بومودورو تعمل لأن المواعيد النهائية تُحدد الانتباه: نافذة 25 دقيقة تُبقي عقلك مُركّزاً.",
+  "التذكر يترسخ أثناء النوم — الرياضة مع نوم جيد تُرسّخ ما درسته أفضل بكثير من الحفظ المكثف.",
+  "التعرض للضوء الطبيعي خلال ساعات الدراسة يُساعد في تنظيم اليقظة؛ المشي السريع هو تمرين وإعادة ضبط تركيز في آن واحد.",
+  "الحركة المكثفة تزيد من اللاكتات الذي يحرقه الدماغ بسعادة كوقود خلال العمل الذهني الشاق.",
+  "الدراسة في جلسات قصيرة متعددة تتفوق على الجلسة الواحدة الطويلة: الممارسة المتباعدة تُحسّن الاحتفاظ طويل المدى.",
+  "إطالة عضلات الوركين والكتفين بعد الجلوس يُحسّن الوضعية — وسهولة التنفس تعني المزيد من الأكسجين للدماغ.",
+  "ثبت أن التمرين الخفيف قبل حفظ مواد جديدة يُحسّن الاستذكار مقارنةً بالبقاء بلا حراك.",
+  "الجفاف المزمن يُقلل نطاق الانتباه تدريجياً — يُخطئ الناس في تفسيره كملل أو إرهاق.",
+  ],
+};
+const FACTS = [...FACTS_BY_LANG.en];
+/* ---------- location-flavoured facts ---------- */
+let localFactsLoaded=false;
+async function initLocalFacts(){
+  if(localFactsLoaded) return;
+  localFactsLoaded=true;
+  /* coarse, IP-based lookup only — city/country level, no GPS, no permission prompt */
+  let place=null;
+  try{
+    const r=await fetch('https://ipapi.co/json/');
+    const j=await r.json();
+    if(j && (j.city||j.country_name)) place={city:j.city||'', country:j.country_name||'', lat:parseFloat(j.latitude)||0};
+  }catch(e){}
+  if(!place){
+    try{
+      const r=await fetch('https://ipwho.is/');
+      const j=await r.json();
+      if(j && j.success!==false) place={city:j.city||'', country:j.country||'', lat:parseFloat(j.latitude)||0};
+    }catch(e){}
+  }
+  if(!place || !(place.city||place.country)) return;
+  const name=place.city||place.country;
+  let local=[];
+  /* AI-crafted facts — works when running inside Claude */
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6', max_tokens:1000, messages:[{role:'user',
+        content:'Give 4 short, interesting, true facts (max 25 words each) that connect studying, focus, exercise, parks, walking, or universities to '+name+', '+place.country+'. Respond in the language with code: '+currentLang+'. Respond ONLY with a JSON array of strings, no other text.'}]})
+    });
+    const data=await resp.json();
+    const text=(data.content||[]).map(i=>i.text||'').join('');
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    if(Array.isArray(parsed)) local=parsed.filter(x=>typeof x==='string').slice(0,4);
+  }catch(e){}
+  /* fallback: location-aware templates for the published site */
+  if(!local.length){
+    local=[
+      'Studying in '+name+'? A 10-minute walk outside between pomodoros gives you daylight, movement and a memory boost in one.',
+      'Find your nearest green space in '+name+' — studies link exercising near nature to bigger mood and attention gains than indoor workouts.',
+      'Your sweat breaks add up: four breaks a day in '+name+' is roughly 80 squats, lunges and push-ups you would not otherwise do.',
+      Math.abs(place.lat)>40
+        ? 'At '+name+'\u2019s latitude, winter daylight is scarce — a midday movement break outside helps keep your body clock and focus sharp.'
+        : 'In '+name+'\u2019s climate, hydration matters even more — keep that bottle topped up between focus rounds.'
+    ];
+  }
+  local.forEach(f=>FACTS.push('\ud83d\udccd '+f));
+}
+
+let factIdx = Math.floor(Math.random()*FACTS.length);
+const factCard=$('factCard'), factText=$('factText');
+factText.textContent = FACTS[factIdx];
+function nextFact(){
+  factCard.classList.add('fade');
+  setTimeout(()=>{
+    factIdx=(factIdx+1)%FACTS.length;
+    factText.textContent=FACTS[factIdx];
+    factCard.classList.remove('fade');
+  }, 450);
+}
+setInterval(nextFact, 75000);
+
+const HYDRATE_MSGS = [
+  ()=>`💧 ${S.remindersMin}-minute check-in — take a few sips of water.`,
+  ()=>"💧 Hydration time! Small sips beat big chugs.",
+  ()=>"💧 You've been at it a while — grab some water.",
+  ()=>"💧 Water break: your brain is 75% the stuff.",
+];
+let hydrateIdx = 0, toastTimer=null, hydrateInterval=null;
+
+/* ---------- session-complete mascot ---------- */
+const MASCOT_MSGS = [
+  'Great work! 🍅', 'Session done! 🎉', 'Crushed it! 💪',
+  'Keep it up! ⭐', 'You\'re on fire! 🔥', 'Focus master! 🧠',
+];
+let mascotMsgIdx = 0, mascotTimer = null;
+function showMascot(){
+  const el=$('mascot');
+  $('mascotMsg').textContent = MASCOT_MSGS[mascotMsgIdx++ % MASCOT_MSGS.length];
+  el.classList.add('show');
+  clearTimeout(mascotTimer);
+  mascotTimer = setTimeout(()=> el.classList.remove('show'), 4000);
+}
+$('mascot').addEventListener('click', ()=>{
+  $('mascot').classList.remove('show');
+  clearTimeout(mascotTimer);
+});
+
+function showToast(msg){
+  toast.textContent = typeof msg==='function' ? msg() : msg;
+  toast.classList.add('show');
+  beep(988,.08,.05); beep(1319,.12,.05,'sine',.1);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toast.classList.remove('show'), 12000);
+}
+toast.onclick = ()=>toast.classList.remove('show');
+function restartHydrateInterval(){
+  clearInterval(hydrateInterval);
+  hydrateInterval = setInterval(()=>{
+    if(S.reminders) showToast(HYDRATE_MSGS[hydrateIdx++ % HYDRATE_MSGS.length]);
+  }, S.remindersMin*60*1000);
+}
+restartHydrateInterval();
+
+/* ---------- tasks (Pomofocus style) ---------- */
+const taskListMain=$('taskListMain'), taskForm=$('taskForm'), newTaskInput=$('newTaskInput');
+let editingTask=null;
+let estCount=1;
+function setEst(v){ estCount=Math.max(1,Math.min(20,v)); $('estVal').textContent=estCount; }
+['estMinus','estPlus'].forEach(id=>{
+  $(id).addEventListener('click', e=>{
+    e.preventDefault(); e.stopPropagation();
+    setEst(estCount + (id==='estPlus'?1:-1));
+  });
+});
+$('addTaskOpen').onclick=()=>{ taskForm.classList.add('show'); setEst(1); newTaskInput.focus(); };
+$('cancelTaskBtn').onclick=()=>{ taskForm.classList.remove('show'); newTaskInput.value=''; };
+function saveTask(){
+  const title=newTaskInput.value.trim();
+  if(!title) return;
+  const t={id:'t'+Date.now(), title, done:false, sessions:0, minutes:0, est:estCount};
+  DATA.tasks.unshift(t);
+  S.activeTask=t.id;                     // newly added task auto-links
+  newTaskInput.value=''; taskForm.classList.remove('show');
+  saveData(); renderTasks();
+}
+$('saveTaskBtn').onclick=saveTask;
+newTaskInput.addEventListener('keydown',e=>{ if(e.key==='Enter') saveTask(); });
+
+function renderTasks(){
+  taskListMain.innerHTML='';
+  DATA.tasks.forEach(t=>{
+    const row=document.createElement('div');
+    const isDone = t.est ? (t.sessions>=t.est) : !!t.done;
+    const isEditing = editingTask===t.id;
+    row.className='task-item'+(isDone?' done':'')+(S.activeTask===t.id?' selected':'')+(isEditing?' editing':'');
+
+    const pct = t.est ? Math.min(100, Math.round((t.sessions/t.est)*100)) : (isDone?100:0);
+
+    // meta line — clean text only, no inline controls
+    let meta = '';
+    if(t.est){
+      const left=Math.max(0, t.est - t.sessions);
+      meta = left ? `${left} to go` : 'done 🎉';
+      if(t.minutes) meta += ` · ${t.minutes}m`;
+    } else {
+      meta = t.sessions ? `${t.sessions} session${t.sessions>1?'s':''} · ${t.minutes}m` : '';
+    }
+
+    row.innerHTML=`
+      <div class="t-check" aria-hidden="true">${isDone?'✓':''}</div>
+      <div class="t-body">
+        <div class="t-title"></div>
+        ${t.est ? `<div class="t-progress">
+          <div class="t-progress-bar"><div class="t-progress-fill" style="width:${pct}%;"></div></div>
+          <span>${t.sessions}/${t.est}</span>
+        </div>` : `<div class="t-meta"></div>`}
+        ${t.est ? `<div class="t-edit-row">
+          <div class="t-edit-group">
+            <span class="t-edit-lbl">Done</span>
+            <button class="t-edit-btn t-done-minus" type="button">−</button>
+            <span class="t-edit-val t-done-val">${t.sessions}</span>
+            <button class="t-edit-btn t-done-plus" type="button">＋</button>
+          </div>
+          <div class="t-edit-group">
+            <span class="t-edit-lbl">Target</span>
+            <button class="t-edit-btn t-est-minus" type="button">−</button>
+            <span class="t-edit-val t-est-target">${t.est}</span>
+            <button class="t-edit-btn t-est-plus" type="button">＋</button>
+          </div>
+        </div>` : ''}
+      </div>
+      <div class="t-right">
+        ${t.est ? `<button class="t-editbtn" aria-label="Edit task" title="Edit">✎</button>` : ''}
+        <button class="t-del" aria-label="Delete task" title="Delete">✕</button>
+      </div>`;
+
+    row.querySelector('.t-title').textContent = t.title;
+    const metaEl=row.querySelector('.t-meta');
+    if(metaEl) metaEl.textContent = meta;
+
+    if(t.est){
+      row.querySelector('.t-done-minus').onclick=e=>{
+        e.stopPropagation();
+        t.sessions=Math.max(0, t.sessions-1);
+        saveData(); renderTasks();
+      };
+      row.querySelector('.t-done-plus').onclick=e=>{
+        e.stopPropagation();
+        t.sessions=Math.min(t.est, t.sessions+1);
+        saveData(); renderTasks();
+      };
+      row.querySelector('.t-est-minus').onclick=e=>{
+        e.stopPropagation();
+        t.est=Math.max(t.sessions+1, t.est-1);
+        saveData(); renderTasks();
+      };
+      row.querySelector('.t-est-plus').onclick=e=>{
+        e.stopPropagation();
+        t.est=Math.min(20, t.est+1);
+        saveData(); renderTasks();
+      };
+      const editBtn=row.querySelector('.t-editbtn');
+      if(editBtn){
+        editBtn.onclick=e=>{
+          e.stopPropagation();
+          editingTask = (editingTask===t.id)?null:t.id;
+          renderTasks();
+        };
+      }
+    }
+
+    row.onclick=()=>{
+      S.activeTask = (S.activeTask===t.id)?null:t.id;
+      renderTasks();
+    };
+    row.querySelector('.t-del').onclick=e=>{
+      e.stopPropagation();
+      DATA.tasks=DATA.tasks.filter(x=>x.id!==t.id);
+      if(S.activeTask===t.id) S.activeTask=null;
+      if(editingTask===t.id) editingTask=null;
+      saveData(); renderTasks();
+    };
+    taskListMain.appendChild(row);
+  });
+  const cur=DATA.tasks.find(x=>x.id===S.activeTask);
+  if(cur){
+    const prog = cur.est ? ` · ${cur.sessions}/${cur.est}` : '';
+    $('currentTaskLabel').innerHTML = '<b></b>'+prog;
+    $('currentTaskLabel').querySelector('b').textContent=cur.title;
+  } else {
+    $('currentTaskLabel').textContent='';
+  }
+}
+
+/* ---------- profile & history ---------- */
+function logEntry(e){
+  e.ts=Date.now();
+  DATA.history.unshift(e);
+  if(DATA.history.length>40) DATA.history.length=40;
+}
+function logFocus(minutes, completed){
+  minutes=Math.round(minutes);
+  DATA.totals.minutes += minutes;
+  const t=DATA.tasks.find(x=>x.id===S.activeTask);
+  if(completed){
+    // a pomodoro only counts when the full focus timer elapses
+    DATA.totals.sessions++;
+    if(t){
+      t.sessions++; t.minutes+=minutes;
+      if(t.est && t.sessions>=t.est) t.done=true;   // auto cross-out at estimate
+    }
+    logEntry({type:'focus', min:minutes, task:t?t.title:null});
+  } else if(minutes>=1){
+    if(t) t.minutes+=minutes;
+    logEntry({type:'focus', min:minutes, task:t?t.title:null});
+  }
+  saveData(); renderTasks();
+}
+function displayName(){ return (DATA.displayName && DATA.displayName.trim()) || DATA.name || ''; }
+function renderProfile(){
+  resetArmed=false;
+  const b=$('resetStatsBtn'); if(b){ b.textContent='Reset'; b.classList.remove('armed'); }
+  const signed=!!DATA.name;
+  const nm=displayName();
+  const isEmoji = DATA.avatar && DATA.avatar.startsWith('emoji:');
+  const emojiChar = isEmoji ? DATA.avatar.slice(6) : null;
+  const profileBtnEl=$('profileBtn');
+  profileBtnEl.title = signed ? nm : T().signIn;
+  profileBtnEl.setAttribute('aria-label', signed ? 'Profile: '+nm : T().signIn);
+  if(signed){
+    if(isEmoji){
+      profileBtnEl.innerHTML = `<span style="font-size:18px;line-height:1;">${emojiChar}</span>`;
+    } else if(DATA.avatar){
+      profileBtnEl.innerHTML = `<img src="${DATA.avatar}" alt="${esc(nm)}" style="width:20px;height:20px;border-radius:50%;object-fit:cover;display:block;">`;
+    } else {
+      profileBtnEl.innerHTML = '👤';
+    }
+  } else {
+    profileBtnEl.innerHTML = '👤';
+  }
+  $('profileTitle').textContent = signed ? T().progressTitle(nm) : T().signIn;
+  $('signinBox').style.display = signed?'none':'block';
+  if(!signed) $('resetBox').style.display='none';
+  $('statsBox').style.display = signed?'block':'none';
+  if(signed){
+    $('displayNameInput').value = DATA.displayName || '';
+    const fallback=$('avatarFallback'), img=$('avatarImg');
+    if(isEmoji){
+      img.style.display='none';
+      fallback.style.display='block';
+      fallback.textContent=emojiChar;
+      fallback.style.fontSize='28px';
+    } else if(DATA.avatar){
+      img.src=DATA.avatar; img.style.display='block'; fallback.style.display='none';
+    } else {
+      img.style.display='none'; fallback.style.display='block';
+      fallback.textContent=(nm[0]||'?').toUpperCase();
+      fallback.style.fontSize='';
+    }
+    // highlight the active emoji in the picker
+    document.querySelectorAll('.emoji-opt').forEach(btn=>{
+      btn.classList.toggle('active', isEmoji && btn.dataset.emoji===emojiChar);
+    });
+    $('stSessions').textContent=DATA.totals.sessions;
+    $('stMinutes').textContent=DATA.totals.minutes;
+    $('stReps').textContent=DATA.totals.reps;
+    const h=$('histList'); h.innerHTML='';
+    if(!DATA.history.length) h.innerHTML='<p class="empty-note">Nothing logged yet — finish a focus round or a workout.</p>';
+    DATA.history.slice(0,8).forEach(e=>{
+      const d=new Date(e.ts);
+      const when=d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+      const row=document.createElement('div'); row.className='hist-item';
+      const what = e.type==='focus'
+        ? `📖 ${e.min} min focus${e.task?' · '+e.task:''}`
+        : `💪 ${e.ex} — ${e.reps} ${e.unit}`;
+      row.innerHTML=`<span class="what"></span><span class="when">${when}</span>`;
+      row.querySelector('.what').textContent=what;
+      h.appendChild(row);
+    });
+  }
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+$('signInBtn').onclick=signIn;
+$('signUpBtn').onclick=signUp;
+$('passInput').addEventListener('keydown',e=>{ if(e.key==='Enter') signIn(); });
+$('signOutBtn').onclick=async ()=>{
+  await store.set('pomofit:session','');
+  DATA=blankData();
+  S.activeTask=null;
+  renderProfile(); renderTasks();
+};
+
+let deleteArmed=false;
+$('deleteAccountBtn').onclick=async ()=>{
+  const b=$('deleteAccountBtn');
+  const t=T();
+  if(!deleteArmed){
+    deleteArmed=true; b.textContent=t.confirmReset; b.classList.add('armed');
+    setTimeout(()=>{ if(deleteArmed){ deleteArmed=false; b.textContent=t.deleteAccount; b.classList.remove('armed'); } }, 4000);
+    return;
+  }
+  deleteArmed=false; b.textContent=t.deleteAccount; b.classList.remove('armed');
+  if(DATA.name && ACCOUNTS[DATA.name]){
+    delete ACCOUNTS[DATA.name];
+    await store.set('pomofit:accounts', JSON.stringify(ACCOUNTS));
+  }
+  await store.set('pomofit:session','');
+  DATA=blankData();
+  S.activeTask=null;
+  renderProfile(); renderTasks();
+};
+
+/* ---------- profile personalisation: display name + avatar ---------- */
+$('displayNameInput').addEventListener('change', ()=>{
+  DATA.displayName = $('displayNameInput').value.trim().slice(0,24) || null;
+  renderProfile(); saveData();
+});
+$('displayNameInput').addEventListener('keydown', e=>{ if(e.key==='Enter') $('displayNameInput').blur(); });
+$('avatarBtn').onclick=()=> $('avatarInput').click();
+$('avatarInput').addEventListener('change', e=>{
+  const file = e.target.files && e.target.files[0];
+  e.target.value='';
+  if(!file) return;
+  if(!file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = ()=> openCropper(reader.result);
+  reader.readAsDataURL(file);
+});
+
+/* emoji avatar picker */
+document.querySelectorAll('.emoji-opt').forEach(btn=>{
+  btn.onclick=()=>{
+    DATA.avatar = 'emoji:'+btn.dataset.emoji;
+    renderProfile(); saveData();
+  };
+});
+
+/* ---------- photo cropper ---------- */
+const cropStage=$('cropStage'), cropImg=$('cropImg'), cropZoom=$('cropZoom');
+const CROP_SIZE=260, OUT_SIZE=200;
+let crop = { natW:0, natH:0, minScale:1, scale:1, x:0, y:0 };
+let cropDrag = null;
+
+function openCropper(src){
+  const img=new Image();
+  img.onload=()=>{
+    crop.natW=img.naturalWidth; crop.natH=img.naturalHeight;
+    crop.minScale = CROP_SIZE / Math.min(crop.natW, crop.natH);
+    crop.scale = crop.minScale;
+    cropZoom.value = 100;
+    cropImg.src = src;
+    cropImg.style.width = crop.natW+'px';
+    cropImg.style.height = crop.natH+'px';
+    // center the image in the circle
+    crop.x = (CROP_SIZE - crop.natW*crop.scale)/2;
+    crop.y = (CROP_SIZE - crop.natH*crop.scale)/2;
+    applyCropTransform();
+    document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));
+    $('cropSheet').classList.add('show'); sheetBg.classList.add('show');
+  };
+  img.src = src;
+}
+function clampCropPos(){
+  const w=crop.natW*crop.scale, h=crop.natH*crop.scale;
+  // keep the circle fully covered by the image at all times
+  crop.x = Math.min(0, Math.max(CROP_SIZE-w, crop.x));
+  crop.y = Math.min(0, Math.max(CROP_SIZE-h, crop.y));
+}
+function applyCropTransform(){
+  clampCropPos();
+  cropImg.style.transform = `translate(${crop.x}px,${crop.y}px) scale(${crop.scale})`;
+}
+cropZoom.addEventListener('input', ()=>{
+  const cx=CROP_SIZE/2, cy=CROP_SIZE/2;
+  // zoom around the centre of the circle, not the image origin
+  const imgCx=(cx-crop.x)/crop.scale, imgCy=(cy-crop.y)/crop.scale;
+  crop.scale = crop.minScale * (cropZoom.value/100);
+  crop.x = cx - imgCx*crop.scale;
+  crop.y = cy - imgCy*crop.scale;
+  applyCropTransform();
+});
+function cropPointerDown(x,y){
+  cropDrag = {startX:x, startY:y, origX:crop.x, origY:crop.y};
+  cropStage.classList.add('grabbing');
+}
+function cropPointerMove(x,y){
+  if(!cropDrag) return;
+  crop.x = cropDrag.origX + (x-cropDrag.startX);
+  crop.y = cropDrag.origY + (y-cropDrag.startY);
+  applyCropTransform();
+}
+function cropPointerUp(){ cropDrag=null; cropStage.classList.remove('grabbing'); }
+cropStage.addEventListener('pointerdown', e=>{ cropStage.setPointerCapture(e.pointerId); cropPointerDown(e.clientX,e.clientY); });
+cropStage.addEventListener('pointermove', e=> cropPointerMove(e.clientX,e.clientY));
+cropStage.addEventListener('pointerup', cropPointerUp);
+cropStage.addEventListener('pointercancel', cropPointerUp);
+// pinch to zoom on touch devices
+let pinchStartDist=null, pinchStartScale=1;
+cropStage.addEventListener('touchstart', e=>{
+  if(e.touches.length===2){
+    cropDrag=null;
+    pinchStartDist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+    pinchStartScale = crop.scale;
+  }
+}, {passive:true});
+cropStage.addEventListener('touchmove', e=>{
+  if(e.touches.length===2 && pinchStartDist){
+    const d = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+    const cx=CROP_SIZE/2, cy=CROP_SIZE/2;
+    const imgCx=(cx-crop.x)/crop.scale, imgCy=(cy-crop.y)/crop.scale;
+    crop.scale = clamp(pinchStartScale*(d/pinchStartDist), crop.minScale, crop.minScale*3);
+    crop.x = cx - imgCx*crop.scale;
+    crop.y = cy - imgCy*crop.scale;
+    cropZoom.value = Math.round((crop.scale/crop.minScale)*100);
+    applyCropTransform();
+  }
+}, {passive:true});
+$('cropCancelBtn').onclick=()=>{ pinchStartDist=null; openSheet('profileSheet'); };
+$('cropUseBtn').onclick=()=>{
+  pinchStartDist=null;
+  const c=document.createElement('canvas'); c.width=OUT_SIZE; c.height=OUT_SIZE;
+  const cx=c.getContext('2d');
+  const k=OUT_SIZE/CROP_SIZE;
+  cx.drawImage(cropImg, crop.x*k, crop.y*k, crop.natW*crop.scale*k, crop.natH*crop.scale*k);
+  DATA.avatar = c.toDataURL('image/jpeg',.88);
+  renderProfile(); saveData();
+  openSheet('profileSheet');
+};
+
+/* ---------- reset statistics ---------- */
+let resetArmed=false;
+$('resetStatsBtn').onclick=()=>{
+  const b=$('resetStatsBtn');
+  if(!resetArmed){
+    resetArmed=true; b.textContent='Confirm?'; b.classList.add('armed');
+    setTimeout(()=>{ if(resetArmed){ resetArmed=false; b.textContent='Reset'; b.classList.remove('armed'); } }, 4000);
+    return;
+  }
+  resetArmed=false; b.textContent='Reset'; b.classList.remove('armed');
+  DATA.totals = {sessions:0, minutes:0, reps:0};
+  DATA.history = [];
+  renderProfile(); saveData();
+};
+
+/* ---------- timer engine ---------- */
+let tickInt=null;
+function phaseDuration(){
+  if(S.phase==='focus') return S.focusMin*60000;
+  if(S.phase==='sweat') return S.breakMin*60000;
+  return S.longMin*60000;
+}
+function fmt(ms){
+  const s=Math.max(0,Math.ceil(ms/1000));
+  return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+}
+function syncStartBtn(){
+  document.body.classList.toggle('timer-running', !!S.running);
+}
+function start(){
+  if(S.running) return;
+  S.running=true;
+  S.endAt=Date.now()+S.remaining;
+  syncStartBtn();
+  delete $('skipBtn').dataset.workout;
+  
+  tickInt=setInterval(tick,200);
+  ac(); clickStart();
+  updateChatLockState();
+  broadcastTimer();
+  document.body.classList.add('timer-running');
+  const fmb=$('focusModeBtn'); if(fmb) fmb.style.display = S.phase==='focus' ? 'flex' : 'none';
+  if(S.phase==='focus') enterFocusMode();
+}
+function pause(){
+  if(!S.running) return;
+  S.running=false;
+  S.remaining=Math.max(0,S.endAt-Date.now());
+  syncStartBtn();
+  clearInterval(tickInt);
+  clickPause();
+  updateChatLockState();
+  broadcastTimer();
+  document.body.classList.remove('timer-running');
+  const fmb=$('focusModeBtn'); if(fmb) fmb.style.display='none';
+  // keep reset button visible while paused so user can reset
+  exitFocusMode();
+}
+function tick(){
+  const left=S.endAt-Date.now();
+  render(left);
+  if(left<=0 && (!mySession || isHost)) nextPhase(true);
+}
+function nextPhase(natural){
+  exitFocusMode();
+  document.body.classList.remove('timer-running');
+  { const fmb=$('focusModeBtn'); if(fmb) fmb.style.display='none'; }
+  if(S.phase==='focus'){
+    const left = S.running ? Math.max(0,S.endAt-Date.now()) : S.remaining;
+    logFocus(natural ? S.focusMin : (phaseDuration()-left)/60000, natural);
+  }
+  clearInterval(tickInt); S.running=false;
+  let didStart=false;
+  if(S.phase==='focus'){
+    if(natural){
+      bell(2); chimeFocusEnd();
+      notify('🍅 Focus complete!', 'Nice work — time for your sweat break.');
+      showMascot();
+      S.completed++;
+      if(S.completed>=S.longBreakEvery){
+        setPhase('rest'); S.completed=0;
+        if(S.autoBreak){ start(); didStart=true; } else syncStartBtn();
+      } else if(S.autoBreak){
+        setPhase('sweat');
+        start(); didStart=true;
+      } else {
+        // auto-break off: reset the timer display to the preset focus time
+        S.remaining=phaseDuration(); render(S.remaining);
+        S.endAt=Date.now()+S.remaining;
+        syncStartBtn();
+        
+        $('skipBtn').dataset.workout='1';
+      }
+    } else {
+      // manual skip — go to break but never auto-start it
+      S.completed++;
+      if(S.completed>=S.longBreakEvery){ setPhase('rest'); S.completed=0; }
+      else setPhase('sweat');
+      syncStartBtn();
+    }
+  } else {
+    if(natural){
+      bell(1); chimeBreakEnd();
+      notify('⏰ Break over', 'Back to the books — you\'ve got this.');
+    }
+    S.session++;
+    renderFooter();
+    setPhase('focus');
+    // auto-focus only when the break ran out naturally, not on a manual skip
+    if(natural && S.autoFocus){ start(); didStart=true; } else syncStartBtn();
+  }
+  if(!didStart) broadcastTimer(); // start() already broadcasts if it ran
+  updateChatLockState();
+}
+function setPhase(p){
+  S.phase=p;
+  S.remaining=phaseDuration();
+  S.endAt=Date.now()+S.remaining;
+  PROG=null; S.reps=0;
+  counterRow.style.visibility='hidden';
+  $('progStartBtn').style.display='none';
+  renderTraj();
+  document.querySelectorAll('#progList .prog-card').forEach(c=>c.classList.remove('active'));
+  document.body.dataset.mode = p;
+  const isBreak = p!=='focus';
+  workoutBlock.classList.toggle('show', isBreak);
+  timerBlock.style.display = isBreak ? 'none':'flex';
+  phaseLabel.textContent = p==='focus' ? '' : p==='sweat' ? T().sweatLabel : T().restLabel;
+  if(isBreak){
+    exName.textContent=T().pickProgramme;
+    exNote.textContent = p==='rest'
+      ? T().programmeNote
+      : T().programmeNote;
+  }
+  nextFact();
+  renderDots();
+  render(S.remaining);
+}
+function render(left){
+  const txt=fmt(left);
+  timerEl.textContent=txt;
+  breakClock.textContent = S.phase!=='focus' ? (txt+' '+T().leftInBreak) : '';
+  document.title = txt+' · '+(S.phase==='focus'?'Focus':'Break')+' — PomoFit';
+  if(S.phase!=='focus' && S.running) S.remaining=Math.max(0,left);
+}
+function renderFooter(){
+  const t=T();
+  $('footerSession').innerHTML = t.sessionFooter(
+    `<b id="sesNum">${S.session}</b>`,
+    `<b id="longEveryLabel">${S.longBreakEvery}</b>`
+  );
+}
+function renderDots(){
+  dotsEl.innerHTML='';
+  for(let i=0;i<4;i++){
+    const d=document.createElement('div'); d.className='dot';
+    if(i<S.completed) d.classList.add('done');
+    if(i===S.completed && S.phase==='focus') d.classList.add('now');
+    dotsEl.appendChild(d);
+  }
+}
+
+/* ---------- UI wiring ---------- */
+startBtn.onclick=()=> S.running?pause():start();
+$('skipBtn').onclick=()=>{
+  clickSkip();
+  const wasWorkoutReady = $('skipBtn').dataset.workout==='1';
+  delete $('skipBtn').dataset.workout;
+  nextPhase(false);
+  if(wasWorkoutReady && !S.running) start();
+};
+$('resetBtn').onclick=e=>{
+  e.stopPropagation();
+  clickSkip();
+  if(S.running){ pause(); }
+  S.remaining = phaseDuration();
+  S.endAt = Date.now() + S.remaining;
+  render(S.remaining);
+  syncStartBtn();
+  if(mySession) broadcastTimer();
+};
+$('backBtn').onclick=()=>{ clickSkip(); nextPhase(false); };
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space' && e.target.tagName!=='INPUT' && !document.querySelector('.sheet.show')){
+    e.preventDefault(); S.running?pause():start();
+  }
+});
+
+/* programme list */
+Object.keys(PROGRAMMES).forEach(k=>{
+  const prog=PROGRAMMES[k];
+  const card=document.createElement('button');
+  card.type='button'; card.className='prog-card'; card.dataset.key=k;
+  const n=prog.steps.length;
+  card.innerHTML=`<span class="prog-name"></span><span class="prog-meta"></span>`;
+  card.querySelector('.prog-name').textContent=prog.name;
+  card.querySelector('.prog-meta').textContent=n+' · '+prog.steps.map(s=>(EX[s]._tname||EX[s].name)).join(', ');
+  card.onclick=()=>{ clickSelect(); selectProgramme(k); };
+  progList.appendChild(card);
+});
+$('shuffleBtn').onclick=()=>{
+  const keys=Object.keys(EX).sort(()=>Math.random()-0.5).slice(0,3);
+  selectProgramme(null, keys);
+  if(typeof broadcastWorkout==='function') broadcastWorkout({action:'start', key:null, keys});
+};
+$('restBtn').onclick=()=>{
+  PROG=null; S.reps=0;
+  counterRow.style.visibility='hidden';
+  $('progStartBtn').style.display='none';
+  renderTraj();
+  document.querySelectorAll('#progList .prog-card').forEach(c=>c.classList.remove('active'));
+  exName.textContent=T().restingEasy;
+  exNote.textContent='';
+  if(typeof broadcastWorkout==='function') broadcastWorkout({action:'rest'});
+};
+
+/* ============================================================
+   STUDY TOGETHER — shared sessions via Firebase Realtime Database
+   ============================================================
+   To activate: fill in YOUR Firebase project config below.
+   Get it from: Firebase Console > Project settings > General > Your apps > SDK setup.
+   Also enable: Build > Authentication > Sign-in method > Anonymous,
+   and Build > Realtime Database > Create Database. */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBEPKyDDzbNneGLp-iF0TkQifz9x9r4xW4",
+  authDomain: "pomofit-dc5aa.firebaseapp.com",
+  databaseURL: "https://pomofit-dc5aa-default-rtdb.firebaseio.com",
+  projectId: "pomofit-dc5aa",
+  storageBucket: "pomofit-dc5aa.firebasestorage.app",
+  messagingSenderId: "560326463792",
+  appId: "1:560326463792:web:16043873dfc4a1d07738f5",
+};
+const FIREBASE_READY = !!FIREBASE_CONFIG.apiKey && !!FIREBASE_CONFIG.databaseURL;
+
+let fb = null;          // { app, auth, db, uid }
+let fbLoadPromise = null;
+let mySession = null;
+let pendingJoinCode = null;
+let sessionRefs = null;
+let sessionListeners = [];
+let renderedChatKeys = new Set();
+let isHost = false;
+let hostUid = null;
+let suppressLocalBroadcast = false;
+
+function loadScript(src){
+  return new Promise((resolve, reject)=>{
+    const s=document.createElement('script');
+    s.src=src; s.onload=resolve; s.onerror=()=>reject(new Error('Failed to load '+src));
+    document.head.appendChild(s);
+  });
+}
+async function ensureFirebase(){
+  if(fb) return fb;
+  if(fbLoadPromise) return fbLoadPromise;
+  fbLoadPromise = (async ()=>{
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js');
+    const app = firebase.initializeApp(FIREBASE_CONFIG);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    const cred = await auth.signInAnonymously();
+    fb = { app, auth, db, uid: cred.user.uid };
+    return fb;
+  })();
+  return fbLoadPromise;
+}
+
+function genSessionCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no ambiguous chars
+  let code='';
+  for(let i=0;i<6;i++) code+=chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+function togetherMsg(m){ $('togetherMsg').textContent=m; }
+function myNickname(){
+  const typed=$('nicknameInput').value.trim();
+  // use typed name, then display name — never DATA.name (login username, could be email)
+  return typed || DATA.displayName || 'Someone';
+}
+
+function showTogetherActive(){
+  $('togetherIntro').style.display='none';
+  $('togetherActive').style.display='block';
+  $('floatChat').classList.add('show');
+  $('floatMembers').classList.add('show');
+  $('togetherBtn').classList.add('active');
+}
+function showTogetherIntro(){
+  $('togetherIntro').style.display='block';
+  $('togetherActive').style.display='none';
+  togetherMsg('');
+  $('floatChat').classList.remove('show');
+  $('floatMembers').classList.remove('show');
+  $('togetherBtn').classList.remove('active');
+  setChatExpanded(false);
+}
+
+$('togetherBtn').onclick=()=>{
+  openSheet('togetherSheet');
+  if(!FIREBASE_READY){
+    togetherMsg('Shared sessions aren\'t set up on this site yet — check back soon!');
+    $('createSessionBtn').disabled=true;
+  } else if(displayName()){
+    $('nicknameInput').value = DATA.displayName || '';
+  }
+};
+
+$('createSessionBtn').onclick=async ()=>{
+  if(!FIREBASE_READY) return;
+  togetherMsg(T().creatingSession);
+  try{
+    await ensureFirebase();
+    const code=genSessionCode();
+    await joinOrCreateSession(code, true);
+  }catch(e){ togetherMsg('Couldn\'t create a session — check your connection and try again.'); }
+};
+async function attemptJoin(code){
+  if(!FIREBASE_READY || !code) return;
+  togetherMsg(T().joiningSession);
+  try{
+    await ensureFirebase();
+    const snap = await fb.db.ref('sessions/'+code+'/createdAt').get();
+    if(!snap.exists()) return togetherMsg(T().expiredLink);
+    await joinOrCreateSession(code, false);
+  }catch(e){ togetherMsg('Couldn\'t join — check your connection and try again.'); }
+}
+$('joinFromLinkBtn').onclick=()=> attemptJoin(pendingJoinCode);
+
+async function joinOrCreateSession(code, asHost){
+  // Always detach any existing listeners before creating new ones
+  detachSessionListeners();
+  await ensureFirebase();
+  mySession = code;
+  isHost = asHost;
+  const sessionRef = fb.db.ref('sessions/'+code);
+  const timerRef = sessionRef.child('timer');
+  const membersRef = sessionRef.child('members');
+  const chatRef = sessionRef.child('chat');
+  const workoutRef = sessionRef.child('workout');
+  const myMemberRef = membersRef.child(fb.uid);
+  sessionRefs = { sessionRef, timerRef, membersRef, chatRef, workoutRef, myMemberRef };
+
+  if(asHost){
+    await timerRef.set({
+      phase:S.phase, running:S.running, endAt:S.endAt, remaining:S.remaining,
+      completed:S.completed, session:S.session, longBreakEvery:S.longBreakEvery,
+      focusMin:S.focusMin, breakMin:S.breakMin, longMin:S.longMin,
+
+      updatedBy: fb.uid,
+    });
+    await sessionRef.child('createdAt').set(firebase.database.ServerValue.TIMESTAMP);
+    await sessionRef.child('hostUid').set(fb.uid);
+    hostUid = fb.uid;
+  }
+
+  await myMemberRef.set({
+    name: myNickname(),
+    avatar: DATA.avatar || null,
+    joinedAt: firebase.database.ServerValue.TIMESTAMP,
+    lastSeen: firebase.database.ServerValue.TIMESTAMP,
+  });
+  // set a much later expiry on disconnect so brief blips don't cause churn
+  myMemberRef.onDisconnect().update({ stale: true });
+  // presence heartbeat — re-writes member entry every 5s to survive transient disconnects
+  if(window._presenceHeartbeat) clearInterval(window._presenceHeartbeat);
+  window._presenceHeartbeat = setInterval(()=>{
+    if(mySession && myMemberRef){
+      myMemberRef.update({
+        name: myNickname(),
+        avatar: DATA.avatar || null,
+        lastSeen: firebase.database.ServerValue.TIMESTAMP,
+        stale: false,
+      }).catch(()=>{});
+    }
+  }, 5000);
+
+  renderedChatKeys = new Set();
+  attachSessionListeners();
+  // explicitly read all current members so guests see everyone immediately
+  sessionRefs.membersRef.get().then(snap=> renderMembers(snap.val()||{}));
+  $('sessionCodeDisplay').textContent = code;
+  $('floatChatCode').textContent = 'Session '+code;
+  showTogetherActive();
+  togetherMsg('');
+  updateChatLockState();
+  // one-time hint: only shown on very first co-work session ever
+  try{
+    if(!localStorage.getItem('pomofit:coworkHintSeen')){
+      localStorage.setItem('pomofit:coworkHintSeen','1');
+      setTimeout(()=> showToast('🔒 Chat locks while the timer is running — unlocks on pause or break!'), 1200);
+    }
+  }catch(e){}
+}
+
+function attachSessionListeners(){
+  const { timerRef, membersRef, chatRef, workoutRef } = sessionRefs;
+
+  const onTimer = timerRef.on('value', snap=>{
+    const v=snap.val();
+    if(!v) return;
+    applyRemoteTimer(v);
+  });
+  sessionListeners.push({ref:timerRef, event:'value', cb:onTimer});
+
+  const onWorkout = workoutRef.on('value', snap=>{
+    const v=snap.val();
+    if(!v) return;
+    applyRemoteWorkout(v);
+  });
+  sessionListeners.push({ref:workoutRef, event:'value', cb:onWorkout});
+
+  const hostRef = sessionRefs.sessionRef.child('hostUid');
+  const onHost = hostRef.on('value', snap=>{
+    hostUid = snap.val();
+    const notice=$('coworkSettingsNotice');
+    if(notice) notice.classList.toggle('show', !!mySession && isHost);
+    // re-render members with correct HOST badge now we know hostUid
+    if(sessionRefs && sessionRefs.membersRef){
+      sessionRefs.membersRef.get().then(s=> renderMembers(s.val()||{}));
+    }
+  });
+  sessionListeners.push({ref:hostRef, event:'value', cb:onHost});
+
+  const onMembers = membersRef.on('value', snap=>{
+    renderMembers(snap.val()||{});
+  });
+  sessionListeners.push({ref:membersRef, event:'value', cb:onMembers});
+
+  const joinedAt = Date.now() - 500;
+  const chatQuery = chatRef.limitToLast(50);
+  const onChat = chatQuery.on('child_added', snap=>{
+    const key = snap.key;
+    if(renderedChatKeys.has(key)) return;
+    renderedChatKeys.add(key);
+    const m = snap.val();
+    if(!m) return;
+    if(m.at && m.at < joinedAt) return;
+    renderChatMessage(m);
+  });
+  sessionListeners.push({ref:chatQuery, event:'child_added', cb:onChat});
+}
+function detachSessionListeners(){
+  sessionListeners.forEach(({ref, event, cb})=> ref.off(event, cb));
+  sessionListeners=[];
+  hostUid=null;
+  if(window._presenceHeartbeat){ clearInterval(window._presenceHeartbeat); window._presenceHeartbeat=null; }
+  const notice=$('coworkSettingsNotice'); if(notice) notice.classList.remove('show');
+}
+
+function applyRemoteTimer(v){
+  if(v.updatedBy===fb.uid && suppressLocalBroadcast) return;
+  suppressLocalBroadcast=true;
+
+  const prevPhase = S.phase;
+  const prevRunning = S.running;
+  const prevRemaining = S.remaining;
+  S.phase=v.phase; S.running=v.running; S.endAt=v.endAt; S.remaining=v.remaining;
+  S.completed=v.completed; S.session=v.session; S.longBreakEvery=v.longBreakEvery;
+  S.focusMin=v.focusMin; S.breakMin=v.breakMin; S.longMin=v.longMin;
+  // guests follow host's auto settings
+  if(typeof v.autoBreak==='boolean') S.autoBreak=v.autoBreak;
+  if(typeof v.autoFocus==='boolean') S.autoFocus=v.autoFocus;
+
+  // fire completion sounds/mascot/notify for guests only when timer was running before the phase changed
+  if(prevPhase !== S.phase && prevRunning){
+    if(prevPhase==='focus' && (S.phase==='sweat'||S.phase==='rest')){
+      // natural if the timer was near zero on our side before the update
+      const wasNatural = prevRemaining <= 3000;
+      bell(2); chimeFocusEnd();
+      notify('🍅 Focus complete!', 'Nice work — time for your sweat break.');
+      if(wasNatural){
+        showMascot();
+        // increment guest's active task on natural focus completion
+        logFocus(S.focusMin, true);
+      }
+    } else if((prevPhase==='sweat'||prevPhase==='rest') && S.phase==='focus'){
+      bell(1); chimeBreakEnd();
+      notify('⏰ Break over', 'Back to the books — you\'ve got this.');
+    }
+  } else if(prevPhase==='focus' && prevRunning && !S.running && prevRemaining <= 3000){
+    // host has auto-break off: focus round finished naturally, phase stayed 'focus'
+    // (checking prevRemaining was near zero distinguishes from a manual pause)
+    bell(2); chimeFocusEnd();
+    notify('🍅 Focus complete!', 'Nice work — time for your sweat break.');
+    showMascot();
+    // increment guest's active task on natural focus completion
+    logFocus(S.focusMin, true);
+    $('skipBtn').dataset.workout='1';
+  }
+
+  renderFooter();
+  setPhaseUIOnly(S.phase);
+  if(S.running){
+    clearInterval(tickInt); tickInt=setInterval(tick,200);
+    syncStartBtn();
+  } else {
+    clearInterval(tickInt);
+    syncStartBtn();
+  }
+  render(S.remaining);
+  // sync focus mode button and immersion for guests
+  if(S.running){
+    document.body.classList.add('timer-running');
+    const fmb=$('focusModeBtn'); if(fmb) fmb.style.display = S.phase==='focus' ? 'flex' : 'none';
+    // enter focus mode when running a focus session (host or guest, first sync included)
+    if(S.phase==='focus') enterFocusMode();
+  } else {
+    document.body.classList.remove('timer-running');
+    const fmb=$('focusModeBtn'); if(fmb) fmb.style.display='none';
+    exitFocusMode();
+  }
+  suppressLocalBroadcast=false;
+  updateChatLockState();
+}
+
+/* ---------- collaborative workouts: host's programme mirrors to guests ---------- */
+let suppressWorkoutBroadcast=false;
+function broadcastWorkout(payload){
+  if(!mySession || !sessionRefs || suppressWorkoutBroadcast) return;
+  sessionRefs.workoutRef.set({ ...payload, updatedBy: fb.uid, at: firebase.database.ServerValue.TIMESTAMP });
+}
+function applyRemoteWorkout(v){
+  if(!v || v.updatedBy===fb.uid) return;
+  suppressWorkoutBroadcast=true;
+  try{
+    if(v.action==='select'){
+      selectProgramme(v.key||null, v.keys||undefined);
+    } else if(v.action==='start'){
+      selectProgramme(v.key||null, v.keys||undefined);
+      $('progStartBtn').style.display='none';
+      beep(1100,.1,.05);
+      beginStep();
+    } else if(v.action==='rest'){
+      PROG=null; S.reps=0;
+      counterRow.style.visibility='hidden';
+      $('progStartBtn').style.display='none';
+      renderTraj();
+      document.querySelectorAll('#progList .prog-card').forEach(c=>c.classList.remove('active'));
+      exName.textContent=T().restingEasy;
+      exNote.textContent='';
+    }
+  } finally {
+    suppressWorkoutBroadcast=false;
+  }
+}
+// like setPhase() but skips resetting timer fields, since those come from the remote snapshot
+function setPhaseUIOnly(p){
+  document.body.dataset.mode = p;
+  const isBreak = p!=='focus';
+  workoutBlock.classList.toggle('show', isBreak);
+  timerBlock.style.display = isBreak ? 'none':'flex';
+  phaseLabel.textContent = p==='focus' ? '' : p==='sweat' ? 'Sweat Break' : 'Long Break';
+  renderDots();
+}
+function broadcastTimer(){
+  if(!mySession || !sessionRefs || suppressLocalBroadcast) return;
+  sessionRefs.timerRef.set({
+    phase:S.phase, running:S.running, endAt:S.endAt, remaining:S.remaining,
+    completed:S.completed, session:S.session, longBreakEvery:S.longBreakEvery,
+    focusMin:S.focusMin, breakMin:S.breakMin, longMin:S.longMin,
+    autoBreak:S.autoBreak, autoFocus:S.autoFocus,
+    updatedBy: fb.uid,
+  });
+}
+
+function renderMembers(members){
+  const wrap=$('togetherMembers');
+  const floatWrap=$('floatMembers');
+  const now = Date.now();
+  const list=Object.entries(members||{})
+    .map(([uid,m])=>({...m, uid}))
+    // filter out members that haven't been seen in over 60s (truly gone)
+    .filter(m => !m.lastSeen || (now - m.lastSeen) < 60000);
+  // if we're in a session but got an empty list, don't wipe the bubbles —
+  // this can happen transiently during phase transitions / listener refreshes
+  if(mySession && list.length===0 && floatWrap.children.length>0){
+    return;
+  }
+  wrap.innerHTML='';
+  floatWrap.innerHTML='';
+  // keep bubbles visible while in a session
+  if(mySession){ floatWrap.classList.add('show'); }
+  list.forEach(m=>{
+    const isEmoji = m.avatar && m.avatar.startsWith('emoji:');
+    const emojiChar = isEmoji ? m.avatar.slice(6) : null;
+    const isThisHost = hostUid && m.uid===hostUid;
+
+    // sheet member chip
+    const chip=document.createElement('div'); chip.className='member-chip';
+    if(isEmoji){
+      chip.innerHTML = `<span style="font-size:18px;line-height:1;">${emojiChar}</span><span></span>`;
+    } else if(m.avatar){
+      chip.innerHTML = `<img class="member-avatar" src="${m.avatar}" alt=""><span></span>`;
+    } else {
+      chip.innerHTML = '<span class="dot"></span><span></span>';
+    }
+    chip.querySelector('span:last-child').textContent = m.name || 'Someone';
+    if(isThisHost){
+      const badge=document.createElement('span'); badge.className='host-badge';
+      badge.textContent='HOST'; chip.appendChild(badge);
+    }
+    wrap.appendChild(chip);
+
+    // floating bubble
+    const bubble=document.createElement('div'); bubble.className='float-member';
+    bubble.title = (m.name || 'Someone') + (isThisHost ? ' (host)' : '');
+    if(isEmoji){
+      bubble.innerHTML = `<span style="font-size:22px;line-height:1;">${emojiChar}</span>`;
+    } else if(m.avatar){
+      bubble.innerHTML = `<img src="${m.avatar}" alt="">`;
+    } else {
+      const initial=document.createElement('span'); initial.className='initial';
+      initial.textContent = (m.name||'?').trim()[0]?.toUpperCase() || '?';
+      bubble.appendChild(initial);
+    }
+    if(fb && m.uid===fb.uid){
+      // current user's bubble — no extra indicator needed
+    }
+    floatWrap.appendChild(bubble);
+  });
+  $('togetherStatus').textContent = list.length<=1
+    ? T().justYou
+    : T().peopleInSession(list.length);
+  // update settings notice visibility
+  const notice=$('coworkSettingsNotice');
+  if(notice) notice.classList.toggle('show', !!mySession && isHost);
+}
+
+let chatExpanded=false;
+let unreadCount=0;
+function buildChatRow(m){
+  const row=document.createElement('div');
+  if(m.type==='react'){
+    row.className='chat-msg react';
+    row.innerHTML = `<span class="who"></span><span></span>`;
+    row.querySelector('.who').textContent=(m.name||'Someone')+':';
+    row.querySelector('span:last-child').textContent=m.emoji||'';
+  } else if(m.type==='system'){
+    row.className='chat-msg system';
+    row.textContent=m.text||'';
+  } else {
+    row.className='chat-msg';
+    row.innerHTML = `<span class="who"></span><span></span>`;
+    row.querySelector('.who').textContent=(m.name||'Someone')+':';
+    row.querySelector('span:last-child').textContent=m.text||'';
+  }
+  return row;
+}
+function renderChatMessage(m){
+  if(!m) return;
+  const floatLog=$('floatChatLog');
+  floatLog.appendChild(buildChatRow(m)); floatLog.scrollTop=floatLog.scrollHeight;
+
+  const fromOther = m.type!=='system' && m.uid && fb && m.uid!==fb.uid;
+  if(fromOther){
+    chimeChatMsg();
+    if(!chatExpanded){
+      unreadCount++;
+      const badge=$('floatChatBadge');
+      badge.textContent=unreadCount; badge.style.display='flex';
+    }
+  }
+}
+function sendChat(text){
+  if(!mySession || !sessionRefs || !text.trim()) return;
+  if(S.phase==='focus' && S.running) return; // no text during focus for anyone
+  sessionRefs.chatRef.push({ type:'text', name:myNickname(), text:text.trim().slice(0,200), uid:fb.uid, at:firebase.database.ServerValue.TIMESTAMP });
+}
+function sendReact(emoji){
+  if(!mySession || !sessionRefs) return;
+  sessionRefs.chatRef.push({ type:'react', name:myNickname(), emoji, uid:fb.uid, at:firebase.database.ServerValue.TIMESTAMP });
+}
+
+/* floating chat widget (front page) */
+$('floatChatSendBtn').onclick=()=>{ sendChat($('floatChatInput').value); $('floatChatInput').value=''; };
+$('floatChatInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ sendChat($('floatChatInput').value); $('floatChatInput').value=''; } });
+$('floatReacts').addEventListener('click', e=>{
+  const b=e.target.closest('button[data-emoji]');
+  if(b) sendReact(b.dataset.emoji);
+});
+function setChatExpanded(v){
+  chatExpanded=v;
+  $('floatChat').classList.toggle('expanded', v);
+  if(v){
+    unreadCount=0;
+    const badge=$('floatChatBadge');
+    badge.style.display='none'; badge.textContent='0';
+    const log=$('floatChatLog'); log.scrollTop=log.scrollHeight;
+  }
+}
+function updateChatLockState(){
+  const fc=$('floatChat');
+  if(!mySession){ fc.classList.remove('focus-locked','host','guest'); return; }
+  const locked = S.phase==='focus' && S.running;
+  fc.classList.toggle('focus-locked', locked);
+  fc.classList.toggle('host', isHost);
+  fc.classList.toggle('guest', !isHost);
+  $('floatChatIcon').textContent = locked ? '🔒' : '💬';
+  // close the panel for EVERYONE when locked (not just guests)
+  if(locked && chatExpanded) setChatExpanded(false);
+}
+$('floatChatToggleBtn').onclick=()=>{
+  if(S.phase==='focus' && S.running) return;
+  setChatExpanded(!chatExpanded);
+};
+$('floatChatCollapseBtn').onclick=()=> setChatExpanded(false);
+
+$('copyCodeBtn').onclick=async ()=>{
+  if(!mySession) return;
+  const url=location.origin+location.pathname+'?join='+mySession;
+  try{
+    await navigator.clipboard.writeText(url);
+    const b=$('copyCodeBtn'); const prev=b.textContent;
+    b.textContent='Copied!'; setTimeout(()=>{ b.textContent=prev; }, 1500);
+  }catch(e){ togetherMsg('Couldn\'t copy — session code is '+mySession); }
+};
+$('leaveSessionBtn').onclick=async ()=>{
+  if(sessionRefs){
+    try{ await sessionRefs.myMemberRef.remove(); }catch(e){}
+    detachSessionListeners();
+  }
+  mySession=null; sessionRefs=null; isHost=false;
+  $('floatChatLog').innerHTML='';
+  unreadCount=0; $('floatChatBadge').style.display='none';
+  showTogetherIntro();
+};
+// remove member entry when closing tab / navigating away
+window.addEventListener('pagehide', ()=>{
+  if(sessionRefs && sessionRefs.myMemberRef){
+    try{ sessionRefs.myMemberRef.remove(); }catch(e){}
+  }
+});
+
+// auto-join via ?join=CODE link — defined here, invoked at boot (see bottom of script)
+function checkJoinLink(){
+  try{
+    const params=new URLSearchParams(location.search);
+    const code=params.get('join');
+    if(code){
+      pendingJoinCode = code.toUpperCase();
+      openSheet('togetherSheet');
+      if(DATA.displayName) $('nicknameInput').value = DATA.displayName;
+      $('createSessionBtn').style.display='none';
+      $('joinFromLinkRow').style.display='flex';
+      togetherMsg(T().invitedNote);
+    }
+  }catch(e){ console.error('checkJoinLink failed:', e); }
+}
+
+/* ---------- language / i18n ---------- */
+const LANGS = {
+  en: {
+    settings:'Settings', focusLength:'Focus length', sweatBreak:'Sweat break',
+    longBreak:'Long break', longBreakAfter:'Long break after (rounds)',
+    hydrationInterval:'Hydration Reminder Interval', autoBreaks:'Auto breaks',
+    autoBreaksDesc:'Starts break timer automatically', autoFocus:'Auto focus',
+    autoFocusDesc:'Restarts focus after each break', language:'Language',
+    tasks:'Tasks', addTask:'+ Add Task', startBtn:'START', pauseBtn:'PAUSE',
+    resumeBtn:'RESUME', skipBtn:'Workout →', support:'Support',
+    cowork:'Co-work', signIn:'Sign in', done:'DONE',
+    studyTogether:'Study Together', focusLabel:'', sweatLabel:'Sweat Break', restLabel:'Long Break',
+    shareNote:'Share a focus session with a friend — your timers stay in sync, no account needed.',
+    joinThisSession:'JOIN THIS SESSION', copyInviteLink:'Copy invite link',
+    leaveSession:'Leave session', sessionChat:'Session chat',
+    saySomething:'Say something…', justYou:'Just you so far — share the code to bring someone in.',
+    peopleInSession:(n)=>`${n} people in this session.`,
+    invitedNote:'You\'ve been invited to a focus session.',
+    nicknamePlaceholder:'Your name in the session',
+    startSession:'START', joinCodePlaceholder:'Have a code? Enter it here',
+    joinSession:'JOIN SESSION',
+    introBubble:'Pomodoro focus timer with workout breaks — stay on task, then get moving when it\'s time to rest.',
+    timeToFocus:'Time to focus!', dir:'ltr',
+    taskPlaceholder:'What are you working on?', estLabel:'Estimated pomodoros',
+    saveTask:'SAVE', cancelTask:'Cancel',
+    signOut:'Sign out', deleteAccount:'Delete account', resetStats:'Reset statistics', resetStatsNote:'Clears your rounds, minutes, reps and history', resetBtn:'Reset', confirmReset:'Confirm?', progressTitle:(n)=>`${n}'s progress`,
+    usernamePlaceholder:'Username', passwordPlaceholder:'Password', securityNote:'Creating an account? Set a security question in case you forget your password:', secAnswerPlaceholder:'Your answer', forgotPassword:'Forgot password?', storageNote:'Accounts live in this browser — sign back in any time on this device.',
+    secQ:{pet:"What was the name of your first pet?",city:"What city were you born in?",school:"What was your first school?",word:"What's a word only you would remember?"},
+    resetIntro:'Answer your security question to set a new password.', resetUserPlaceholder:'Username', resetAnswerPlaceholder:'Your answer', saveNewPassword:'SAVE NEW PASSWORD', continueBtn:'CONTINUE',
+    errUsernameShort:'Username needs at least 2 characters.', errPasswordShort:'Password needs at least 4 characters.', errUsernameTaken:'That username is taken — try signing in instead.', errNoSecAnswer:'Please add a security question answer so you can recover your account later.',
+    errNoAccount:'No account with that username — create one.', errWrongPassword:'Wrong password — try again.',
+    errNoAccountReset:'No account with that username.', errNoSecQuestion:"This account doesn't have a security question set up — sorry, recovery isn't available.", errBadAnswer:"That answer doesn't match — try again.",
+    passwordUpdated:'Password updated — sign in with your new password.',
+    creatingSession:'Creating session…', joiningSession:'Joining…', expiredLink:'That invite link looks like it has expired or is invalid.', cantJoin:"Couldn't join — check the code and your connection.",
+    workoutBtn:'Workout →', cropCancel:'Cancel', cropUse:'USE PHOTO',
+    timeToFocus:'Time to focus!', backToStudy:'← Back to study',
+    pickProgramme:'Pick a programme', programmeNote:'Each programme is sized to fill your whole break.',
+    startProgramme:'START PROGRAMME', surpriseMix:'🎲 Surprise mix', justRest:'Just rest',
+    restingEasy:'Resting easy', programmeDone:'Programme complete! 💪',
+    programmeDoneNote:'Shake it out and breathe — focus is up next.',
+    sizednote:' moves · sized to your break', restNote:'Take it easy — breathe and reset.',
+    sessionFooter:(s,r)=>`Session ${s} · long break after ${r} rounds`,
+    leftInBreak:'left in break', privacyPolicy:'Privacy Policy',
+    reps:'reps', sec:'sec', totalReps:'Total reps',
+    ex:{jacks:'Jumping Jacks',squats:'Squats',pushups:'Push-ups',knees:'High Knees',lunges:'Lunges',plank:'Plank'},
+    prog:{cardio:'⚡ Cardio Spark',strength:'🏋 Strength Circuit',core:'🧘 Core & Hold',full:'🔥 Full Body'},
+  },
+  tr: {
+    settings:'Ayarlar', focusLength:'Odak süresi', sweatBreak:'Ter molası',
+    longBreak:'Uzun mola', longBreakAfter:'Uzun mola sonrası (tur)',
+    hydrationInterval:'Hatırlatma aralığı', autoBreaks:'Otomatik mola',
+    autoBreaksDesc:'Molayı otomatik başlatır', autoFocus:'Otomatik odak',
+    autoFocusDesc:'Moladan sonra odağı yeniden başlatır', language:'Dil',
+    tasks:'Görevler', addTask:'+ Görev Ekle', startBtn:'BAŞLAT', pauseBtn:'DURAKLAT',
+    resumeBtn:'DEVAM', skipBtn:'Egzersiz →', support:'Destek',
+    cowork:'Birlikte', signIn:'Giriş yap', done:'TAMAM',
+    studyTogether:'Birlikte Çalış', focusLabel:'', sweatLabel:'Ter Molası', restLabel:'Uzun Mola',
+    shareNote:'Bir arkadaşınla odak seansı paylaş — zamanlayıcılar senkronize kalır, hesap gerekmez.',
+    joinThisSession:'BU SEANSA KATIL', copyInviteLink:'Davet bağlantısını kopyala',
+    leaveSession:'Seansı bırak', sessionChat:'Seans sohbeti',
+    saySomething:'Bir şey söyle…', justYou:'Şimdilik sadece sen varsın — kodu paylaşarak birini davet et.',
+    peopleInSession:(n)=>`${n} kişi bu seansta.`,
+    invitedNote:'Bir odak seansına davet edildiniz.',
+    nicknamePlaceholder:'Seanstaki adın',
+    startSession:'BAŞLAT', joinCodePlaceholder:'Kodu var mı? Buraya gir',
+    joinSession:'SEANSA KATIL',
+    introBubble:'Egzersiz molaları olan bir Pomodoro zamanlayıcısı — odaklan, mola zamanı gel.',
+    timeToFocus:'Odaklanma zamanı!', dir:'ltr',
+    taskPlaceholder:'Ne üzerinde çalışıyorsun?', estLabel:'Tahmini pomodoro 🍅',
+    saveTask:'KAYDET', cancelTask:'İptal',
+    signOut:'Çıkış yap', deleteAccount:'Hesabı sil', resetStats:'İstatistikleri sıfırla', resetStatsNote:'Turlar, dakikalar, tekrarlar ve geçmişi temizler', resetBtn:'Sıfırla', confirmReset:'Emin misin?', progressTitle:(n)=>`${n} ilerleme`,
+    usernamePlaceholder:'Kullanıcı adı', passwordPlaceholder:'Şifre', securityNote:'Hesap oluşturuyor musun? Şifreni unutursan kurtarmak için bir güvenlik sorusu belirle:', secAnswerPlaceholder:'Cevabın', forgotPassword:'Şifremi unuttum', storageNote:'Hesaplar bu tarayıcıda saklanır — istediğin zaman geri oturum aç.',
+    secQ:{pet:'İlk evcil hayvanının adı neydi?',city:'Hangi şehirde doğdun?',school:'İlk okulun hangisiydi?',word:'Sadece senin bileceğin bir kelime nedir?'},
+    resetIntro:'Yeni bir şifre belirlemek için güvenlik sorusunu yanıtla.', resetUserPlaceholder:'Kullanıcı adı', resetAnswerPlaceholder:'Cevabın', saveNewPassword:'YENİ ŞİFREYİ KAYDET', continueBtn:'DEVAM',
+    errUsernameShort:'Kullanıcı adı en az 2 karakter olmalıdır.', errPasswordShort:'Şifre en az 4 karakter olmalıdır.', errUsernameTaken:'Bu kullanıcı adı alınmış — oturum açmayı dene.', errNoSecAnswer:'Hesabını kurtarabilmek için güvenlik sorusu cevabı ekle.',
+    errNoAccount:'Bu kullanıcı adına sahip hesap yok — bir tane oluştur.', errWrongPassword:'Yanlış şifre — tekrar dene.',
+    errNoAccountReset:'Bu kullanıcı adına sahip hesap yok.', errNoSecQuestion:'Bu hesapta güvenlik sorusu yok — kurtarma mevcut değil.', errBadAnswer:'Cevap eşleşmiyor — tekrar dene.',
+    passwordUpdated:'Şifre güncellendi — yeni şifrenle giriş yap.',
+    creatingSession:'Seans oluşturuluyor…', joiningSession:'Katılınıyor…', expiredLink:'Davet bağlantısının süresi dolmuş veya geçersiz görünüyor.', cantJoin:'Katılınamadı — kodu ve bağlantını kontrol et.',
+    workoutBtn:'Egzersiz →', cropCancel:'İptal', cropUse:'FOTOĞRAFI KULLAN',
+    timeToFocus:'Odaklanma zamanı!', backToStudy:'← Çalışmaya dön',
+    pickProgramme:'Bir program seç', programmeNote:'Her program molana göre ayarlanmıştır.',
+    startProgramme:'PROGRAMI BAŞLAT', surpriseMix:'🎲 Sürpriz karışım', justRest:'Sadece dinlen',
+    restingEasy:'Dinleniyorsun', programmeDone:'Program tamamlandı! 💪',
+    programmeDoneNote:'Nefes al ve sallan — odak sırası sende.',
+    sizednote:' hareket · molana göre', restNote:'Dinlen — nefes al ve hazırlan.',
+    sessionFooter:(s,r)=>`Oturum ${s} · ${r} turdan sonra uzun mola`,
+    leftInBreak:'molada kalan', privacyPolicy:'Gizlilik Politikası',
+    reps:'tekrar', sec:'sn', totalReps:'Toplam tekrar',
+    ex:{jacks:'Jumping Jacks',squats:'Squat',pushups:'Şınav',knees:'Diz Kaldırma',lunges:'Öne Adım',plank:'Plank'},
+    prog:{cardio:'⚡ Kardiyo Atışı',strength:'🏋 Güç Devresi',core:'🧘 Core & Tutuş',full:'🔥 Tam Vücut'},
+  },
+  de: {
+    settings:'Einstellungen', focusLength:'Fokus-Dauer', sweatBreak:'Sport-Pause',
+    longBreak:'Lange Pause', longBreakAfter:'Lange Pause nach (Runden)',
+    hydrationInterval:'Trink-Erinnerung Intervall', autoBreaks:'Auto Pause',
+    autoBreaksDesc:'Startet die Pause automatisch', autoFocus:'Auto Fokus',
+    autoFocusDesc:'Startet den Fokus nach der Pause', language:'Sprache',
+    tasks:'Aufgaben', addTask:'+ Aufgabe', startBtn:'START', pauseBtn:'PAUSE',
+    resumeBtn:'WEITER', skipBtn:'Training →', support:'Unterstützen',
+    cowork:'Zusammen', signIn:'Anmelden', done:'FERTIG',
+    studyTogether:'Zusammen Lernen', focusLabel:'', sweatLabel:'Sport-Pause', restLabel:'Lange Pause',
+    shareNote:'Teile eine Fokus-Sitzung mit einem Freund — eure Timer bleiben synchron, kein Konto nötig.',
+    joinThisSession:'SITZUNG BEITRETEN', copyInviteLink:'Einladungslink kopieren',
+    leaveSession:'Sitzung verlassen', sessionChat:'Sitzungs-Chat',
+    saySomething:'Etwas sagen…', justYou:'Bisher nur du — teile den Code, um jemanden einzuladen.',
+    peopleInSession:(n)=>`${n} Personen in dieser Sitzung.`,
+    invitedNote:'Du wurdest zu einer Fokus-Sitzung eingeladen.',
+    nicknamePlaceholder:'Dein Name in der Sitzung',
+    startSession:'START', joinCodePlaceholder:'Code vorhanden? Hier eingeben',
+    joinSession:'SITZUNG BEITRETEN',
+    introBubble:'Pomodoro-Timer mit Sport-Pausen — bleib konzentriert, dann beweg dich.',
+    timeToFocus:'Zeit zum Fokussieren!', dir:'ltr',
+    taskPlaceholder:'Woran arbeitest du?', estLabel:'Geschätzte Pomodoros 🍅',
+    saveTask:'SPEICHERN', cancelTask:'Abbrechen',
+    signOut:'Abmelden', deleteAccount:'Konto löschen', resetStats:'Statistiken zurücksetzen', resetStatsNote:'Löscht Runden, Minuten, Wiederholungen und Verlauf', resetBtn:'Zurücksetzen', confirmReset:'Bestätigen?', progressTitle:(n)=>`${n}s Fortschritt`,
+    usernamePlaceholder:'Benutzername', passwordPlaceholder:'Passwort', securityNote:'Konto erstellen? Lege eine Sicherheitsfrage fest, falls du dein Passwort vergisst:', secAnswerPlaceholder:'Deine Antwort', forgotPassword:'Passwort vergessen', storageNote:'Konten werden in diesem Browser gespeichert — melde dich jederzeit wieder an.',
+    secQ:{pet:'Wie hieß dein erstes Haustier?',city:'In welcher Stadt wurdest du geboren?',school:'Wie hieß deine erste Schule?',word:'Ein Wort, das nur du kennen würdest?'},
+    resetIntro:'Beantworte deine Sicherheitsfrage, um ein neues Passwort zu setzen.', resetUserPlaceholder:'Benutzername', resetAnswerPlaceholder:'Deine Antwort', saveNewPassword:'NEUES PASSWORT SPEICHERN', continueBtn:'WEITER',
+    errUsernameShort:'Benutzername muss mindestens 2 Zeichen lang sein.', errPasswordShort:'Passwort muss mindestens 4 Zeichen lang sein.', errUsernameTaken:'Dieser Benutzername ist vergeben — versuche dich anzumelden.', errNoSecAnswer:'Bitte füge eine Sicherheitsantwort hinzu, damit du dein Konto wiederherstellen kannst.',
+    errNoAccount:'Kein Konto mit diesem Benutzernamen — erstelle eines.', errWrongPassword:'Falsches Passwort — versuche es erneut.',
+    errNoAccountReset:'Kein Konto mit diesem Benutzernamen.', errNoSecQuestion:'Dieses Konto hat keine Sicherheitsfrage — Wiederherstellung nicht möglich.', errBadAnswer:'Die Antwort stimmt nicht — versuche es erneut.',
+    passwordUpdated:'Passwort aktualisiert — melde dich mit deinem neuen Passwort an.',
+    creatingSession:'Sitzung wird erstellt…', joiningSession:'Beitreten…', expiredLink:'Dieser Einladungslink ist abgelaufen oder ungültig.', cantJoin:'Beitreten nicht möglich — überprüfe den Code und deine Verbindung.',
+    workoutBtn:'Training →', cropCancel:'Abbrechen', cropUse:'FOTO VERWENDEN',
+    timeToFocus:'Zeit zum Fokussieren!', backToStudy:'← Zurück zum Lernen',
+    pickProgramme:'Wähle ein Programm', programmeNote:'Jedes Programm ist auf deine Pause abgestimmt.',
+    startProgramme:'PROGRAMM STARTEN', surpriseMix:'🎲 Überraschungs-Mix', justRest:'Einfach ausruhen',
+    restingEasy:'Du ruhst dich aus', programmeDone:'Programm abgeschlossen! 💪',
+    programmeDoneNote:'Ausschütteln und durchatmen — Fokus kommt als nächstes.',
+    sizednote:' Übungen · auf Pause abgestimmt', restNote:'Ausruhen — atme durch.',
+    sessionFooter:(s,r)=>`Sitzung ${s} · lange Pause nach ${r} Runden`,
+    leftInBreak:'verbleibend in Pause', privacyPolicy:'Datenschutz',
+    reps:'Wdh.', sec:'Sek.', totalReps:'Gesamte Wdh.',
+    ex:{jacks:'Hampelmann',squats:'Kniebeugen',pushups:'Liegestütze',knees:'Kniehebelauf',lunges:'Ausfallschritte',plank:'Unterarmstütz'},
+    prog:{cardio:'⚡ Kardio-Funke',strength:'🏋 Kraftzirkel',core:'🧘 Core & Halten',full:'🔥 Ganzkörper'},
+  },
+  ar: {
+    settings:'الإعدادات', focusLength:'مدة التركيز', sweatBreak:'استراحة رياضية',
+    longBreak:'استراحة طويلة', longBreakAfter:'استراحة طويلة بعد (جولات)',
+    hydrationInterval:'فترة تذكير الماء', autoBreaks:'بدء تلقائي للاستراحة',
+    autoBreaksDesc:'يبدأ الاستراحة تلقائياً', autoFocus:'بدء تلقائي للتركيز',
+    autoFocusDesc:'يعيد التركيز بعد الاستراحة', language:'اللغة',
+    tasks:'المهام', addTask:'+ إضافة مهمة', startBtn:'ابدأ', pauseBtn:'إيقاف',
+    resumeBtn:'استمر', skipBtn:'تمرين →', support:'دعم',
+    cowork:'معاً', signIn:'تسجيل الدخول', done:'تم',
+    studyTogether:'الدراسة معاً', focusLabel:'', sweatLabel:'استراحة رياضية', restLabel:'استراحة طويلة',
+    shareNote:'شارك جلسة تركيز مع صديق — تظل المؤقتات متزامنة، لا حاجة لحساب.',
+    joinThisSession:'انضم إلى الجلسة', copyInviteLink:'نسخ رابط الدعوة',
+    leaveSession:'مغادرة الجلسة', sessionChat:'دردشة الجلسة',
+    saySomething:'قل شيئاً…', justYou:'أنت فقط حتى الآن — شارك الرمز لدعوة شخص ما.',
+    peopleInSession:(n)=>`${n} أشخاص في هذه الجلسة.`,
+    invitedNote:'لقد تمت دعوتك إلى جلسة تركيز.',
+    nicknamePlaceholder:'اسمك في الجلسة',
+    startSession:'ابدأ', joinCodePlaceholder:'لديك رمز؟ أدخله هنا',
+    joinSession:'انضم للجلسة',
+    introBubble:'مؤقت بومودورو مع استراحات رياضية — ركز، ثم تحرك وقت الاستراحة.',
+    timeToFocus:'وقت التركيز!', dir:'rtl',
+    taskPlaceholder:'ماذا تعمل الآن؟', estLabel:'بومودورو متوقعة 🍅',
+    saveTask:'حفظ', cancelTask:'إلغاء',
+    signOut:'تسجيل الخروج', deleteAccount:'حذف الحساب', resetStats:'إعادة تعيين الإحصائيات', resetStatsNote:'يمسح الجولات والدقائق والتكرارات والسجل', resetBtn:'إعادة تعيين', confirmReset:'تأكيد؟', progressTitle:(n)=>`تقدم ${n}`,
+    usernamePlaceholder:'اسم المستخدم', passwordPlaceholder:'كلمة المرور', securityNote:'هل تنشئ حساباً؟ عيّن سؤال أمان لاستعادة حسابك:', secAnswerPlaceholder:'إجابتك', forgotPassword:'نسيت كلمة المرور', storageNote:'الحسابات مخزنة في هذا المتصفح — سجّل دخولك في أي وقت.',
+    secQ:{pet:'ما اسم حيوانك الأليف الأول؟',city:'في أي مدينة وُلدت؟',school:'ما اسم أول مدرسة دخلتها؟',word:'كلمة لا يعرفها إلا أنت؟'},
+    resetIntro:'أجب على سؤال الأمان لتعيين كلمة مرور جديدة.', resetUserPlaceholder:'اسم المستخدم', resetAnswerPlaceholder:'إجابتك', saveNewPassword:'حفظ كلمة المرور الجديدة', continueBtn:'متابعة',
+    errUsernameShort:'اسم المستخدم يحتاج إلى حرفين على الأقل.', errPasswordShort:'كلمة المرور تحتاج إلى 4 أحرف على الأقل.', errUsernameTaken:'اسم المستخدم مأخوذ — حاول تسجيل الدخول.', errNoSecAnswer:'يرجى إضافة إجابة سؤال الأمان لتتمكن من استعادة حسابك.',
+    errNoAccount:'لا يوجد حساب بهذا الاسم — أنشئ حساباً.', errWrongPassword:'كلمة المرور خاطئة — حاول مجدداً.',
+    errNoAccountReset:'لا يوجد حساب بهذا الاسم.', errNoSecQuestion:'هذا الحساب لا يحتوي على سؤال أمان — الاستعادة غير متاحة.', errBadAnswer:'الإجابة غير مطابقة — حاول مجدداً.',
+    passwordUpdated:'تم تحديث كلمة المرور — سجّل دخولك بكلمة مرورك الجديدة.',
+    creatingSession:'جارٍ إنشاء الجلسة…', joiningSession:'جارٍ الانضمام…', expiredLink:'يبدو أن رابط الدعوة منتهي أو غير صالح.', cantJoin:'تعذّر الانضمام — تحقق من الرمز والاتصال.',
+    workoutBtn:'تمرين →', cropCancel:'إلغاء', cropUse:'استخدم الصورة',
+    timeToFocus:'وقت التركيز!', backToStudy:'← العودة للدراسة',
+    pickProgramme:'اختر برنامجاً', programmeNote:'كل برنامج مُصمَّم ليناسب فترة استراحتك.',
+    startProgramme:'ابدأ البرنامج', surpriseMix:'🎲 مزيج مفاجئ', justRest:'فقط استرح',
+    restingEasy:'أنت مسترخٍ', programmeDone:'اكتمل البرنامج! 💪',
+    programmeDoneNote:'تنفس وارتاح — التركيز قادم.',
+    sizednote:' حركات · لاستراحتك', restNote:'استرح — خذ نفساً وتجهّز.',
+    sessionFooter:(s,r)=>`الجلسة ${s} · استراحة طويلة بعد ${r} جولات`,
+    leftInBreak:'متبقٍ في الاستراحة', privacyPolicy:'سياسة الخصوصية',
+    reps:'تكرار', sec:'ثا', totalReps:'إجمالي التكرارات',
+    ex:{jacks:'قفز المروحة',squats:'القرفصاء',pushups:'تمرين الضغط',knees:'رفع الركبتين',lunges:'الاندفاعة',plank:'البلانك'},
+    prog:{cardio:'⚡ شرارة كارديو',strength:'🏋 دائرة القوة',core:'🧘 الجوهر والثبات',full:'🔥 الجسم كاملاً'},
+  },
+  zh: {
+    settings:'设置', focusLength:'专注时长', sweatBreak:'运动休息',
+    longBreak:'长休息', longBreakAfter:'长休息间隔（轮）',
+    hydrationInterval:'补水提醒间隔', autoBreaks:'自动休息',
+    autoBreaksDesc:'自动开始休息计时', autoFocus:'自动专注',
+    autoFocusDesc:'休息后自动重新专注', language:'语言',
+    tasks:'任务', addTask:'+ 添加任务', startBtn:'开始', pauseBtn:'暂停',
+    resumeBtn:'继续', skipBtn:'训练 →', support:'支持',
+    cowork:'协作', signIn:'登录', done:'完成',
+    studyTogether:'一起学习', focusLabel:'', sweatLabel:'运动休息', restLabel:'长休息',
+    introBubble:'带运动休息的番茄钟 — 专注学习，休息时动起来。',
+    timeToFocus:'专注时间到！', backToStudy:'← 返回学习',
+    pickProgramme:'选择训练方案', programmeNote:'每个方案都适配你的休息时长。',
+    startProgramme:'开始训练', surpriseMix:'🎲 随机组合', justRest:'只是休息',
+    restingEasy:'休息中', programmeDone:'训练完成！💪',
+    programmeDoneNote:'活动一下，深呼吸 — 接下来是专注时间。',
+    sizednote:' 个动作 · 适配休息时长', restNote:'休息一下 — 深呼吸，准备好。',
+    sessionFooter:(s,r)=>`第 ${s} 轮 · 每 ${r} 轮后长休息`,
+    leftInBreak:'休息剩余', privacyPolicy:'隐私政策',
+    reps:'次', sec:'秒', totalReps:'总次数',
+    ex:{jacks:'开合跳',squats:'深蹲',pushups:'俯卧撑',knees:'高抬腿',lunges:'弓步蹲',plank:'平板支撑'},
+    prog:{cardio:'⚡ 有氧燃脂',strength:'🏋 力量训练',core:'🧘 核心保持',full:'🔥 全身训练'},
+    shareNote:'与朋友共享专注时段 — 计时器保持同步，无需账号。',
+    joinThisSession:'加入此次专注', copyInviteLink:'复制邀请链接',
+    leaveSession:'离开专注', sessionChat:'专注聊天',
+    saySomething:'说点什么…', justYou:'目前只有你 — 分享邀请码邀请他人。',
+    peopleInSession:(n)=>`${n} 人正在此次专注中。`,
+    invitedNote:'您已被邀请加入专注时段。',
+    nicknamePlaceholder:'你在此次专注中的名字',
+    startSession:'开始', joinCodePlaceholder:'有邀请码？在此输入',
+    joinSession:'加入专注',
+    taskPlaceholder:'你在做什么？', estLabel:'预计番茄数 🍅',
+    saveTask:'保存', cancelTask:'取消',
+    signOut:'退出登录', deleteAccount:'删除账户', resetStats:'重置统计', resetStatsNote:'清除轮次、分钟、次数和历史记录', resetBtn:'重置', confirmReset:'确认？', progressTitle:(n)=>`${n} 的进度`,
+    usernamePlaceholder:'用户名', passwordPlaceholder:'密码', securityNote:'创建账户？设置一个安全问题以防忘记密码：', secAnswerPlaceholder:'你的答案', forgotPassword:'忘记密码', storageNote:'账户保存在此浏览器中 — 随时可以重新登录。',
+    secQ:{pet:'你的第一只宠物叫什么名字？',city:'你出生在哪个城市？',school:'你的第一所学校叫什么？',word:'只有你知道的一个词是什么？'},
+    resetIntro:'回答安全问题以设置新密码。', resetUserPlaceholder:'用户名', resetAnswerPlaceholder:'你的答案', saveNewPassword:'保存新密码', continueBtn:'继续',
+    errUsernameShort:'用户名至少需要2个字符。', errPasswordShort:'密码至少需要4个字符。', errUsernameTaken:'该用户名已被占用 — 请尝试登录。', errNoSecAnswer:'请添加安全问题答案，以便日后找回账户。',
+    errNoAccount:'未找到该用户名的账户 — 请创建一个。', errWrongPassword:'密码错误 — 请重试。',
+    errNoAccountReset:'未找到该用户名的账户。', errNoSecQuestion:'该账户未设置安全问题 — 无法恢复。', errBadAnswer:'答案不匹配 — 请重试。',
+    passwordUpdated:'密码已更新 — 请使用新密码登录。',
+    creatingSession:'正在创建专注…', joiningSession:'正在加入…', expiredLink:'该邀请链接似乎已过期或无效。', cantJoin:'无法加入 — 请检查邀请码和网络连接。',
+    workoutBtn:'训练 →', cropCancel:'取消', cropUse:'使用照片',
+    dir:'ltr',
+  },
+};
+let currentLang = 'en';
+const T = ()=> LANGS[currentLang] || LANGS.en;
+
+function applyLang(lang){
+  if(!LANGS[lang]) lang='en';
+  currentLang = lang;
+  const t = LANGS[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = t.dir;
+  // settings labels
+  const setLabs = {
+    'lab-language': t.language,
+  };
+  Object.entries(setLabs).forEach(([id,txt])=>{ const el=$(id); if(el) el.textContent=txt; });
+  // stepper row labels — find by text content within set-row
+  document.querySelectorAll('.set-row .lab').forEach(el=>{
+    const txt = el.textContent.trim();
+    if(txt==='Focus length'||txt===LANGS.tr.focusLength||txt===LANGS.de.focusLength||txt===LANGS.ar.focusLength) el.textContent=t.focusLength;
+    else if(txt==='Sweat break'||txt===LANGS.tr.sweatBreak||txt===LANGS.de.sweatBreak||txt===LANGS.ar.sweatBreak) el.textContent=t.sweatBreak;
+    else if(txt==='Long break'||txt===LANGS.tr.longBreak||txt===LANGS.de.longBreak||txt===LANGS.ar.longBreak) el.textContent=t.longBreak;
+    else if(/Long break after|Uzun mola|Lange Pause nach|استراحة طويلة بعد/.test(txt)) el.textContent=t.longBreakAfter;
+    else if(/Hydration|Hatırlatma|Trink|تذكير/.test(txt)) el.textContent=t.hydrationInterval;
+    else if(/Language|Dil|Sprache|اللغة/.test(txt)) el.textContent=t.language;
+  });
+  // toggle buttons
+  const autoBreakEl=$('autoBreak'), autoFocusEl=$('autoFocus');
+  if(autoBreakEl){
+    autoBreakEl.querySelector('.toggle-compact-label').textContent=t.autoBreaks;
+    autoBreakEl.querySelector('.toggle-compact-desc').textContent=t.autoBreaksDesc;
+  }
+  if(autoFocusEl){
+    autoFocusEl.querySelector('.toggle-compact-label').textContent=t.autoFocus;
+    autoFocusEl.querySelector('.toggle-compact-desc').textContent=t.autoFocusDesc;
+  }
+  // tasks section
+  const tasksHeading=document.querySelector('.tasks-heading');
+  if(tasksHeading) tasksHeading.textContent=t.tasks;
+  const addTaskEl2=$('addTaskOpen');
+  if(addTaskEl2) addTaskEl2.textContent = t.addTask;
+  // tasks heading
+  const tasksHeadingEl=$('tasksHeading');
+  if(tasksHeadingEl) tasksHeadingEl.textContent=t.tasks;
+  // settings sheet heading (both desktop and mobile)
+  const settingsH2=document.querySelector('#settingsSheet h2');
+  if(settingsH2) settingsH2.textContent=t.settings;
+  // mobile settings shortcuts (Theme / Sound)
+  const THEME_LABELS={en:'Theme',tr:'Tema',de:'Design',ar:'المظهر',zh:'主题'};
+  const SOUND_LABELS={en:'Sound',tr:'Ses',de:'Ton',ar:'الصوت',zh:'声音'};
+  const THEME_DESC={en:'Switch colour theme',tr:'Renk temasını değiştir',de:'Farbthema wechseln',ar:'تغيير مظهر الألوان',zh:'切换颜色主题'};
+  const SOUND_DESC={en:'Toggle sound effects',tr:'Ses efektlerini aç/kapat',de:'Soundeffekte umschalten',ar:'تفعيل/إيقاف المؤثرات الصوتية',zh:'切换音效'};
+  const stTheme=$('settingsThemeBtn');
+  if(stTheme){
+    stTheme.querySelector('.toggle-compact-label').textContent=THEME_LABELS[lang]||'Theme';
+    stTheme.querySelector('.toggle-compact-desc').textContent=THEME_DESC[lang]||'Switch colour theme';
+  }
+  const stSfx=$('settingsSfxBtn');
+  if(stSfx){
+    stSfx.querySelector('.toggle-compact-label').textContent=SOUND_LABELS[lang]||'Sound';
+    stSfx.querySelector('.toggle-compact-desc').textContent=SOUND_DESC[lang]||'Toggle sound effects';
+  }
+  const addTaskEl=document.querySelector('.task-add-placeholder');
+  if(addTaskEl) addTaskEl.textContent=t.addTask;
+  // timer buttons
+  if(startBtn){
+    syncStartBtn();
+  }
+  const skipBtnEl=$('skipBtn');
+  // header buttons
+  const kofiText=document.querySelector('.kofi-text');
+  if(kofiText) kofiText.textContent=' '+t.support;
+  // intro bubble
+  const bubble=document.querySelector('.intro-bubble span');
+  if(bubble) bubble.textContent=t.introBubble;
+  // phase label (only if not running, so we don't override during workout)
+  if(!S.running && phaseLabel){
+    if(S.phase==='focus') phaseLabel.textContent=t.focusLabel;
+    else if(S.phase==='sweat') phaseLabel.textContent=t.sweatLabel;
+    else phaseLabel.textContent=t.restLabel;
+  }
+  // task form
+  const taskInput=$('newTaskInput');
+  if(taskInput) taskInput.placeholder = t.taskPlaceholder;
+  const estLabelEl=document.querySelector('.est-row span');
+  if(estLabelEl) estLabelEl.textContent = t.estLabel;
+  const saveTaskEl=$('saveTaskBtn');
+  if(saveTaskEl) saveTaskEl.textContent = t.saveTask;
+  const cancelTaskEl=$('cancelTaskBtn');
+  if(cancelTaskEl) cancelTaskEl.textContent = t.cancelTask;
+  // workout / exercise page
+  const backBtnEl=$('backBtn');
+  if(backBtnEl) backBtnEl.textContent = t.backToStudy;
+  const progStartBtnEl=$('progStartBtn');
+  if(progStartBtnEl && progStartBtnEl.style.display!=='none') progStartBtnEl.textContent = t.startProgramme;
+  const shuffleBtnEl=$('shuffleBtn');
+  if(shuffleBtnEl) shuffleBtnEl.textContent = t.surpriseMix;
+  const restBtnEl=$('restBtn');
+  if(restBtnEl) restBtnEl.textContent = t.justRest;
+  // exName/exNote — only translate the static idle states
+  if(exName){
+    if(exName.textContent==='Pick a programme'||exName.textContent===LANGS.tr.pickProgramme||exName.textContent===LANGS.de.pickProgramme||exName.textContent===LANGS.ar.pickProgramme)
+      exName.textContent=t.pickProgramme;
+    if(exName.textContent==='Resting easy'||exName.textContent===LANGS.tr.restingEasy||exName.textContent===LANGS.de.restingEasy||exName.textContent===LANGS.ar.restingEasy)
+      exName.textContent=t.restingEasy;
+  }
+  if(exNote){
+    if(/Each programme|Her program|Jedes Programm|كل برنامج/.test(exNote.textContent))
+      exNote.textContent=t.programmeNote;
+    if(/Take it easy|Dinlen|Ausruhen|استرح/.test(exNote.textContent)||exNote.textContent==='')
+      {}// leave empty rest state alone
+  }
+  // co-work button and sheet
+  const coworkLabel=document.querySelector('.cowork-fab-label');
+  if(coworkLabel) coworkLabel.textContent=t.cowork;
+  const togetherH2=document.querySelector('#togetherSheet h2');
+  if(togetherH2) togetherH2.textContent=t.studyTogether;
+  const shareNoteEl=document.querySelector('#togetherStart .signin-note');
+  if(shareNoteEl) shareNoteEl.textContent=t.shareNote;
+  const joinFromLinkBtnEl=$('joinFromLinkBtn');
+  if(joinFromLinkBtnEl) joinFromLinkBtnEl.textContent=t.joinThisSession;
+  const copyCodeBtnEl=$('copyCodeBtn');
+  if(copyCodeBtnEl) copyCodeBtnEl.textContent=t.copyInviteLink;
+  const leaveSessionEl=$('leaveSessionBtn');
+  if(leaveSessionEl) leaveSessionEl.textContent=t.leaveSession;
+  const floatToggleLabel=$('floatChatToggleLabel');
+  if(floatToggleLabel) floatToggleLabel.textContent=t.sessionChat;
+  const floatChatInputEl=$('floatChatInput');
+  if(floatChatInputEl) floatChatInputEl.placeholder=t.saySomething;
+  const nicknameEl=$('nicknameInput');
+  if(nicknameEl) nicknameEl.placeholder=t.nicknamePlaceholder;
+  const createSessionBtnEl=$('createSessionBtn');
+  if(createSessionBtnEl) createSessionBtnEl.textContent=t.startSession;
+  // German header: hide support text to prevent crowding (keep emoji only)
+  if(kofiText) kofiText.style.display = (lang==='de') ? 'none' : '';
+  // footer and privacy
+  renderFooter();
+  const privEl=$('privacyLink');
+  if(privEl) privEl.textContent = t.privacyPolicy;
+  // exercise names in EX (used in running exercise display)
+  if(t.ex){
+    Object.keys(t.ex).forEach(k=>{ if(EX[k]) EX[k]._tname = t.ex[k]; });
+  }
+  // rebuild programme cards with translated names
+  if(t.prog && t.ex && typeof progList!=='undefined' && progList){
+    progList.querySelectorAll('.prog-card').forEach(card=>{
+      const k=card.dataset.key;
+      if(k){
+        if(t.prog[k]) card.querySelector('.prog-name').textContent=t.prog[k];
+        // rebuild meta with translated exercise names
+        const prog=PROGRAMMES[k];
+        if(prog){
+          const n=prog.steps.length;
+          card.querySelector('.prog-meta').textContent=n+' · '+prog.steps.map(s=>(t.ex[s]||EX[s].name)).join(', ');
+        }
+      }
+    });
+  }
+  // Brain fuel eyebrow label
+  const BRAIN_FUEL_LABELS = {en:'Brain fuel', tr:'Beyin yakıtı', de:'Gehirnnahrung', ar:'وقود الدماغ', zh:'大脑燃料'};
+  const eyebrow=document.querySelector('.fact .eyebrow');
+  if(eyebrow) eyebrow.textContent = BRAIN_FUEL_LABELS[lang] || 'Brain fuel';
+  // Swap the active facts array to the selected language
+  const langFacts = FACTS_BY_LANG[lang] || FACTS_BY_LANG.en;
+  FACTS.length = 0;
+  langFacts.forEach(f => FACTS.push(f));
+  // Show a fact in the new language immediately
+  factIdx = Math.floor(Math.random() * FACTS.length);
+  if(typeof factText !== 'undefined') factText.textContent = FACTS[factIdx];
+
+  // profile sheet
+  const profileTitleEl=$('profileTitle');
+  if(profileTitleEl && !DATA.name) profileTitleEl.textContent=t.signIn;
+  const userInputEl=$('userInput'); if(userInputEl) userInputEl.placeholder=t.usernamePlaceholder;
+  const passInputEl=$('passInput'); if(passInputEl) passInputEl.placeholder=t.passwordPlaceholder;
+  const secNoteEl=document.querySelector('#securityFields .signin-note');
+  if(secNoteEl) secNoteEl.textContent=t.securityNote;
+  const secAnswerEl=$('secAnswer'); if(secAnswerEl) secAnswerEl.placeholder=t.secAnswerPlaceholder;
+  const forgotLinkEl=$('forgotLink'); if(forgotLinkEl) forgotLinkEl.textContent=t.forgotPassword;
+  const storageNoteEl=$('storageNote'); if(storageNoteEl) storageNoteEl.textContent=t.storageNote;
+  // security questions dropdown
+  if(t.secQ){ const sq=$('secQuestion'); if(sq){ sq.querySelectorAll('option').forEach(o=>{ if(t.secQ[o.value]) o.textContent=t.secQ[o.value]; }); } }
+  // reset box
+  const resetIntroEl=document.querySelector('#resetBox .signin-note:first-child');
+  if(resetIntroEl) resetIntroEl.textContent=t.resetIntro;
+  const resetUserEl=$('resetUserInput'); if(resetUserEl) resetUserEl.placeholder=t.resetUserPlaceholder;
+  const resetAnswerEl=$('resetAnswerInput'); if(resetAnswerEl) resetAnswerEl.placeholder=t.resetAnswerPlaceholder;
+  const resetCancelEl=$('resetCancelBtn'); if(resetCancelEl) resetCancelEl.textContent=t.cancelTask;
+  // stats box
+  const resetStatsBtnEl=$('resetStatsBtn'); if(resetStatsBtnEl && resetStatsBtnEl.textContent!==t.confirmReset) resetStatsBtnEl.textContent=t.resetBtn;
+  const signOutEl=$('signOutBtn'); if(signOutEl) signOutEl.textContent=t.signOut;
+  const delAccEl=$('deleteAccountBtn'); if(delAccEl && !delAccEl.classList.contains('armed')) delAccEl.textContent=t.deleteAccount;
+  // reset stats label
+  const resetStatsLab=document.querySelector('.lab2'); if(resetStatsLab) resetStatsLab.textContent=t.resetStats;
+  const resetStatsSub=document.querySelector('.sub2'); if(resetStatsSub) resetStatsSub.textContent=t.resetStatsNote;
+  // crop sheet
+  const cropCancelEl=$('cropCancelBtn'); if(cropCancelEl) cropCancelEl.textContent=t.cropCancel;
+  const cropUseEl=$('cropUseBtn'); if(cropUseEl) cropUseEl.textContent=t.cropUse;
+  // start/pause/resume button (only update if not mid-session to avoid disruption)
+  if(startBtn){
+    syncStartBtn();
+  }
+  // workout button (if currently showing)
+  const _sb=$('skipBtn');
+
+  // focus label text used in nextPhase/setPhaseUIOnly
+  // RTL: flip the main content direction
+  document.body.style.direction = t.dir;
+  // sync header language button and dropdowns
+  if(typeof syncLangUI==='function') syncLangUI(lang);
+  // re-render tasks so currentTaskLabel shows in new language
+  if(typeof renderTasks==='function') renderTasks();
+  // save preference
+  try{ localStorage.setItem('pomofit:lang', lang); }catch(e){}
+}
+
+$('langSelect').addEventListener('change', ()=>{
+  applyLang($('langSelect').value);
+});
+
+// custom header language dropdown
+const langDropdown=$('langDropdown');
+$('langCycleBtn').onclick=(e)=>{
+  e.stopPropagation();
+  langDropdown.classList.toggle('show');
+};
+langDropdown.querySelectorAll('.lang-opt').forEach(btn=>{
+  btn.onclick=(e)=>{
+    e.stopPropagation();
+    const lang=btn.dataset.lang;
+    $('langSelect').value=lang;
+    applyLang(lang);
+    langDropdown.classList.remove('show');
+  };
+});
+document.addEventListener('click', ()=> langDropdown.classList.remove('show'));
+
+// sync header lang button and dropdowns — called from within applyLang
+function syncLangUI(lang){
+  const flags={en:'🇬🇧',tr:'🇹🇷',de:'🇩🇪',ar:'🇸🇦',zh:'🇨🇳'};
+  $('langCycleBtn').textContent = flags[lang]||'🇬🇧';
+  $('langSelect').value = lang;
+  langDropdown.querySelectorAll('.lang-opt').forEach(b=>{
+    b.classList.toggle('active', b.dataset.lang===lang);
+  });
+}
+
+// restore saved language on load
+(function(){
+  try{
+    const saved = localStorage.getItem('pomofit:lang');
+    if(saved && LANGS[saved]){
+      $('langSelect').value = saved;
+      applyLang(saved);
+    }
+  }catch(e){}
+})();
+
+/* sheets */
+const sheetBg=$('sheetBg');
+function openSheet(id){
+  document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));
+  if(id==='profileSheet') renderProfile();
+  $(id).classList.add('show'); sheetBg.classList.add('show');
+  $('floatChat').classList.add('sheet-open');
+  $('floatMembers').classList.add('sheet-open');
+}
+function closeSheets(){
+  document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));
+  sheetBg.classList.remove('show');
+  $('floatChat').classList.remove('sheet-open');
+  $('floatMembers').classList.remove('sheet-open');
+}
+$('settingsBtn').onclick=()=>openSheet('settingsSheet');
+$('profileBtn').onclick=()=>openSheet('profileSheet');
+sheetBg.onclick=closeSheets;
+document.querySelectorAll('.close-sheet').forEach(b=>b.onclick=closeSheets);
+
+/* themes: cycles between Ember and Mono */
+const THEME_ORDER=['ember','mono','pink','cream'];
+const THEME_ICON={ember:'◐', mono:'◑', pink:'◓', cream:'◒'};
+const THEME_NAMES={ember:'Field Grey', mono:'Black & White'};
+const themeToggleBtn=$('themeToggleBtn');
+function applyTheme(k){
+  document.body.dataset.theme=k;
+  themeToggleBtn.textContent=THEME_ICON[k]||'◐';
+  const themeNames={ember:'Field Green', mono:'Black & White', pink:'Pink & White'};
+  themeToggleBtn.title='Theme: '+(themeNames[k]||k)+' (tap to switch)';
+  const stb=$('settingsThemeBtn');
+  if(stb) stb.firstChild.textContent=THEME_ICON[k]||'◐';
+}
+themeToggleBtn.onclick=()=>{
+  const cur=document.body.dataset.theme;
+  const next=THEME_ORDER[(THEME_ORDER.indexOf(cur)+1) % THEME_ORDER.length] || 'mono';
+  applyTheme(next);
+  saveSettings();
+};
+applyTheme(document.body.dataset.theme);
+
+/* ---------- duration steppers (step by 15 min, typeable) ---------- */
+let syncFocusStepperDisplay = ()=>{}; // kept for loadSettings compatibility
+function makeStepper(elId, getVal, setVal, minV, maxV, step){
+  const el=$(elId);
+  const wrap=document.createElement('div');
+  wrap.className='chip stepper-chip';
+  wrap.innerHTML=`<button type="button" aria-label="Decrease">−</button><input type="text" inputmode="numeric" maxlength="3" aria-label="Value"><button type="button" aria-label="Increase">＋</button>`;
+  el.appendChild(wrap);
+  const inp=wrap.querySelector('input');
+  let v=getVal();
+  function show(){ inp.value=String(v); }
+  function commit(save){
+    setVal(v);
+    if(!S.running){ S.remaining=phaseDuration(); render(S.remaining); }
+    if(save!==false) saveSettings();
+  }
+  wrap.querySelectorAll('button')[0].addEventListener('click',e=>{
+    e.stopPropagation();
+    const dec = v <= 5 ? 1 : step;
+    v=Math.max(minV, v-dec); show(); commit();
+  });
+  wrap.querySelectorAll('button')[1].addEventListener('click',e=>{
+    e.stopPropagation();
+    const inc = v < 5 ? 1 : step;
+    v=Math.min(maxV, v+inc); show(); commit();
+  });
+  inp.addEventListener('click',e=>{ e.stopPropagation(); inp.select(); });
+  inp.addEventListener('input',()=>{
+    const n=parseInt(inp.value.replace(/\D/g,''),10);
+    if(n>=minV && n<=maxV){ v=n; commit(); }
+  });
+  inp.addEventListener('blur',()=>{
+    const n=parseInt(inp.value.replace(/\D/g,''),10);
+    if(!isNaN(n)){
+      v=clamp(n, minV, maxV);
+      commit();
+    }
+    show();
+  });
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') inp.blur(); });
+  show();
+  el._syncStepper=(n)=>{ v=clamp(Math.round(n),minV,maxV); show(); commit(false); };
+  if(elId==='focusSeg') syncFocusStepperDisplay=(n)=>el._syncStepper(n);
+}
+makeStepper('focusSeg',    ()=>S.focusMin, v=>S.focusMin=v,  1, 180, 5);
+makeStepper('breakSeg',    ()=>S.breakMin, v=>S.breakMin=v,  1,  60, 5);
+makeStepper('longSeg',     ()=>S.longMin,  v=>S.longMin=v,   1, 120, 5);
+makeStepper('remSeg',   ()=>S.remindersMin, v=>{ S.remindersMin=v; restartHydrateInterval(); }, 1, 120, 5);
+
+/* rounds before long break */
+function setLongBreakEvery(n){
+  S.longBreakEvery = clamp(Math.round(n), 2, 12);
+  $('rndVal').textContent = S.longBreakEvery;
+  $('longEveryLabel').textContent = S.longBreakEvery;
+  renderFooter();
+  saveSettings();
+}
+$('rndMinus').onclick=()=> setLongBreakEvery(S.longBreakEvery-1);
+$('rndPlus').onclick=()=> setLongBreakEvery(S.longBreakEvery+1);
+function wireToggle(id, get, set){
+  const b=$(id);
+  b.onclick=()=>{
+    set(!get());
+    b.setAttribute('aria-pressed', get());
+    try{
+      const snap={
+        theme: document.body.dataset.theme,
+        focusMin: S.focusMin, breakMin: S.breakMin, longMin: S.longMin,
+        longBreakEvery: S.longBreakEvery, remindersMin: S.remindersMin,
+        reminders: S.reminders, sound: S.sound, autoBreak: S.autoBreak, autoFocus: S.autoFocus,
+      };
+      localStorage.setItem('pomofit:settings', JSON.stringify(snap));
+    }catch(e){ saveSettings(); }
+  };
+}
+S.reminders = true;
+$('sfxToggle').onclick=()=>{
+  S.sound=!S.sound;
+  $('sfxToggle').setAttribute('aria-pressed', S.sound);
+  $('settingsSfxBtn').setAttribute('aria-pressed', S.sound);
+  try{
+    const snap={
+      theme: document.body.dataset.theme,
+      focusMin: S.focusMin, breakMin: S.breakMin, longMin: S.longMin,
+      longBreakEvery: S.longBreakEvery, remindersMin: S.remindersMin,
+      reminders: S.reminders, sound: S.sound, autoBreak: S.autoBreak, autoFocus: S.autoFocus,
+    };
+    localStorage.setItem('pomofit:settings', JSON.stringify(snap));
+  }catch(e){ saveSettings(); }
+};
+$('settingsThemeBtn').onclick=()=>{
+  const cur=document.body.dataset.theme;
+  const next=THEME_ORDER[(THEME_ORDER.indexOf(cur)+1)%THEME_ORDER.length]||'mono';
+  applyTheme(next); saveSettings();
+};
+$('settingsSfxBtn').onclick=()=>{
+  S.sound=!S.sound;
+  $('sfxToggle').setAttribute('aria-pressed', S.sound);
+  $('settingsSfxBtn').setAttribute('aria-pressed', S.sound);
+  try{
+    const snap={
+      theme: document.body.dataset.theme,
+      focusMin: S.focusMin, breakMin: S.breakMin, longMin: S.longMin,
+      longBreakEvery: S.longBreakEvery, remindersMin: S.remindersMin,
+      reminders: S.reminders, sound: S.sound, autoBreak: S.autoBreak, autoFocus: S.autoFocus,
+    };
+    localStorage.setItem('pomofit:settings', JSON.stringify(snap));
+  }catch(e){ saveSettings(); }
+};
+wireToggle('autoBreak',()=>S.autoBreak,v=>S.autoBreak=v);
+wireToggle('autoFocus',()=>S.autoFocus,v=>S.autoFocus=v);
+
+/* ---------- boot ---------- */
+renderDots();
+renderFooter();
+render(S.remaining);
+renderTasks();
+animate();
+loadData();
+loadSettings();
+loadIntroState();
+initLocalFacts();
+checkJoinLink();
+
+/* ---------- focus mode: centre timer, hide everything, tap to exit ---------- */
+let focusHintTimer=null;
+let focusEnteredAt=0;
+function enterFocusMode(){
+  document.body.classList.add('focus-mode');
+  focusEnteredAt=Date.now();
+  setTimeout(()=>{
+    const h=$('focusHint');
+    if(h && document.body.classList.contains('focus-mode')){
+      h.classList.add('show');
+      clearTimeout(focusHintTimer);
+      focusHintTimer=setTimeout(()=> h.classList.remove('show'), 4000);
+    }
+  }, 700);
+}
+function exitFocusMode(){
+  document.body.classList.remove('focus-mode');
+  const h=$('focusHint'); if(h) h.classList.remove('show');
+  clearTimeout(focusHintTimer);
+}
+// tap anywhere exits focus mode (ignore the click that started it)
+document.addEventListener('click', e=>{
+  if(!document.body.classList.contains('focus-mode')) return;
+  if(Date.now()-focusEnteredAt < 400) return; // ignore the starting click
+  exitFocusMode();
+});
+// explicit button to re-enter focus mode
+$('focusModeBtn').addEventListener('click', e=>{
+  e.stopPropagation();
+  if(S.running && S.phase==='focus') enterFocusMode();
+});
+
+/* ---------- entry page ---------- */
+(function(){
+  const page=$('entryPage'), glow=$('entryGlow'), btn=$('entryBtn');
+  if(!page) return;
+
+  document.addEventListener('mousemove', e=>{
+    glow.style.left=e.clientX+'px';
+    glow.style.top=e.clientY+'px';
+  }, {passive:true});
+
+  // ripple on click anywhere on the entry page
+  page.addEventListener('pointerdown', e=>{
+    const r=document.createElement('div');
+    r.className='entry-ripple';
+    r.style.left=e.clientX+'px';
+    r.style.top=e.clientY+'px';
+    page.appendChild(r);
+    r.addEventListener('animationend', ()=> r.remove());
+  });
+
+  function enter(){
+    page.classList.add('fade-out');
+    setTimeout(()=>{ page.style.display='none'; }, 850);
+  }
+
+  btn.addEventListener('click', enter);
+})();
+</script>
+</body>
+</html>
