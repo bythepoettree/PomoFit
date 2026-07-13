@@ -250,6 +250,37 @@
     0%   { opacity:0; transform:scale(.6); filter:blur(6px); }
     100% { opacity:1; transform:scale(1); filter:blur(0); }
   }
+  /* ---------- intention reminder bubble ---------- */
+  .intention-bubble{
+    position:fixed; z-index:900;
+    max-width:min(360px, 80vw);
+    padding:14px 20px;
+    background:rgba(255,255,255,.08); backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:20px;
+    font-size:14px; line-height:1.4; color:var(--fg);
+    font-style:italic;
+    text-align:center;
+    pointer-events:none;
+    opacity:0;
+    box-shadow:0 8px 40px rgba(0,0,0,.15);
+    animation: intentionDrift 12s ease-in-out forwards;
+  }
+  .intention-bubble .intention-eyebrow{
+    display:block;
+    font-size:9px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--muted); font-style:normal; font-weight:600;
+    margin-bottom:6px; opacity:.8;
+  }
+  @keyframes intentionDrift{
+    0%   { opacity:0; transform:translate(var(--drift-from-x,0px), var(--drift-from-y,20px)) scale(.85); filter:blur(6px); }
+    15%  { opacity:1; transform:translate(0,0) scale(1); filter:blur(0); }
+    85%  { opacity:1; transform:translate(var(--drift-to-x,0px), var(--drift-to-y,-15px)) scale(1); filter:blur(0); }
+    100% { opacity:0; transform:translate(var(--drift-to-x,0px), var(--drift-to-y,-15px)) scale(.9); filter:blur(6px); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .intention-bubble{ animation-duration:6s; }
+  }
   .entry-glow{
     position:fixed; pointer-events:none;
     width:220px; height:220px; border-radius:50%;
@@ -4052,6 +4083,118 @@ loadIntroState();
 initLocalFacts();
 checkJoinLink();
 
+/* ---------- intention reminder — magical bubble that floats in every ~60min when idle ---------- */
+(function(){
+  const MIN_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
+  const MAX_INTERVAL_MS = 60 * 60 * 1000; // 60 minutes
+  let lastShownAt = 0;
+  let scheduleTimer = null;
+
+  function getIntention(){
+    try{ return sessionStorage.getItem('pomofit:intention') || ''; }catch(e){ return ''; }
+  }
+
+  function canShowNow(){
+    // don't show during focus mode or if timer is actively running in focus
+    if(document.body.classList.contains('focus-mode')) return false;
+    if(S.running && S.phase === 'focus') return false;
+    // don't show on the entry page
+    const ep = document.getElementById('entryPage');
+    if(ep && ep.style.display !== 'none' && !ep.classList.contains('fade-out')) return false;
+    // don't show if a sheet is open
+    if(document.querySelector('.sheet.show')) return false;
+    return true;
+  }
+
+  function pickPosition(){
+    // avoid the timer area (roughly centered)
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const zones = [
+      { x: 20 + Math.random()*(w*0.3), y: 60 + Math.random()*80 },              // top-left
+      { x: w*0.5 + Math.random()*(w*0.35), y: 60 + Math.random()*80 },          // top-right
+      { x: 20 + Math.random()*(w*0.3), y: h*0.75 + Math.random()*60 },           // bottom-left
+      { x: w*0.55 + Math.random()*(w*0.35), y: h*0.75 + Math.random()*60 },     // bottom-right
+    ];
+    return zones[Math.floor(Math.random()*zones.length)];
+  }
+
+  function spawnParticles(bubble){
+    // scatter a few soft particles from the bubble as it appears — magical arrival
+    const rect = bubble.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    const dots = ['·','·','·','·','·','·','·','·'];
+    dots.forEach((ch, i)=>{
+      const p = document.createElement('span');
+      p.className = 'fizzle-particle';
+      p.textContent = ch;
+      // start from a random point near the bubble
+      const angle = Math.random() * Math.PI * 2;
+      const startDist = 60 + Math.random() * 60;
+      p.style.left = (cx + Math.cos(angle)*startDist) + 'px';
+      p.style.top  = (cy + Math.sin(angle)*startDist) + 'px';
+      // fly outward and fade
+      const outAngle = angle + (Math.random()-0.5)*0.6;
+      const dist = 80 + Math.random() * 100;
+      p.style.setProperty('--dx', Math.cos(outAngle) * dist + 'px');
+      p.style.setProperty('--dy', Math.sin(outAngle) * dist + 'px');
+      p.style.animationDelay = (i * 40) + 'ms';
+      p.style.color = 'var(--muted)';
+      document.body.appendChild(p);
+      setTimeout(()=> p.remove(), 1800 + i * 40);
+    });
+  }
+
+  function showIntention(){
+    const intention = getIntention();
+    if(!intention) return;
+    if(!canShowNow()) return;
+
+    const pos = pickPosition();
+    const bubble = document.createElement('div');
+    bubble.className = 'intention-bubble';
+    bubble.innerHTML = `<span class="intention-eyebrow">Your intention</span>${intention.replace(/</g,'&lt;')}`;
+    bubble.style.left = pos.x + 'px';
+    bubble.style.top  = pos.y + 'px';
+    // subtle drift direction
+    const driftX = (Math.random()-0.5) * 40;
+    const driftY = -20 - Math.random() * 30;
+    bubble.style.setProperty('--drift-from-x', (driftX*-0.5) + 'px');
+    bubble.style.setProperty('--drift-from-y', '30px');
+    bubble.style.setProperty('--drift-to-x', driftX + 'px');
+    bubble.style.setProperty('--drift-to-y', driftY + 'px');
+    document.body.appendChild(bubble);
+    // spawn magical particles slightly after arrival, then again on departure
+    setTimeout(()=> spawnParticles(bubble), 200);
+    setTimeout(()=> spawnParticles(bubble), 9500);
+    setTimeout(()=> bubble.remove(), 12500);
+    lastShownAt = Date.now();
+  }
+
+  function scheduleNext(){
+    clearTimeout(scheduleTimer);
+    const delay = MIN_INTERVAL_MS + Math.random() * (MAX_INTERVAL_MS - MIN_INTERVAL_MS);
+    scheduleTimer = setTimeout(tryShow, delay);
+  }
+
+  function tryShow(){
+    if(canShowNow()){
+      showIntention();
+      scheduleNext();
+    } else {
+      // retry in 2 minutes if conditions aren't right yet
+      scheduleTimer = setTimeout(tryShow, 2 * 60 * 1000);
+    }
+  }
+
+  // dev helper: run window.showIntentionNow() in the console to preview
+  window.showIntentionNow = showIntention;
+
+  // first appearance ~55-70 minutes after page load
+  scheduleNext();
+})();
+
 /* ---------- focus mode: centre timer, hide everything, tap to exit ---------- */
 let focusHintTimer=null;
 let focusEnteredAt=0;
@@ -4111,6 +4254,10 @@ $('focusModeBtn').addEventListener('click', e=>{
 
   function fizzleIntention(){
     const text = (intInput.value || '').trim();
+    // save intention so it can float back in later as a reminder
+    if(text){
+      try{ sessionStorage.setItem('pomofit:intention', text); }catch(e){}
+    }
     // spawn particle for each character in the input value (or a set of dots if empty)
     const chars = text ? text.split('') : ['·','·','·','·','·','·'];
     const rect = intInput.getBoundingClientRect();
