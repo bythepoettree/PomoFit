@@ -253,30 +253,28 @@
   /* ---------- intention reminder bubble ---------- */
   .intention-bubble{
     position:fixed; z-index:900;
-    max-width:min(360px, 80vw);
-    padding:14px 20px;
-    background:rgba(255,255,255,.08); backdrop-filter:blur(12px);
-    border:1px solid rgba(255,255,255,.15);
-    border-radius:20px;
-    font-size:14px; line-height:1.4; color:var(--fg);
-    font-style:italic;
+    max-width:min(320px, 75vw);
+    padding:12px 18px;
+    background:rgba(255,255,255,.04); backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;
+    font-size:13px; line-height:1.4; color:var(--muted);
     text-align:center;
     pointer-events:none;
     opacity:0;
-    box-shadow:0 8px 40px rgba(0,0,0,.15);
     animation: intentionDrift 12s ease-in-out forwards;
   }
   .intention-bubble .intention-eyebrow{
     display:block;
-    font-size:9px; letter-spacing:.24em; text-transform:uppercase;
-    color:var(--muted); font-style:normal; font-weight:600;
-    margin-bottom:6px; opacity:.8;
+    font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--muted); font-weight:500;
+    margin-bottom:4px; opacity:.55;
   }
   @keyframes intentionDrift{
-    0%   { opacity:0; transform:translate(var(--drift-from-x,0px), var(--drift-from-y,20px)) scale(.85); filter:blur(6px); }
-    15%  { opacity:1; transform:translate(0,0) scale(1); filter:blur(0); }
-    85%  { opacity:1; transform:translate(var(--drift-to-x,0px), var(--drift-to-y,-15px)) scale(1); filter:blur(0); }
-    100% { opacity:0; transform:translate(var(--drift-to-x,0px), var(--drift-to-y,-15px)) scale(.9); filter:blur(6px); }
+    0%   { opacity:0; transform:translate(var(--drift-from-x,0px), var(--drift-from-y,20px)) scale(.9); filter:blur(4px); }
+    18%  { opacity:.75; transform:translate(0,0) scale(1); filter:blur(0); }
+    82%  { opacity:.75; transform:translate(var(--drift-to-x,0px), var(--drift-to-y,-15px)) scale(1); filter:blur(0); }
+    100% { opacity:0; transform:translate(var(--drift-to-x,0px), var(--drift-to-y,-15px)) scale(.94); filter:blur(4px); }
   }
   @media (prefers-reduced-motion:reduce){
     .intention-bubble{ animation-duration:6s; }
