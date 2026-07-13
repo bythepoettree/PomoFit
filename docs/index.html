@@ -684,11 +684,19 @@
   }
   .together-members{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
   .member-chip{
-    display:inline-flex; align-items:center; gap:6px; background:var(--chip);
-    border-radius:999px; padding:6px 12px 6px 6px; font-size:13px; font-weight:500;
+    display:inline-flex; align-items:center; gap:8px; background:var(--chip);
+    border-radius:14px; padding:8px 14px 8px 8px; font-size:13px; font-weight:500;
+    max-width:100%;
   }
   .member-chip .dot{width:8px; height:8px; border-radius:50%; background:var(--accent); flex:none;}
-  .member-avatar{width:22px; height:22px; border-radius:50%; object-fit:cover; flex:none; background:var(--bg2);}
+  .member-avatar{width:26px; height:26px; border-radius:50%; object-fit:cover; flex:none; background:var(--bg2);}
+  .member-info{display:flex; flex-direction:column; gap:1px; min-width:0;}
+  .member-name{font-size:13px; font-weight:600; color:var(--fg); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .member-task{
+    font-size:11px; color:var(--muted); font-weight:400;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    max-width:200px;
+  }
   .host-badge{
     font-size:8px; font-weight:800; letter-spacing:.06em;
     background:var(--accent); color:var(--accent-ink);
@@ -2161,6 +2169,18 @@ function restartHydrateInterval(){
 restartHydrateInterval();
 
 /* ---------- tasks (Pomofocus style) ---------- */
+function getMyCurrentTaskTitle(){
+  if(!S.activeTask) return null;
+  const t = (DATA.tasks||[]).find(x=>x.id===S.activeTask);
+  return (t && t.title) ? t.title.slice(0, 60) : null;
+}
+function broadcastMyTask(){
+  if(!mySession || !sessionRefs || !sessionRefs.myMemberRef) return;
+  sessionRefs.myMemberRef.update({
+    task: getMyCurrentTaskTitle(),
+    lastSeen: firebase.database.ServerValue.TIMESTAMP,
+  }).catch(()=>{});
+}
 const taskListMain=$('taskListMain'), taskForm=$('taskForm'), newTaskInput=$('newTaskInput');
 let editingTask=null;
 let estCount=1;
@@ -2191,6 +2211,7 @@ function saveTask(){
   newTaskInput.value=''; taskForm.classList.remove('show');
   $('addTaskOpen').style.display='';
   saveData(); renderTasks();
+  broadcastMyTask();
 }
 $('saveTaskBtn').onclick=saveTask;
 newTaskInput.addEventListener('keydown',e=>{ if(e.key==='Enter') saveTask(); });
@@ -2281,11 +2302,12 @@ function renderTasks(){
     row.onclick=()=>{
       S.activeTask = (S.activeTask===t.id)?null:t.id;
       renderTasks();
+      broadcastMyTask();
     };
     row.querySelector('.t-del').onclick=e=>{
       e.stopPropagation();
       DATA.tasks=DATA.tasks.filter(x=>x.id!==t.id);
-      if(S.activeTask===t.id) S.activeTask=null;
+      if(S.activeTask===t.id){ S.activeTask=null; broadcastMyTask(); }
       if(editingTask===t.id) editingTask=null;
       saveData(); renderTasks();
     };
@@ -2907,6 +2929,7 @@ async function joinOrCreateSession(code, asHost){
   await myMemberRef.set({
     name: myNickname(),
     avatar: DATA.avatar || null,
+    task: getMyCurrentTaskTitle(),
     joinedAt: firebase.database.ServerValue.TIMESTAMP,
     lastSeen: firebase.database.ServerValue.TIMESTAMP,
   });
@@ -2919,6 +2942,7 @@ async function joinOrCreateSession(code, asHost){
       myMemberRef.update({
         name: myNickname(),
         avatar: DATA.avatar || null,
+        task: getMyCurrentTaskTitle(),
         lastSeen: firebase.database.ServerValue.TIMESTAMP,
         stale: false,
       }).catch(()=>{});
@@ -3149,14 +3173,16 @@ function renderMembers(members){
 
     // sheet member chip
     const chip=document.createElement('div'); chip.className='member-chip';
+    const nameHtml = `<div class="member-name">${(m.name||'Someone').replace(/</g,'&lt;')}</div>`;
+    const taskHtml = m.task ? `<div class="member-task">Working on: ${String(m.task).replace(/</g,'&lt;')}</div>` : '';
+    const infoHtml = `<div class="member-info">${nameHtml}${taskHtml}</div>`;
     if(isEmoji){
-      chip.innerHTML = `<span style="font-size:18px;line-height:1;">${emojiChar}</span><span></span>`;
+      chip.innerHTML = `<span style="font-size:18px;line-height:1;">${emojiChar}</span>${infoHtml}`;
     } else if(m.avatar){
-      chip.innerHTML = `<img class="member-avatar" src="${m.avatar}" alt=""><span></span>`;
+      chip.innerHTML = `<img class="member-avatar" src="${m.avatar}" alt="">${infoHtml}`;
     } else {
-      chip.innerHTML = '<span class="dot"></span><span></span>';
+      chip.innerHTML = `<span class="dot"></span>${infoHtml}`;
     }
-    chip.querySelector('span:last-child').textContent = m.name || 'Someone';
     if(isThisHost){
       const badge=document.createElement('span'); badge.className='host-badge';
       badge.textContent='HOST'; chip.appendChild(badge);
