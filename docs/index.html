@@ -2149,7 +2149,7 @@ function showToast(msg){
   toast.classList.add('show');
   beep(988,.08,.05); beep(1319,.12,.05,'sine',.1);
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>toast.classList.remove('show'), 12000);
+  toastTimer = setTimeout(()=>toast.classList.remove('show'), 4000);
 }
 toast.onclick = ()=>toast.classList.remove('show');
 function restartHydrateInterval(){
@@ -2171,8 +2171,17 @@ function setEst(v){ estCount=Math.max(1,Math.min(20,v)); $('estVal').textContent
     setEst(estCount + (id==='estPlus'?1:-1));
   });
 });
-$('addTaskOpen').onclick=()=>{ taskForm.classList.add('show'); setEst(1); newTaskInput.focus(); };
-$('cancelTaskBtn').onclick=()=>{ taskForm.classList.remove('show'); newTaskInput.value=''; };
+$('addTaskOpen').onclick=()=>{
+  $('addTaskOpen').style.display='none';
+  taskForm.classList.add('show');
+  setEst(1);
+  newTaskInput.focus();
+};
+$('cancelTaskBtn').onclick=()=>{
+  taskForm.classList.remove('show');
+  newTaskInput.value='';
+  $('addTaskOpen').style.display='';
+};
 function saveTask(){
   const title=newTaskInput.value.trim();
   if(!title) return;
@@ -2180,6 +2189,7 @@ function saveTask(){
   DATA.tasks.unshift(t);
   S.activeTask=t.id;                     // newly added task auto-links
   newTaskInput.value=''; taskForm.classList.remove('show');
+  $('addTaskOpen').style.display='';
   saveData(); renderTasks();
 }
 $('saveTaskBtn').onclick=saveTask;
@@ -3104,6 +3114,8 @@ function setPhaseUIOnly(p){
 }
 function broadcastTimer(){
   if(!mySession || !sessionRefs || suppressLocalBroadcast) return;
+  // only the host can broadcast timer state - prevents guests overwriting host's settings (autoBreak, autoFocus, durations)
+  if(!isHost) return;
   sessionRefs.timerRef.set({
     phase:S.phase, running:S.running, endAt:S.endAt, remaining:S.remaining,
     completed:S.completed, session:S.session, longBreakEvery:S.longBreakEvery,
