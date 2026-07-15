@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" style="background:#1B3A2D;">
+<html lang="en" style="background:#1B3A2D; color-scheme:dark;">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1B3A2D" id="metaThemeColor">
 <title>Privacy Policy — PomoFit</title>
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://www.pomofit.fit/privacy.html">
+<style>
+  /* set body colour immediately so first paint isn't white */
+  html,body{background:#1B3A2D;}
+</style>
 <script>
   // apply saved theme instantly (before body renders) to prevent white flash
   (function(){
@@ -14,8 +19,11 @@
       if(s && s.theme){
         const t = s.theme === 'cream' ? 'ocean' : s.theme;
         const bgMap = { ember:'#1B3A2D', mono:'#0B0B0B', pink:'#EF8AAE', ocean:'#3E92B8' };
-        document.documentElement.style.background = bgMap[t] || '#1B3A2D';
+        const bg = bgMap[t] || '#1B3A2D';
+        document.documentElement.style.background = bg;
         document.documentElement.dataset.pendingTheme = t;
+        const meta = document.getElementById('metaThemeColor');
+        if(meta) meta.setAttribute('content', bg);
       }
     }catch(e){}
   })();
