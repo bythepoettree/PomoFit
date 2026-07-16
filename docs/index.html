@@ -1909,7 +1909,37 @@ $('resetContinueBtn').onclick=async ()=>{
 
 /* ---------- sound effects ---------- */
 let AC=null;
-function ac(){ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended')AC.resume(); return AC; }
+function ac(){
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended') AC.resume();
+  }catch(e){}
+  return AC;
+}
+// unlock AudioContext on the first user gesture — browsers block it until then
+(function unlockAudioOnGesture(){
+  const unlock = ()=>{
+    try{
+      const a = ac();
+      // create a tiny silent buffer + play it to definitively unlock on iOS/Safari
+      if(a && a.state !== 'closed'){
+        const buf = a.createBuffer(1, 1, 22050);
+        const src = a.createBufferSource();
+        src.buffer = buf;
+        src.connect(a.destination);
+        src.start(0);
+      }
+    }catch(e){}
+    document.removeEventListener('pointerdown', unlock);
+    document.removeEventListener('touchstart', unlock);
+    document.removeEventListener('keydown', unlock);
+    document.removeEventListener('click', unlock);
+  };
+  document.addEventListener('pointerdown', unlock, {passive:true});
+  document.addEventListener('touchstart', unlock, {passive:true});
+  document.addEventListener('keydown', unlock, {passive:true});
+  document.addEventListener('click', unlock, {passive:true});
+})();
 function beep(freq, dur=0.09, gain=0.05, type='sine', when=0){
   if(!S.sound) return;
   try{
@@ -3090,6 +3120,8 @@ $('skipBtn').onclick=()=>{
   const wasWorkoutReady = $('skipBtn').dataset.workout==='1';
   delete $('skipBtn').dataset.workout;
   nextPhase(false);
+  // if the user completed a focus session (wasWorkoutReady=true), start the break
+  // regardless of auto-break setting — they've earned it. otherwise leave it paused.
   if(wasWorkoutReady && !S.running) start();
 };
 $('resetBtn').onclick=e=>{
