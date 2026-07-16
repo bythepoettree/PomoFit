@@ -2468,7 +2468,6 @@ $('mascot').addEventListener('click', ()=>{
 function showToast(msg){
   toast.textContent = typeof msg==='function' ? msg() : msg;
   toast.classList.add('show');
-  beep(988,.08,.05); beep(1319,.12,.05,'sine',.1);
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=>toast.classList.remove('show'), 4000);
 }
@@ -4337,7 +4336,6 @@ function wireToggle(id, get, set){
     }catch(e){ saveSettings(); }
   };
 }
-S.reminders = true;
 $('sfxToggle').onclick=()=>{
   S.sound=!S.sound;
   $('sfxToggle').setAttribute('aria-pressed', S.sound);
