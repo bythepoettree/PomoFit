@@ -972,8 +972,25 @@
     letter-spacing:.02em; white-space:nowrap;
   }
   .profile-action-btn:hover{ opacity:.85; }
-  .profile-action-btn.danger{ color:#E8604C; }
+  .profile-action-btn.danger{ color:#E8604C; width:100%; }
   .profile-action-btn.danger:hover{ background:rgba(232,96,76,.12); }
+  /* collapsed danger zone keeps destructive actions out of easy reach */
+  .danger-zone{ margin-top:14px; }
+  .danger-toggle{
+    background:none; border:none; color:var(--muted);
+    font-family:inherit; font-size:11.5px; font-weight:600; letter-spacing:.04em;
+    cursor:pointer; padding:4px 2px; opacity:.7; transition:opacity .15s ease;
+  }
+  .danger-toggle:hover{ opacity:1; }
+  .danger-body{
+    max-height:0; overflow:hidden;
+    transition:max-height .28s ease, margin .28s ease;
+    margin-top:0;
+  }
+  .danger-toggle[aria-expanded="true"] + .danger-body{ max-height:200px; margin-top:8px; }
+  .danger-note{
+    font-size:11px; line-height:1.5; color:var(--muted); margin:0 0 8px;
+  }
   .stat{background:var(--chip); border:none; border-radius:16px; padding:14px;}
   .stat .num{font-family:'Anton',sans-serif; font-size:26px;}
   .stat .lab{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:2px;}
@@ -1715,18 +1732,20 @@
     <button class="close-sheet" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1;" aria-label="Close">✕</button>
   </div>
   <div id="signinBox">
+    <form id="signinForm" onsubmit="return false;" style="margin:0;">
     <div class="task-add" style="margin-bottom:8px;">
-      <input id="userInput" type="email" maxlength="80" placeholder="Email" autocomplete="email" inputmode="email">
+      <input id="userInput" name="email" type="email" maxlength="80" placeholder="Email" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false">
     </div>
     <div class="task-add">
-      <input id="passInput" type="password" maxlength="80" placeholder="Password" autocomplete="current-password">
+      <input id="passInput" name="password" type="password" maxlength="80" placeholder="Password" autocomplete="current-password">
     </div>
     <div id="securityFields" style="display:none;"></div>
     <p class="signin-note" id="authMsg" style="min-height:16px;margin:0 0 6px;"></p>
     <div class="controls" style="justify-content:flex-start;gap:8px;margin-top:0;">
-      <button class="btn" id="signInBtn" style="flex:1;max-width:150px;font-size:12px;padding:9px 0;letter-spacing:.03em;">SIGN IN</button>
-      <button class="btn ghost" id="signUpBtn" style="flex:1;max-width:150px;font-size:12px;padding:9px 0;letter-spacing:.03em;">Create account</button>
+      <button type="submit" class="btn" id="signInBtn" style="flex:1;max-width:150px;font-size:12px;padding:9px 0;letter-spacing:.03em;">SIGN IN</button>
+      <button type="button" class="btn ghost" id="signUpBtn" style="flex:1;max-width:150px;font-size:12px;padding:9px 0;letter-spacing:.03em;">Create account</button>
     </div>
+    </form>
     <p class="signin-note" id="forgotNote" style="margin-top:8px;"><a href="#" id="forgotLink" style="color:var(--accent);text-decoration:none;font-weight:600;">Forgot password?</a></p>
     <p class="signin-note" id="storageNote">☁️ Sign in to sync your tasks and progress across all your devices.</p>
   </div>
@@ -1789,7 +1808,13 @@
     <div class="profile-actions">
       <button class="profile-action-btn" id="resetStatsBtn">Reset</button>
       <button class="profile-action-btn" id="signOutBtn">Sign out</button>
-      <button class="profile-action-btn danger" id="deleteAccountBtn">Delete</button>
+    </div>
+    <div class="danger-zone">
+      <button type="button" class="danger-toggle" id="dangerToggle" aria-expanded="false">Advanced ⌄</button>
+      <div class="danger-body" id="dangerBody">
+        <p class="danger-note">Deleting your account permanently removes your profile, tasks, and all saved progress. This can't be undone.</p>
+        <button class="profile-action-btn danger" id="deleteAccountBtn">Delete account</button>
+      </div>
     </div>
   </div>
 </div>
@@ -3131,6 +3156,9 @@ function displayName(){ return (DATA.displayName && DATA.displayName.trim()) || 
 function renderProfile(){
   resetArmed=false;
   const b=$('resetStatsBtn'); if(b){ b.textContent='Reset'; b.classList.remove('armed'); }
+  // keep the danger zone collapsed and delete disarmed each time the profile renders
+  const dt=$('dangerToggle'); if(dt){ dt.setAttribute('aria-expanded','false'); dt.textContent='Advanced ⌄'; }
+  const db=$('deleteAccountBtn'); if(db){ deleteArmed=false; db.textContent='Delete account'; db.classList.remove('armed'); }
   const signed=!!DATA.name;
   const nm=displayName();
   const isEmoji = DATA.avatar && DATA.avatar.startsWith('emoji:');
@@ -3191,21 +3219,31 @@ function renderProfile(){
   }
 }
 function esc(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-$('signInBtn').onclick=cloudSignIn;
+$('signinForm').addEventListener('submit', e=>{ e.preventDefault(); cloudSignIn(); });
+$('signInBtn').onclick=(e)=>{ e.preventDefault(); cloudSignIn(); };
 $('signUpBtn').onclick=cloudSignUp;
 $('passInput').addEventListener('keydown',e=>{ if(e.key==='Enter') cloudSignIn(); });
 $('signOutBtn').onclick=cloudSignOut;
 
 let deleteArmed=false;
+// collapsed "Advanced" disclosure that hides the delete button
+$('dangerToggle').onclick=()=>{
+  const t=$('dangerToggle');
+  const open = t.getAttribute('aria-expanded')==='true';
+  t.setAttribute('aria-expanded', open?'false':'true');
+  t.textContent = open ? 'Advanced ⌄' : 'Advanced ⌃';
+  // re-disarm delete whenever the zone is toggled
+  deleteArmed=false;
+  const b=$('deleteAccountBtn'); b.textContent='Delete account'; b.classList.remove('armed');
+};
 $('deleteAccountBtn').onclick=async ()=>{
   const b=$('deleteAccountBtn');
-  const t=T();
   if(!deleteArmed){
-    deleteArmed=true; b.textContent=t.confirmReset; b.classList.add('armed');
-    setTimeout(()=>{ if(deleteArmed){ deleteArmed=false; b.textContent=t.deleteAccount; b.classList.remove('armed'); } }, 4000);
+    deleteArmed=true; b.textContent='Tap again to permanently delete'; b.classList.add('armed');
+    setTimeout(()=>{ if(deleteArmed){ deleteArmed=false; b.textContent='Delete account'; b.classList.remove('armed'); } }, 5000);
     return;
   }
-  deleteArmed=false; b.textContent=t.deleteAccount; b.classList.remove('armed');
+  deleteArmed=false; b.textContent='Delete account'; b.classList.remove('armed');
   // cloud account: remove cloud data + the auth user
   if(cloudUser){
     try{ if(cloudDataRef) await cloudDataRef.remove(); }catch(e){}
@@ -4672,7 +4710,7 @@ function applyLang(lang){
   // stats box
   const resetStatsBtnEl=$('resetStatsBtn'); if(resetStatsBtnEl && resetStatsBtnEl.textContent!==t.confirmReset) resetStatsBtnEl.textContent=t.resetBtn;
   const signOutEl=$('signOutBtn'); if(signOutEl) signOutEl.textContent=t.signOut;
-  const delAccEl=$('deleteAccountBtn'); if(delAccEl && !delAccEl.classList.contains('armed')) delAccEl.textContent=t.deleteAccount;
+  const delAccEl=$('deleteAccountBtn'); if(delAccEl && !delAccEl.classList.contains('armed')) delAccEl.textContent='Delete account';
   // reset stats label
   const resetStatsLab=document.querySelector('.lab2'); if(resetStatsLab) resetStatsLab.textContent=t.resetStats;
   const resetStatsSub=document.querySelector('.sub2'); if(resetStatsSub) resetStatsSub.textContent=t.resetStatsNote;
