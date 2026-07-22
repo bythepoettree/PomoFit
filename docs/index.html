@@ -1050,7 +1050,18 @@
     background:var(--chip); border-radius:16px; padding:16px 14px;
     display:flex; flex-direction:column; gap:2px;
   }
-  .dash-card.accent{ background:var(--accent); color:var(--accent-ink); }
+  .dash-card.accent{
+    background:var(--chip);
+    color:var(--fg);
+    border:1.5px solid var(--accent);
+    position:relative;
+  }
+  /* faint accent wash so the streak card reads as the highlight without a jarring fill */
+  .dash-card.accent::before{
+    content:''; position:absolute; inset:0; border-radius:inherit;
+    background:var(--accent); opacity:.07; pointer-events:none;
+  }
+  .dash-card.accent > *{ position:relative; z-index:1; }
   .dash-card .dnum{ font-family:'Anton',sans-serif; font-size:30px; line-height:1; }
   .dash-card .dsub{ font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; opacity:.85; margin-top:4px; }
   .dash-card .dnote{ font-size:11px; opacity:.7; margin-top:2px; }
