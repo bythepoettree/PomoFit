@@ -1187,6 +1187,15 @@
     background:var(--chip); color:var(--fg);
     border:1px solid var(--line);
   }
+  .together-cta-rejoin{
+    background:var(--chip); color:var(--fg);
+    border:1px solid var(--accent);
+  }
+  .together-cta-rejoin.expired{
+    border-color:var(--line); opacity:.45; cursor:not-allowed;
+  }
+  .together-cta-rejoin.expired:hover{ opacity:.45; }
+  .together-cta-rejoin.expired:active{ transform:none; }
 
   .together-hint{
     font-size:12px; color:var(--muted); line-height:1.5;
@@ -1379,9 +1388,9 @@
   .float-member .initial{font-family:'Anton',sans-serif; font-size:15px; color:var(--muted);}
   @keyframes memberGyrate{
     0%{ transform:rotate(0deg) translateY(0); }
-    25%{ transform:rotate(-4deg) translateY(-1px); }
-    50%{ transform:rotate(0deg) translateY(-2px); }
-    75%{ transform:rotate(4deg) translateY(-1px); }
+    25%{ transform:rotate(-2.5deg) translateY(-1.5px); }
+    50%{ transform:rotate(0deg) translateY(-3px); }
+    75%{ transform:rotate(2.5deg) translateY(-1.5px); }
     100%{ transform:rotate(0deg) translateY(0); }
   }
   @media (prefers-reduced-motion: reduce){
@@ -2016,6 +2025,13 @@
         <button class="together-cta together-cta-join" id="joinFromLinkBtn">
           <span class="together-cta-title">Join this session</span>
           <span class="together-cta-sub">You've been invited by a friend</span>
+        </button>
+      </div>
+
+      <div id="rejoinRow" style="display:none;">
+        <button class="together-cta together-cta-rejoin" id="rejoinBtn">
+          <span class="together-cta-title">Rejoin last session</span>
+          <span class="together-cta-sub" id="rejoinSub">Pick up where you left off</span>
         </button>
       </div>
 
@@ -4160,6 +4176,35 @@ function showTogetherIntro(){
     $('createSessionBtn').style.display='';
     $('joinFromLinkRow').style.display='none';
   }
+  refreshRejoinButton();
+}
+
+// show a "Rejoin last session" button (greyed out if that session has expired)
+async function refreshRejoinButton(){
+  const row=$('rejoinRow'), btn=$('rejoinBtn'), sub=$('rejoinSub');
+  if(!row||!btn) return;
+  let last=null;
+  try{ last=JSON.parse(localStorage.getItem('pomofit:lastSession')||'null'); }catch(e){}
+  // don't offer to rejoin the session we're currently in / just left as a pending link
+  if(!last || !last.code || last.code===pendingJoinCode){ row.style.display='none'; return; }
+  row.style.display='flex';
+  // optimistic default while we check liveness
+  btn.classList.remove('expired');
+  sub.textContent='Pick up where you left off';
+  try{
+    await ensureFirebase();
+    const snap = await fb.db.ref('sessions/'+last.code+'/createdAt').get();
+    if(snap.exists()){
+      btn.classList.remove('expired');
+      sub.textContent='Code '+last.code+' · still active';
+    } else {
+      btn.classList.add('expired');
+      sub.textContent='Code '+last.code+' · session ended';
+    }
+  }catch(e){
+    // if we can't check, leave it enabled and let the join attempt handle it
+    sub.textContent='Code '+last.code;
+  }
 }
 
 $('togetherBtn').onclick=()=>{
@@ -4200,6 +4245,29 @@ async function attemptJoin(code){
     await joinOrCreateSession(code, false);
   }catch(e){ togetherMsg('Couldn\'t join — check your connection and try again.'); }
 }
+$('rejoinBtn').onclick=async ()=>{
+  if(!FIREBASE_READY) return;
+  const btn=$('rejoinBtn');
+  if(btn.classList.contains('expired')) return; // session ended
+  let last=null;
+  try{ last=JSON.parse(localStorage.getItem('pomofit:lastSession')||'null'); }catch(e){}
+  if(!last || !last.code) return;
+  const typed = $('nicknameInput').value.trim();
+  myCapturedName = typed || DATA.displayName || 'Someone';
+  try{ localStorage.setItem('pomofit:coworkName', myCapturedName); }catch(e){}
+  togetherMsg(T().joiningSession);
+  try{
+    await ensureFirebase();
+    const snap = await fb.db.ref('sessions/'+last.code+'/createdAt').get();
+    if(!snap.exists()){
+      btn.classList.add('expired');
+      $('rejoinSub').textContent='Code '+last.code+' · session ended';
+      return togetherMsg('That session has ended — start a new one instead.');
+    }
+    // rejoin as host only if we originally created it
+    await joinOrCreateSession(last.code, !!last.asHost);
+  }catch(e){ togetherMsg('Couldn\'t rejoin — check your connection and try again.'); }
+};
 $('joinFromLinkBtn').onclick=async ()=>{
   const code = pendingJoinCode;
   pendingJoinCode = null; // clear so leaving-and-reopening starts fresh
@@ -4216,6 +4284,8 @@ async function joinOrCreateSession(code, asHost){
   isHost = asHost;
   // persist session so it can be restored after page reload (e.g. navigating to privacy and back)
   try{ localStorage.setItem("pomofit:activeSession", JSON.stringify({code, asHost})); }catch(e){}
+  // remember this as the last session for the "Rejoin" option (survives leaving)
+  try{ localStorage.setItem("pomofit:lastSession", JSON.stringify({code, asHost, at:Date.now()})); }catch(e){}
   const sessionRef = fb.db.ref('sessions/'+code);
   const timerRef = sessionRef.child('timer');
   const membersRef = sessionRef.child('members');
@@ -4475,6 +4545,7 @@ function broadcastTimer(){
   sessionRefs.timerRef.update(payload);
 }
 
+let lastFloatSig = '';
 function renderMembers(members){
   const wrap=$('togetherMembers');
   const floatWrap=$('floatMembers');
@@ -4498,9 +4569,14 @@ function renderMembers(members){
     return;
   }
   wrap.innerHTML='';
-  floatWrap.innerHTML='';
   // keep bubbles visible while in a session
   if(mySession){ floatWrap.classList.add('show'); }
+  // Only rebuild the FLOATING bubbles when the set of members (or their avatars/
+  // names) actually changes. Frequent heartbeat updates (lastSeen) shouldn't wipe
+  // and recreate them, which would restart their float animation and look jerky.
+  const floatSig = list.map(m=>m.uid+'|'+(m.avatar||'')+'|'+(m.name||'')).join(',');
+  const rebuildFloat = floatSig !== lastFloatSig;
+  if(rebuildFloat){ floatWrap.innerHTML=''; lastFloatSig = floatSig; }
   list.forEach(m=>{
     const isEmoji = m.avatar && m.avatar.startsWith('emoji:');
     const emojiChar = isEmoji ? m.avatar.slice(6) : null;
@@ -4524,22 +4600,21 @@ function renderMembers(members){
     }
     wrap.appendChild(chip);
 
-    // floating bubble
-    const bubble=document.createElement('div'); bubble.className='float-member';
-    bubble.title = (m.name || 'Someone') + (isThisHost ? ' (host)' : '');
-    if(isEmoji){
-      bubble.innerHTML = `<span style="font-size:22px;line-height:1;">${emojiChar}</span>`;
-    } else if(m.avatar){
-      bubble.innerHTML = `<img src="${m.avatar}" alt="">`;
-    } else {
-      const initial=document.createElement('span'); initial.className='initial';
-      initial.textContent = (m.name||'?').trim()[0]?.toUpperCase() || '?';
-      bubble.appendChild(initial);
+    // floating bubble — only (re)created when membership changed
+    if(rebuildFloat){
+      const bubble=document.createElement('div'); bubble.className='float-member';
+      bubble.title = (m.name || 'Someone') + (isThisHost ? ' (host)' : '');
+      if(isEmoji){
+        bubble.innerHTML = `<span style="font-size:22px;line-height:1;">${emojiChar}</span>`;
+      } else if(m.avatar){
+        bubble.innerHTML = `<img src="${m.avatar}" alt="">`;
+      } else {
+        const initial=document.createElement('span'); initial.className='initial';
+        initial.textContent = (m.name||'?').trim()[0]?.toUpperCase() || '?';
+        bubble.appendChild(initial);
+      }
+      floatWrap.appendChild(bubble);
     }
-    if(fb && m.uid===fb.uid){
-      // current user's bubble — no extra indicator needed
-    }
-    floatWrap.appendChild(bubble);
   });
   const status = $('togetherStatus');
   if(status){
@@ -4661,6 +4736,7 @@ $('leaveSessionBtn').onclick=async ()=>{
   }catch(e){}
   $('floatChatLog').innerHTML='';
   unreadCount=0; $('floatChatBadge').style.display='none';
+  $('floatMembers').innerHTML=''; lastFloatSig='';
   showTogetherIntro();
 };
 // remove member entry when closing tab / navigating away
