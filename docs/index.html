@@ -1042,34 +1042,47 @@
     font-size:10px; font-weight:700; border-radius:999px;
     padding:2px 7px; margin-left:auto; margin-right:8px;
   }
-  .friend-code-card{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    background:var(--bg2); border-radius:10px; padding:9px 10px 9px 13px; margin-bottom:7px;
+  .friend-top-row{
+    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;
   }
-  .friend-code-card .together-copy-btn{
-    font-family:inherit; font-size:10.5px; font-weight:700; letter-spacing:.02em; padding:6px 13px; border-radius:8px;
-    background:var(--chip); color:var(--fg);
+  .friend-code-btn{
+    display:flex; flex-direction:column; gap:2px; text-align:left;
+    background:var(--bg2); border:none; border-radius:10px; padding:9px 12px;
+    cursor:pointer; font-family:inherit; transition:background .12s ease;
   }
+  .friend-code-btn:hover{ background:var(--chip); }
   .friend-code-label{
-    font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:1px;
+    font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .friend-code{
-    font-family:'Anton',sans-serif; font-size:15px; letter-spacing:.16em; color:var(--fg);
+    font-family:'Anton',sans-serif; font-size:15px; letter-spacing:.14em; color:var(--fg);
   }
-  .friend-add-row{
-    display:flex; gap:6px; align-items:stretch;
+  .friend-add-box{
+    display:flex; flex-direction:column; gap:2px;
+    background:var(--bg2); border-radius:10px; padding:9px 10px 9px 12px;
   }
-  .friend-add-row input{
-    flex:1; min-width:0; background:var(--bg2); border:none; color:var(--fg);
-    border-radius:10px; padding:8px 12px; font-family:inherit; font-size:12.5px;
-    letter-spacing:.1em; text-transform:uppercase;
+  .friend-add-inline{ display:flex; gap:6px; align-items:center; }
+  .friend-add-inline input{
+    flex:1; min-width:0; background:none; border:none; color:var(--fg);
+    padding:2px 0; font-family:'Anton',sans-serif; font-size:15px;
+    letter-spacing:.14em; text-transform:uppercase;
   }
-  .friend-add-row input::placeholder{ letter-spacing:normal; text-transform:none; opacity:.6; }
+  .friend-add-inline input:focus{ outline:none; }
+  .friend-add-inline input::placeholder{ letter-spacing:normal; text-transform:none; opacity:.5; font-size:12px; font-family:inherit; }
   .friend-add-btn{
-    font-family:inherit; font-size:10.5px; font-weight:700; letter-spacing:.02em; padding:0 16px; border-radius:10px;
-    background:var(--chip); color:var(--fg);
+    flex:none; font-family:inherit; font-size:10px; font-weight:700; letter-spacing:.03em;
+    padding:5px 11px; border-radius:8px; border:none; cursor:pointer;
+    background:var(--accent); color:var(--accent-ink);
   }
-  .friend-add-btn:hover, .friend-code-card .together-copy-btn:hover{ opacity:.8; }
+  .friend-add-btn:hover, .friend-code-btn:hover{ opacity:.9; }
+  /* scrollable friends list so a long list never crowds the sheet */
+  .friends-list-scroll{
+    max-height:196px; overflow-y:auto; margin-top:2px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .friends-list-scroll::-webkit-scrollbar{ width:5px; }
+  .friends-list-scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:3px; }
   .friend-row{
     display:flex; align-items:center; gap:10px;
     padding:8px 2px; border-top:1px solid var(--line); font-size:13px;
@@ -2111,20 +2124,22 @@
     <details class="profile-section" id="friendsSection" style="display:none;">
       <summary>Friends <span class="friend-badge" id="friendReqBadge" style="display:none;">0</span><span class="chev">›</span></summary>
       <div style="margin-top:10px;">
-        <div class="friend-code-card">
-          <div>
-            <div class="friend-code-label">Your friend code</div>
-            <div class="friend-code" id="myFriendCode">······</div>
+        <div class="friend-top-row">
+          <button class="friend-code-btn" id="copyFriendCodeBtn" type="button" title="Tap to copy your code">
+            <span class="friend-code-label">Your code — tap to copy</span>
+            <span class="friend-code" id="myFriendCode">······</span>
+          </button>
+          <div class="friend-add-box">
+            <span class="friend-code-label">Add a friend</span>
+            <div class="friend-add-inline">
+              <input id="friendCodeInput" type="text" maxlength="6" placeholder="Their code" autocomplete="off" autocapitalize="characters" spellcheck="false">
+              <button class="friend-add-btn" id="addFriendBtn" type="button">Add</button>
+            </div>
           </div>
-          <button class="btn together-copy-btn" id="copyFriendCodeBtn" type="button">Copy</button>
-        </div>
-        <div class="friend-add-row">
-          <input id="friendCodeInput" type="text" maxlength="6" placeholder="Enter a friend's code" autocomplete="off" autocapitalize="characters" spellcheck="false">
-          <button class="btn friend-add-btn" id="addFriendBtn" type="button">Add</button>
         </div>
         <p class="signin-note" id="friendMsg" style="min-height:0;margin:6px 0 0;"></p>
         <div id="friendRequestsList"></div>
-        <div id="friendsList"></div>
+        <div id="friendsList" class="friends-list-scroll"></div>
       </div>
     </details>
 
@@ -4206,10 +4221,10 @@ $('friendCodeInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.pre
 $('copyFriendCodeBtn').onclick=async ()=>{
   const code=$('myFriendCode').textContent.trim();
   if(!code || code.startsWith('·') || code.startsWith('—')) return;
+  const lbl=$('copyFriendCodeBtn').querySelector('.friend-code-label');
   try{
     await navigator.clipboard.writeText(code);
-    const b=$('copyFriendCodeBtn'); const t=b.textContent; b.textContent='Copied!';
-    setTimeout(()=>{ b.textContent=t; }, 1400);
+    if(lbl){ const t=lbl.textContent; lbl.textContent='Copied!'; setTimeout(()=>{ lbl.textContent=t; }, 1400); }
   }catch(e){ friendMsg('Copy failed — your code is: '+code); }
 };
 $('googleSignInBtn').onclick=cloudSignInGoogle;
