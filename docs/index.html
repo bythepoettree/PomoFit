@@ -1271,7 +1271,12 @@
     color:var(--muted); font-weight:600; margin-bottom:6px;
   }
   .together-name-block{ margin-bottom:16px; }
-  .together-name-block input{
+  .session-name-row{ margin-bottom:12px; }
+  .session-name-row input{
+    width:100%; background:var(--chip); border:none; color:var(--fg);
+    border-radius:12px; padding:12px 15px; font-family:inherit; font-size:15px; font-weight:600;
+  }
+  .session-name-row input::placeholder{ color:var(--muted); opacity:.6; font-weight:400; }  .together-name-block input{
     width:100%; background:var(--chip); border:1px solid transparent; border-radius:12px;
     color:var(--fg); font-family:inherit; font-size:15px; font-weight:500;
     padding:12px 14px; outline:none; transition:border-color .15s ease;
@@ -1426,6 +1431,12 @@
     100%{ box-shadow: 0 0 0 3px #FF6B6B; }
   }
   @media (prefers-reduced-motion: reduce){ .cowork-fab.active{ animation:none; box-shadow:0 0 0 3px var(--accent); } }
+  /* colourful ring around the Co-work menu icon while a session is active */
+  .menu-item.active .cowork-ic{
+    border-radius:50%; width:22px; height:22px;
+    animation:coworkRing 2s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce){ .menu-item.active .cowork-ic{ animation:none; box-shadow:0 0 0 2px var(--accent); border-radius:50%; } }
 
   .float-chat{
     position:fixed; bottom:16px; z-index:999;
@@ -1777,8 +1788,8 @@
       <button class="menu-item" id="profileBtn" role="menuitem">
         <span class="menu-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg></span><span id="menuAccountLabel">Account</span>
       </button>
-      <button class="menu-item" id="togetherBtn" role="menuitem" aria-label="Co-study">
-        <span class="menu-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17l2 2a1 1 0 1 0 3-3"/><path d="m14 14l2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3l1 11h-2M3 3L2 14l6.5 6.5a1 1 0 1 0 3-3M3 4h8"/></svg></span><span>Co-study</span>
+      <button class="menu-item" id="togetherBtn" role="menuitem" aria-label="Co-work">
+        <span class="menu-ic cowork-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17l2 2a1 1 0 1 0 3-3"/><path d="m14 14l2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3l1 11h-2M3 3L2 14l6.5 6.5a1 1 0 1 0 3-3M3 4h8"/></svg></span><span>Co-work</span>
       </button>
       <a class="menu-item" id="supportLink" href="https://ko-fi.com/pomoease" target="_blank" rel="noopener noreferrer" role="menuitem">
         <span class="menu-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></span><span>Support</span>
@@ -2085,26 +2096,6 @@
       </div>
     </details>
 
-    <details class="profile-section" id="friendsSection" style="display:none;">
-      <summary>Friends <span class="friend-badge" id="friendReqBadge" style="display:none;">0</span><span class="chev">›</span></summary>
-      <div style="margin-top:10px;">
-        <div class="friend-code-card">
-          <div>
-            <div class="friend-code-label">Your friend code</div>
-            <div class="friend-code" id="myFriendCode">······</div>
-          </div>
-          <button class="btn together-copy-btn" id="copyFriendCodeBtn" type="button">Copy</button>
-        </div>
-        <div class="friend-add-row">
-          <input id="friendCodeInput" type="text" maxlength="6" placeholder="Enter a friend's code" autocomplete="off" autocapitalize="characters" spellcheck="false">
-          <button class="btn friend-add-btn" id="addFriendBtn" type="button">Add</button>
-        </div>
-        <p class="signin-note" id="friendMsg" style="min-height:0;margin:6px 0 0;"></p>
-        <div id="friendRequestsList"></div>
-        <div id="friendsList"></div>
-      </div>
-    </details>
-
     <p class="profile-notice" id="profileNotice">Your account lives on this device only — clearing browser data will erase it.</p>
 
     <div class="profile-actions">
@@ -2141,7 +2132,7 @@
 
 <div class="sheet" id="togetherSheet">
   <div class="sheet-head">
-    <h2>Study together</h2>
+    <h2>Co-work</h2>
     <button class="close-sheet" aria-label="Close">✕</button>
   </div>
 
@@ -2149,7 +2140,7 @@
     <div id="togetherStart">
       <p class="together-tagline">Share a focus session with a friend — timers stay in sync. No account needed.</p>
 
-      <div class="together-name-block">
+      <div class="together-name-block" id="nameBlock">
         <label for="nicknameInput" class="together-label">Your name</label>
         <input id="nicknameInput" type="text" maxlength="25" placeholder="e.g. Alex" autocomplete="off">
       </div>
@@ -2174,10 +2165,34 @@
       </div>
 
       <p class="signin-note" id="togetherMsg" style="min-height:16px;"></p>
+
+      <details class="profile-section" id="friendsSection" style="display:none;margin-top:6px;">
+        <summary>Friends <span class="friend-badge" id="friendReqBadge" style="display:none;">0</span><span class="chev">›</span></summary>
+        <div style="margin-top:10px;">
+          <div class="friend-code-card">
+            <div>
+              <div class="friend-code-label">Your friend code</div>
+              <div class="friend-code" id="myFriendCode">······</div>
+            </div>
+            <button class="btn together-copy-btn" id="copyFriendCodeBtn" type="button">Copy</button>
+          </div>
+          <div class="friend-add-row">
+            <input id="friendCodeInput" type="text" maxlength="6" placeholder="Enter a friend's code" autocomplete="off" autocapitalize="characters" spellcheck="false">
+            <button class="btn friend-add-btn" id="addFriendBtn" type="button">Add</button>
+          </div>
+          <p class="signin-note" id="friendMsg" style="min-height:0;margin:6px 0 0;"></p>
+          <div id="friendRequestsList"></div>
+          <div id="friendsList"></div>
+        </div>
+      </details>
+      <p class="signin-note" id="friendsSignedOutNote" style="display:none;margin-top:6px;">Sign in to your account to add friends and see who's online.</p>
     </div>
   </div>
 
   <div id="togetherActive" style="display:none;">
+    <div class="session-name-row">
+      <input id="sessionNameInput" type="text" maxlength="40" placeholder="Name this session (optional)" autocomplete="off">
+    </div>
     <div class="together-invite-card">
       <div class="together-invite-info">
         <div class="together-invite-label">Invite code</div>
@@ -2824,10 +2839,11 @@ async function renderFriends(){
       const row=buildFriendRow(f, [
         {label:'Remove', cls:'ghost', fn:()=>removeFriend(fUid)}
       ]);
-      // invite button — appears only when this friend is online AND we're in a session
+      // invite button — appears whenever this friend is online. If we're not in a
+      // session yet, it starts one first, then invites them.
       const inviteB=document.createElement('button'); inviteB.type='button';
       inviteB.className='fr-btn'; inviteB.textContent='Invite'; inviteB.style.display='none';
-      inviteB.onclick=()=>sendSessionInvite(fUid, inviteB);
+      inviteB.onclick=()=>inviteFriendToSession(fUid, inviteB);
       row.querySelector('.fr-actions').prepend(inviteB);
       // live online dot — updates as the friend connects/disconnects
       const dot=document.createElement('span'); dot.className='fr-dot'; dot.title='Offline';
@@ -2840,7 +2856,8 @@ async function renderFriends(){
           const online = !!(v && v.online);
           dot.classList.toggle('online', online);
           dot.title = online ? 'Online now' : 'Offline';
-          inviteB.style.display = (online && mySession) ? '' : 'none';
+          inviteB.style.display = online ? '' : 'none';
+          inviteB.textContent = mySession ? 'Invite' : 'Start';
           let sub=nameCol.querySelector('.fr-sub');
           if(online){
             if(!sub){ sub=document.createElement('div'); sub.className='fr-sub'; nameCol.appendChild(sub); }
@@ -2989,6 +3006,22 @@ async function sendSessionInvite(fUid, btn){
     if(btn){ const t=btn.textContent; btn.textContent='Invited!'; btn.disabled=true;
       setTimeout(()=>{ btn.textContent=t; btn.disabled=false; }, 2500); }
   }catch(e){ console.error('invite failed', e); friendMsg('Couldn\'t send the invite — try again.'); }
+}
+
+// invite a friend, starting a session first if we're not already in one
+async function inviteFriendToSession(fUid, btn){
+  if(!cloudUser) return;
+  try{
+    await ensureFirebase();
+    if(!mySession){
+      // start a new session as host, using the profile name
+      myCapturedName = (DATA.displayName||'').trim() || 'Someone';
+      try{ localStorage.setItem('pomofit:coworkName', myCapturedName); }catch(e){}
+      const code = genSessionCode();
+      await joinOrCreateSession(code, true);
+    }
+    await sendSessionInvite(fUid, btn);
+  }catch(e){ console.error('invite/start failed', e); friendMsg('Couldn\'t start the session — try again.'); }
 }
 
 let inviteListenerRef=null, inviteListenerHandler=null;
@@ -4133,7 +4166,6 @@ function renderProfile(){
     $('stMinutes').textContent=DATA.totals.minutes;
     $('stReps').textContent=DATA.totals.reps;
     renderDashboard();
-    renderFriends();
     const notice=$('profileNotice');
     if(notice) notice.textContent = cloudUser
       ? '☁️ Signed in — your progress syncs across your devices.'
@@ -4700,6 +4732,20 @@ function showTogetherIntro(){
     $('joinFromLinkRow').style.display='none';
   }
   refreshRejoinButton();
+  // signed-in users don't need to type a name — we use their profile name.
+  // guests still get the name field.
+  const nameBlock=$('nameBlock');
+  const signedIn = !!(cloudUser && (DATA.displayName||'').trim());
+  if(nameBlock) nameBlock.style.display = signedIn ? 'none' : '';
+  // friends live here now — render for signed-in users, prompt sign-in otherwise
+  const fsec=$('friendsSection'), fnote=$('friendsSignedOutNote');
+  if(cloudUser){
+    if(fnote) fnote.style.display='none';
+    renderFriends();
+  } else {
+    if(fsec) fsec.style.display='none';
+    if(fnote) fnote.style.display='';
+  }
 }
 
 // show a "Rejoin last session" button (greyed out if that session has expired)
@@ -4859,6 +4905,7 @@ async function joinOrCreateSession(code, asHost){
   sessionRefs.membersRef.get().then(snap=> renderMembers(snap.val()||{}));
   $('sessionCodeDisplay').textContent = code;
   $('floatChatCode').textContent = 'Session '+code;
+  setupSessionName(code);
   showTogetherActive();
   togetherMsg('');
   updateChatLockState();
@@ -4869,6 +4916,35 @@ async function joinOrCreateSession(code, asHost){
       setTimeout(()=> showToast('🔒 Chat locks while the timer is running — unlocks on pause or break!'), 1200);
     }
   }catch(e){}
+}
+
+let sessionNameRef=null, sessionNameHandler=null, sessionNameLocalEdit=0;
+function setupSessionName(code){
+  teardownSessionName();
+  if(!fb || !fb.db) return;
+  const input=$('sessionNameInput');
+  sessionNameRef = fb.db.ref('sessions/'+code+'/name');
+  // live: reflect the name others set (ignore the echo of our own recent edit)
+  sessionNameHandler = sessionNameRef.on('value', snap=>{
+    if(Date.now()-sessionNameLocalEdit < 1500) return;
+    if(document.activeElement===input) return; // don't clobber while typing
+    input.value = snap.val() || '';
+  }, ()=>{});
+  // write as the user types (debounced)
+  let t=null;
+  input.oninput=()=>{
+    sessionNameLocalEdit = Date.now();
+    clearTimeout(t);
+    t=setTimeout(()=>{
+      const v=(input.value||'').trim().slice(0,40);
+      try{ sessionNameRef.set(v || null); }catch(e){}
+    }, 350);
+  };
+}
+function teardownSessionName(){
+  if(sessionNameRef && sessionNameHandler){ try{ sessionNameRef.off('value', sessionNameHandler); }catch(e){} }
+  sessionNameRef=null; sessionNameHandler=null;
+  const input=$('sessionNameInput'); if(input){ input.oninput=null; input.value=''; }
 }
 
 function attachSessionListeners(){
@@ -4922,6 +4998,7 @@ function detachSessionListeners(){
   sessionListeners.forEach(({ref, event, cb})=> ref.off(event, cb));
   sessionListeners=[];
   hostUid=null;
+  teardownSessionName();
   if(window._presenceHeartbeat){ clearInterval(window._presenceHeartbeat); window._presenceHeartbeat=null; }
   const notice=$('coworkSettingsNotice'); if(notice) notice.classList.remove('show');
 }
