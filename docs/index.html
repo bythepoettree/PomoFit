@@ -1118,7 +1118,7 @@
     opacity:.75;
   }
   .profile-actions{
-    display:flex; flex-direction:row; gap:8px; margin-top:8px;
+    display:flex; flex-direction:row; gap:8px; margin-top:12px;
   }
   .profile-action-btn{
     flex:1; padding:10px 8px; text-align:center;
@@ -1131,13 +1131,18 @@
   .profile-action-btn.danger{ color:#E8604C; width:100%; }
   .profile-action-btn.danger:hover{ background:rgba(232,96,76,.12); }
   /* collapsed danger zone keeps destructive actions out of easy reach */
-  .danger-zone{ margin-top:14px; }
+  .danger-zone{ margin-top:8px; }
   .danger-toggle{
-    background:none; border:none; color:var(--muted);
-    font-family:inherit; font-size:11.5px; font-weight:600; letter-spacing:.04em;
-    cursor:pointer; padding:4px 2px; opacity:.7; transition:opacity .15s ease;
+    width:100%;
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--chip); border:none; border-radius:10px;
+    color:var(--muted); font-family:inherit; font-size:12px; font-weight:600;
+    letter-spacing:.02em; cursor:pointer; padding:10px 14px;
+    transition:background .12s ease, color .12s ease;
   }
-  .danger-toggle:hover{ opacity:1; }
+  .danger-toggle:hover{ color:var(--fg); }
+  .danger-chev{ font-size:14px; line-height:1; transition:transform .2s ease; }
+  .danger-toggle[aria-expanded="true"] .danger-chev{ transform:rotate(180deg); }
   .danger-body{
     max-height:0; overflow:hidden;
     transition:max-height .28s ease, margin .28s ease;
@@ -2096,14 +2101,32 @@
       </div>
     </details>
 
-    <p class="profile-notice" id="profileNotice">Your account lives on this device only — clearing browser data will erase it.</p>
+    <details class="profile-section" id="friendsSection" style="display:none;">
+      <summary>Friends <span class="friend-badge" id="friendReqBadge" style="display:none;">0</span><span class="chev">›</span></summary>
+      <div style="margin-top:10px;">
+        <div class="friend-code-card">
+          <div>
+            <div class="friend-code-label">Your friend code</div>
+            <div class="friend-code" id="myFriendCode">······</div>
+          </div>
+          <button class="btn together-copy-btn" id="copyFriendCodeBtn" type="button">Copy</button>
+        </div>
+        <div class="friend-add-row">
+          <input id="friendCodeInput" type="text" maxlength="6" placeholder="Enter a friend's code" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button class="btn friend-add-btn" id="addFriendBtn" type="button">Add</button>
+        </div>
+        <p class="signin-note" id="friendMsg" style="min-height:0;margin:6px 0 0;"></p>
+        <div id="friendRequestsList"></div>
+        <div id="friendsList"></div>
+      </div>
+    </details>
 
     <div class="profile-actions">
       <button class="profile-action-btn" id="resetStatsBtn">Reset</button>
       <button class="profile-action-btn" id="signOutBtn">Sign out</button>
     </div>
     <div class="danger-zone">
-      <button type="button" class="danger-toggle" id="dangerToggle" aria-expanded="false">Advanced ⌄</button>
+      <button type="button" class="danger-toggle" id="dangerToggle" aria-expanded="false"><span>Advanced settings</span><span class="danger-chev">⌄</span></button>
       <div class="danger-body" id="dangerBody">
         <p class="danger-note">Deleting your account permanently removes your profile, tasks, and all saved progress. This can't be undone.</p>
         <button class="profile-action-btn danger" id="deleteAccountBtn">Delete account</button>
@@ -2166,26 +2189,6 @@
 
       <p class="signin-note" id="togetherMsg" style="min-height:16px;"></p>
 
-      <details class="profile-section" id="friendsSection" style="display:none;margin-top:6px;">
-        <summary>Friends <span class="friend-badge" id="friendReqBadge" style="display:none;">0</span><span class="chev">›</span></summary>
-        <div style="margin-top:10px;">
-          <div class="friend-code-card">
-            <div>
-              <div class="friend-code-label">Your friend code</div>
-              <div class="friend-code" id="myFriendCode">······</div>
-            </div>
-            <button class="btn together-copy-btn" id="copyFriendCodeBtn" type="button">Copy</button>
-          </div>
-          <div class="friend-add-row">
-            <input id="friendCodeInput" type="text" maxlength="6" placeholder="Enter a friend's code" autocomplete="off" autocapitalize="characters" spellcheck="false">
-            <button class="btn friend-add-btn" id="addFriendBtn" type="button">Add</button>
-          </div>
-          <p class="signin-note" id="friendMsg" style="min-height:0;margin:6px 0 0;"></p>
-          <div id="friendRequestsList"></div>
-          <div id="friendsList"></div>
-        </div>
-      </details>
-      <p class="signin-note" id="friendsSignedOutNote" style="display:none;margin-top:6px;">Sign in to your account to add friends and see who's online.</p>
     </div>
   </div>
 
@@ -4109,7 +4112,7 @@ function renderProfile(){
   resetArmed=false;
   const b=$('resetStatsBtn'); if(b){ b.textContent='Reset'; b.classList.remove('armed'); }
   // keep the danger zone collapsed and delete disarmed each time the profile renders
-  const dt=$('dangerToggle'); if(dt){ dt.setAttribute('aria-expanded','false'); dt.textContent='Advanced ⌄'; }
+  const dt=$('dangerToggle'); if(dt){ dt.setAttribute('aria-expanded','false'); }
   const et=$('emojiToggle'); if(et){ et.setAttribute('aria-expanded','false'); et.textContent='Use an emoji instead ⌄'; }
   const db=$('deleteAccountBtn'); if(db){ deleteArmed=false; db.textContent='Delete account'; db.classList.remove('armed'); }
   const signed=!!DATA.name;
@@ -4166,10 +4169,7 @@ function renderProfile(){
     $('stMinutes').textContent=DATA.totals.minutes;
     $('stReps').textContent=DATA.totals.reps;
     renderDashboard();
-    const notice=$('profileNotice');
-    if(notice) notice.textContent = cloudUser
-      ? '☁️ Signed in — your progress syncs across your devices.'
-      : 'Your account lives on this device only — clearing browser data will erase it.';
+    renderFriends();
     const h=$('histList'); h.innerHTML='';
     if(!DATA.history.length) h.innerHTML='<p class="empty-note">Nothing logged yet — finish a focus round or a workout.</p>';
     DATA.history.slice(0,5).forEach(e=>{
@@ -4217,7 +4217,6 @@ $('dangerToggle').onclick=()=>{
   const t=$('dangerToggle');
   const open = t.getAttribute('aria-expanded')==='true';
   t.setAttribute('aria-expanded', open?'false':'true');
-  t.textContent = open ? 'Advanced ⌄' : 'Advanced ⌃';
   // re-disarm delete whenever the zone is toggled
   deleteArmed=false;
   const b=$('deleteAccountBtn'); b.textContent='Delete account'; b.classList.remove('armed');
@@ -4737,15 +4736,6 @@ function showTogetherIntro(){
   const nameBlock=$('nameBlock');
   const signedIn = !!(cloudUser && (DATA.displayName||'').trim());
   if(nameBlock) nameBlock.style.display = signedIn ? 'none' : '';
-  // friends live here now — render for signed-in users, prompt sign-in otherwise
-  const fsec=$('friendsSection'), fnote=$('friendsSignedOutNote');
-  if(cloudUser){
-    if(fnote) fnote.style.display='none';
-    renderFriends();
-  } else {
-    if(fsec) fsec.style.display='none';
-    if(fnote) fnote.style.display='';
-  }
 }
 
 // show a "Rejoin last session" button (greyed out if that session has expired)
