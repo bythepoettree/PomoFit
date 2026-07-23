@@ -20,7 +20,7 @@
       const s = JSON.parse(localStorage.getItem('pomofit:settings') || 'null');
       if(s && s.theme){
         const t = s.theme === 'cream' ? 'ocean' : s.theme;
-        const bgMap = { ember:'#1B3A2D', mono:'#0B0B0B', pink:'#EF8AAE', ocean:'#3E92B8', light:'#F5F5F4' };
+        const bgMap = { ember:'#1B3A2D', mono:'#141414', pink:'#E36F97', ocean:'#2E7191', light:'#5A5F66' };
         const bg = bgMap[t] || '#1B3A2D';
         document.documentElement.style.background = bg;
         document.documentElement.style.colorScheme = (t === 'light') ? 'light' : 'dark';
@@ -100,56 +100,56 @@
   }
   /* ---------- THEME: Black & White ---------- */
   body[data-theme="mono"][data-mode="focus"]{
-    --bg:#000000; --bg2:#111111; --fg:#FFFFFF; --muted:#777777;
-    --accent:#FFFFFF; --accent-ink:#000000; --line:rgba(255,255,255,.10); --chip:#1A1A1A;
+    --bg:#141414; --bg2:#1E1E1E; --fg:#FFFFFF; --muted:#828282;
+    --accent:#FFFFFF; --accent-ink:#141414; --line:rgba(255,255,255,.10); --chip:#262626;
   }
   body[data-theme="mono"][data-mode="sweat"]{
-    --bg:#000000; --bg2:#0D0D0D; --fg:#FFFFFF; --muted:#777777;
-    --accent:#FFFFFF; --accent-ink:#000000; --line:rgba(255,255,255,.10); --chip:#181818;
+    --bg:#101010; --bg2:#1A1A1A; --fg:#FFFFFF; --muted:#828282;
+    --accent:#FFFFFF; --accent-ink:#101010; --line:rgba(255,255,255,.10); --chip:#222222;
   }
   body[data-theme="mono"][data-mode="rest"]{
-    --bg:#000000; --bg2:#111111; --fg:#FFFFFF; --muted:#777777;
-    --accent:#FFFFFF; --accent-ink:#000000; --line:rgba(255,255,255,.10); --chip:#1A1A1A;
+    --bg:#181818; --bg2:#222222; --fg:#FFFFFF; --muted:#828282;
+    --accent:#FFFFFF; --accent-ink:#181818; --line:rgba(255,255,255,.10); --chip:#2A2A2A;
   }
   /* ---------- THEME: Pink & White ---------- */
   body[data-theme="pink"][data-mode="focus"]{
-    --bg:#EF8AAE; --bg2:#E8799F; --fg:#FFFFFF; --muted:rgba(255,255,255,.7);
-    --accent:#FFFFFF; --accent-ink:#C4527A; --line:rgba(255,255,255,.2); --chip:#D4607E;
+    --bg:#E36F97; --bg2:#DA6088; --fg:#FFFFFF; --muted:rgba(255,255,255,.72);
+    --accent:#FFFFFF; --accent-ink:#B0426A; --line:rgba(255,255,255,.2); --chip:#CE5A80;
   }
   body[data-theme="pink"][data-mode="sweat"]{
-    --bg:#E8799F; --bg2:#DA6590; --fg:#FFFFFF; --muted:rgba(255,255,255,.7);
-    --accent:#FFFFFF; --accent-ink:#B04268; --line:rgba(255,255,255,.2); --chip:#C55280;
+    --bg:#DA6088; --bg2:#CE5079; --fg:#FFFFFF; --muted:rgba(255,255,255,.72);
+    --accent:#FFFFFF; --accent-ink:#9E385C; --line:rgba(255,255,255,.2); --chip:#C24E72;
   }
   body[data-theme="pink"][data-mode="rest"]{
-    --bg:#F59BBB; --bg2:#EF8AAE; --fg:#FFFFFF; --muted:rgba(255,255,255,.7);
-    --accent:#FFFFFF; --accent-ink:#C4527A; --line:rgba(255,255,255,.2); --chip:#D4607E;
+    --bg:#EA80A4; --bg2:#E36F97; --fg:#FFFFFF; --muted:rgba(255,255,255,.72);
+    --accent:#FFFFFF; --accent-ink:#B0426A; --line:rgba(255,255,255,.2); --chip:#CE5A80;
   }
   /* ---------- THEME: Ocean Blue & White ---------- */
   body[data-theme="ocean"][data-mode="focus"]{
-    --bg:#3E92B8; --bg2:#3583A7; --fg:#FFFFFF; --muted:rgba(255,255,255,.78);
-    --accent:#FFFFFF; --accent-ink:#256987; --line:rgba(255,255,255,.22); --chip:#2E779A;
+    --bg:#2E7191; --bg2:#276484; --fg:#FFFFFF; --muted:rgba(255,255,255,.75);
+    --accent:#FFFFFF; --accent-ink:#1B5674; --line:rgba(255,255,255,.2); --chip:#296b8c;
   }
   body[data-theme="ocean"][data-mode="sweat"]{
-    --bg:#3583A7; --bg2:#2E779A; --fg:#FFFFFF; --muted:rgba(255,255,255,.78);
-    --accent:#FFFFFF; --accent-ink:#1E5C79; --line:rgba(255,255,255,.22); --chip:#276B8D;
+    --bg:#276484; --bg2:#215977; --fg:#FFFFFF; --muted:rgba(255,255,255,.75);
+    --accent:#FFFFFF; --accent-ink:#164C67; --line:rgba(255,255,255,.2); --chip:#235d7d;
   }
   body[data-theme="ocean"][data-mode="rest"]{
-    --bg:#4CA1C6; --bg2:#3E92B8; --fg:#FFFFFF; --muted:rgba(255,255,255,.78);
-    --accent:#FFFFFF; --accent-ink:#256987; --line:rgba(255,255,255,.22); --chip:#2E779A;
+    --bg:#357E9F; --bg2:#2E7191; --fg:#FFFFFF; --muted:rgba(255,255,255,.75);
+    --accent:#FFFFFF; --accent-ink:#1B5674; --line:rgba(255,255,255,.2); --chip:#296b8c;
   }
 
-  /* ---------- THEME: Light (white & dark grey) ---------- */
+  /* ---------- THEME: Grey & White ---------- */
   body[data-theme="light"][data-mode="focus"]{
-    --bg:#F5F5F4; --bg2:#EDEDEC; --fg:#3A3A3A; --muted:rgba(58,58,58,.72);
-    --accent:#3A3A3A; --accent-ink:#F5F5F4; --line:rgba(58,58,58,.12); --chip:#E4E4E2;
+    --bg:#5A5F66; --bg2:#656B73; --fg:#FFFFFF; --muted:rgba(255,255,255,.68);
+    --accent:#FFFFFF; --accent-ink:#5A5F66; --line:rgba(255,255,255,.14); --chip:#6B7178;
   }
   body[data-theme="light"][data-mode="sweat"]{
-    --bg:#EDEDEC; --bg2:#E4E4E2; --fg:#3A3A3A; --muted:rgba(58,58,58,.72);
-    --accent:#3A3A3A; --accent-ink:#EDEDEC; --line:rgba(58,58,58,.12); --chip:#DBDBD9;
+    --bg:#52575E; --bg2:#5D636B; --fg:#FFFFFF; --muted:rgba(255,255,255,.68);
+    --accent:#FFFFFF; --accent-ink:#52575E; --line:rgba(255,255,255,.14); --chip:#636970;
   }
   body[data-theme="light"][data-mode="rest"]{
-    --bg:#FAFAF9; --bg2:#F1F1EF; --fg:#3A3A3A; --muted:rgba(58,58,58,.72);
-    --accent:#3A3A3A; --accent-ink:#FAFAF9; --line:rgba(58,58,58,.12); --chip:#E4E4E2;
+    --bg:#61666E; --bg2:#6C727A; --fg:#FFFFFF; --muted:rgba(255,255,255,.68);
+    --accent:#FFFFFF; --accent-ink:#61666E; --line:rgba(255,255,255,.14); --chip:#727880;
   }
 
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
@@ -159,9 +159,19 @@
   body{
     background:var(--bg); color:var(--fg);
     font-family:'Space Grotesk', system-ui, 'Segoe UI', 'Noto Sans Arabic', 'Noto Sans SC', sans-serif;
-    transition: background .6s var(--ease), color .6s var(--ease);
+    transition: color .6s var(--ease);
     display:flex; flex-direction:column; align-items:center;
     min-height:100dvh; padding:0 16px 32px;
+  }
+  /* ocean theme: vertical gradient that lightens toward the bottom of the screen */
+  body[data-theme="ocean"]{
+    background:linear-gradient(to bottom, var(--bg) 0%, var(--bg) 30%, #58a6c8 100%);
+    background-attachment:fixed;
+  }
+  /* pink: whisper-subtle lift toward the bottom */
+  body[data-theme="pink"]{
+    background:linear-gradient(to bottom, var(--bg) 0%, var(--bg) 60%, #EF87A8 100%);
+    background-attachment:fixed;
   }
   /* Arabic: disable letter-spacing (breaks glyph joining) and use system Arabic fonts */
   :lang(ar), :lang(ar) *{
@@ -650,7 +660,7 @@
   .current-task b{color:var(--fg); font-weight:600;}
   .timer{
     font-family:'Anton', sans-serif;
-    font-size:clamp(76px, 25vw, 142px);
+    font-size:clamp(86px, 28vw, 160px);
     line-height:1; letter-spacing:.01em;
     font-variant-numeric: tabular-nums; user-select:none;
   }
@@ -1642,6 +1652,7 @@
     <path stroke-width="1.2" opacity="0.4"  d="M0 84 Q 45 76, 90 84 T 180 84 T 270 84 T 360 84 T 400 84"/>
   </g>
 </svg>
+
 
 <div id="entryPage" aria-label="Enter PomoEase">
   <div class="entry-glow" id="entryGlow"></div>
