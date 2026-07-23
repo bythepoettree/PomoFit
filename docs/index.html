@@ -2911,9 +2911,9 @@ async function renderFriends(){
   }catch(e){ console.error('requests read failed', e); }
   const reqWrap=$('friendRequestsList'); reqWrap.innerHTML='';
   const reqEntries=Object.entries(requests);
-  const badge=$('friendReqBadge');
+  const badge=$('menuFriendBadge');
   if(reqEntries.length){
-    badge.style.display=''; badge.textContent=reqEntries.length;
+    if(badge){ badge.style.display=''; badge.textContent=reqEntries.length; }
     const head=document.createElement('div'); head.className='friends-subhead'; head.textContent='Requests';
     reqWrap.appendChild(head);
     reqEntries.forEach(([fromUid, r])=>{
@@ -2923,7 +2923,7 @@ async function renderFriends(){
       ]));
     });
   } else {
-    badge.style.display='none';
+    if(badge) badge.style.display='none';
   }
 
   // 3) friends list
