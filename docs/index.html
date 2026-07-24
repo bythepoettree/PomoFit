@@ -1114,15 +1114,17 @@
   /* incoming session invite toast */
   .invite-toast{
     position:fixed; top:16px; left:50%; transform:translate(-50%,-8px);
-    z-index:9000; display:flex; align-items:center; gap:10px;
+    z-index:9000; display:flex; flex-direction:column; align-items:stretch; gap:12px;
     background:var(--bg2); color:var(--fg);
     border:1px solid var(--accent); border-radius:14px;
-    padding:12px 14px; box-shadow:0 14px 36px rgba(0,0,0,.32);
-    max-width:min(92vw, 420px);
+    padding:14px 16px; box-shadow:0 14px 36px rgba(0,0,0,.32);
+    width:min(92vw, 400px);
     opacity:0; transition:opacity .25s ease, transform .25s ease;
   }
   .invite-toast.show{ opacity:1; transform:translate(-50%,0); }
-  .invite-toast-text{ font-size:13px; line-height:1.35; flex:1; min-width:0; }
+  .invite-toast-text{ font-size:14px; line-height:1.4; }
+  .invite-toast-actions{ display:flex; gap:8px; justify-content:flex-end; }
+  .invite-toast-actions .fr-btn{ padding:9px 16px; font-size:12px; }
   .fr-dot{
     width:8px; height:8px; border-radius:50%; flex:none;
     background:var(--line); transition:background .3s ease, box-shadow .3s ease;
@@ -1137,6 +1139,7 @@
     font-family:inherit; font-size:11px; font-weight:700; padding:7px 12px; cursor:pointer;
   }
   .fr-btn.ghost{ background:var(--bg2); color:var(--muted); }
+  .fr-btn.armed{ background:#E8604C; color:#fff; }
   .fr-btn:hover{ opacity:.85; }
   .friends-empty{
     font-size:12px; color:var(--muted); padding:10px 2px 2px; opacity:.8;
@@ -1314,7 +1317,14 @@
     width:100%; background:var(--chip); border:none; color:var(--fg);
     border-radius:12px; padding:12px 15px; font-family:inherit; font-size:15px; font-weight:600;
   }
-  .session-name-row input::placeholder{ color:var(--muted); opacity:.6; font-weight:400; }  .together-name-block input{
+  .session-name-row input::placeholder{ color:var(--muted); opacity:.6; font-weight:400; }
+  /* committed state — reads as locked in, still editable on tap */
+  .session-name-row input.named{
+    background:transparent; border:1px solid var(--line);
+    font-family:'Anton', sans-serif; letter-spacing:.02em; font-size:16px;
+    cursor:pointer;
+  }
+  .session-name-row input{ border:1px solid transparent; transition:background .18s ease, border-color .18s ease; }  .together-name-block input{
     width:100%; background:var(--chip); border:1px solid transparent; border-radius:12px;
     color:var(--fg); font-family:inherit; font-size:15px; font-weight:500;
     padding:12px 14px; outline:none; transition:border-color .15s ease;
@@ -2272,6 +2282,10 @@ const S = {
 };
 let DATA = { name:null, displayName:null, avatar:null, tasks:[], history:[], totals:{sessions:0, minutes:0, reps:0} };
 let storageOK = false;
+/* focus-mode state — declared up here because closeSheets() (defined well above
+   the focus-mode section) reads both, and a `let` in the dead zone would throw */
+let userExitedFocus = false;
+let focusModePending = false;
 
 const $ = id => document.getElementById(id);
 const timerEl=$('timer'), startBtn=$('startBtn');
@@ -2552,8 +2566,8 @@ function applyCloudUser(user, cloudDoc){
   try{ localStorage.setItem('pomofit:cloudSession', '1'); }catch(e){}
   attachLiveSync();
   setupPresence();
-  attachInviteListener();
-  attachJoinRequestListener();
+  attachInviteListener().catch(e=>console.error('invite listener attach failed', e));
+  attachJoinRequestListener().catch(e=>console.error('join request listener attach failed', e));
   attachFriendsLive();
 }
 
@@ -2801,7 +2815,10 @@ async function askToJoinFriend(fUid, code, btn){
   if(!cloudUser || !code) return;
   try{
     await ensureFirebase();
-    await fb.db.ref('joinRequests/'+fUid+'/'+cloudUser.uid).set({
+    const ref = fb.db.ref('joinRequests/'+fUid+'/'+cloudUser.uid);
+    // same child_added problem as sendSessionInvite — clear before writing
+    await ref.remove();
+    await ref.set({
       name: myShareName(), code: code, at: firebase.database.ServerValue.TIMESTAMP
     });
     if(btn){ const t=btn.textContent; btn.textContent='Asked'; btn.disabled=true;
@@ -2809,33 +2826,37 @@ async function askToJoinFriend(fUid, code, btn){
   }catch(e){ console.error('join request failed', e); friendMsg("Couldn't send that request — try again."); }
 }
 
-let joinReqRef=null, joinReqHandler=null, joinReqPrimed=false;
-function attachJoinRequestListener(){
+let joinReqRef=null, joinReqHandler=null;
+async function attachJoinRequestListener(){
   detachJoinRequestListener();
   if(!cloudUser || !fb || !fb.db) return;
-  joinReqRef = fb.db.ref('joinRequests/'+cloudUser.uid);
-  joinReqHandler = joinReqRef.on('child_added', snap=>{
+  const ref = fb.db.ref('joinRequests/'+cloudUser.uid);
+  joinReqRef = ref;
+  // clear anything already queued — see attachInviteListener for why
+  try{
+    const snap = await ref.once('value');
+    const updates = {};
+    snap.forEach(c=>{ updates[c.key] = null; });
+    if(Object.keys(updates).length) await ref.update(updates);
+  }catch(e){}
+  if(joinReqRef !== ref) return; // detached while awaiting
+  joinReqHandler = ref.on('child_added', snap=>{
     const req = snap.val()||{}; const fromUid = snap.key;
     // stale, or for a room we've since left
     if((req.at && Date.now()-req.at > 2*60*60*1000) || !mySession || req.code!==mySession){
-      try{ joinReqRef.child(fromUid).remove(); }catch(e){}
+      try{ ref.child(fromUid).remove(); }catch(e){}
       return;
     }
-    // Firebase replays child_added for every EXISTING child when a listener
-    // attaches — on a page refresh that fired the ping with nothing new having
-    // happened. Only genuinely new arrivals should make a sound.
-    showJoinRequestToast(fromUid, req, joinReqPrimed);
+    showJoinRequestToast(fromUid, req);
   }, err=>console.error('join request listener', err));
-  // 'value' fires after the initial batch of child_added events
-  joinReqRef.once('value', ()=>{ joinReqPrimed=true; }, ()=>{ joinReqPrimed=true; });
 }
 function detachJoinRequestListener(){
   if(joinReqRef && joinReqHandler){ try{ joinReqRef.off('child_added', joinReqHandler); }catch(e){} }
-  joinReqRef=null; joinReqHandler=null; joinReqPrimed=false;
+  joinReqRef=null; joinReqHandler=null;
 }
 
-function showJoinRequestToast(fromUid, req, withSound=true){
-  if(withSound) pingIncoming();
+function showJoinRequestToast(fromUid, req){
+  pingIncoming();
   const toast=document.createElement('div'); toast.className='invite-toast';
   const txt=document.createElement('span'); txt.className='invite-toast-text';
   txt.textContent=(req.name||'A friend')+' wants to join your session';
@@ -2848,7 +2869,10 @@ function showJoinRequestToast(fromUid, req, withSound=true){
     try{ await sendSessionInvite(fromUid, null); }catch(e){}
   };
   no.onclick=()=>{ clear(); toast.remove(); };
-  toast.appendChild(txt); toast.appendChild(yes); toast.appendChild(no);
+  toast.appendChild(txt);
+  const acts=document.createElement('div'); acts.className='invite-toast-actions';
+  acts.appendChild(yes); acts.appendChild(no);
+  toast.appendChild(acts);
   document.body.appendChild(toast);
   requestAnimationFrame(()=>toast.classList.add('show'));
   setTimeout(()=>{ if(toast.isConnected){ toast.remove(); } }, 30000);
@@ -2974,7 +2998,7 @@ async function renderFriends(){
     listWrap.appendChild(head);
     frEntries.forEach(([fUid, f])=>{
       const row=buildFriendRow(f, [
-        {label:'Remove', cls:'ghost', fn:()=>removeFriend(fUid)}
+        {label:'Remove', cls:'ghost', fn:(e)=>armRemoveFriend(fUid, e.currentTarget)}
       ]);
       // Two possible actions, shown per the four-state matrix (see docs below):
       //   neither in a session      -> Start   (create one + invite them)
@@ -3131,6 +3155,31 @@ async function declineFriendRequest(fromUid){
   }catch(e){ console.error('decline failed', e); }
 }
 
+/* Removing a friend was a single tap, which was far too easy to do by accident.
+   First tap arms the button, second tap within 4s commits; it disarms itself. */
+let removeArmTimer=null;
+function armRemoveFriend(fUid, btn){
+  if(!btn) return removeFriend(fUid);
+  if(btn.dataset.armed==='1'){
+    clearTimeout(removeArmTimer);
+    btn.dataset.armed='0';
+    removeFriend(fUid);
+    return;
+  }
+  // disarm any other button that's currently armed
+  document.querySelectorAll('.fr-btn[data-armed="1"]').forEach(b=>{
+    b.dataset.armed='0'; b.classList.remove('armed'); b.textContent='Remove';
+  });
+  btn.dataset.armed='1';
+  btn.classList.add('armed');
+  btn.textContent='Sure?';
+  clearTimeout(removeArmTimer);
+  removeArmTimer=setTimeout(()=>{
+    if(!btn.isConnected) return;
+    btn.dataset.armed='0'; btn.classList.remove('armed'); btn.textContent='Remove';
+  }, 4000);
+}
+
 async function removeFriend(fUid){
   if(!cloudUser) return;
   try{
@@ -3151,7 +3200,13 @@ async function sendSessionInvite(fUid, btn){
   if(!cloudUser || !mySession) return;
   try{
     await ensureFirebase();
-    await fb.db.ref('invites/'+fUid+'/'+cloudUser.uid).set({
+    const ref = fb.db.ref('invites/'+fUid+'/'+cloudUser.uid);
+    /* The key here is the SENDER's uid, so if an invite from us is already
+       sitting at this path, set() is an update — the recipient's child_added
+       listener never fires and the invite silently vanishes, no matter how
+       many times you press the button. Clear it first so this is a new child. */
+    await ref.remove();
+    await ref.set({
       name: myShareName(),
       code: mySession,
       at: firebase.database.ServerValue.TIMESTAMP
@@ -3202,13 +3257,24 @@ function detachFriendsLive(){
   clearTimeout(friendsRenderTimer);
 }
 
-let inviteListenerRef=null, inviteListenerHandler=null, invitesPrimed=false;
-function attachInviteListener(){
+let inviteListenerRef=null, inviteListenerHandler=null;
+async function attachInviteListener(){
   detachInviteListener();
   if(!cloudUser || !fb || !fb.db) return;
-  invitesPrimed=false;
-  inviteListenerRef = fb.db.ref('invites/'+cloudUser.uid);
-  inviteListenerHandler = inviteListenerRef.on('child_added', snap=>{
+  const ref = fb.db.ref('invites/'+cloudUser.uid);
+  inviteListenerRef = ref;
+  /* Firebase replays child_added for every child that ALREADY exists when a
+     listener attaches. That re-delivered old invites — and re-played the ping —
+     on every page refresh. An invite the user never acted on is stale, so clear
+     the node before listening; then child_added only ever means "new". */
+  try{
+    const snap = await ref.once('value');
+    const updates = {};
+    snap.forEach(c=>{ updates[c.key] = null; });
+    if(Object.keys(updates).length) await ref.update(updates);
+  }catch(e){}
+  if(inviteListenerRef !== ref) return; // detached while awaiting
+  inviteListenerHandler = ref.on('child_added', snap=>{
     const inv=snap.val()||{};
     const fromUid=snap.key;
     // ignore + clean up stale invites (older than 2 hours)
@@ -3221,23 +3287,19 @@ function attachInviteListener(){
       try{ inviteListenerRef.child(fromUid).remove(); }catch(e){}
       return;
     }
-    // pre-existing invites are replayed on attach (i.e. on every refresh) —
-    // show them, but don't make a sound as if they'd just arrived
-    showInviteToast(fromUid, inv, invitesPrimed);
+    showInviteToast(fromUid, inv);
   }, err=>{ console.error('invite listener error', err); });
-  // 'value' fires after the initial batch of child_added events
-  inviteListenerRef.once('value', ()=>{ invitesPrimed=true; }, ()=>{ invitesPrimed=true; });
 }
 function detachInviteListener(){
   if(inviteListenerRef && inviteListenerHandler){
     try{ inviteListenerRef.off('child_added', inviteListenerHandler); }catch(e){}
   }
-  inviteListenerRef=null; inviteListenerHandler=null; invitesPrimed=false;
+  inviteListenerRef=null; inviteListenerHandler=null;
 }
 
 let activeInviteToast=null;
-function showInviteToast(fromUid, inv, withSound=true){
-  if(withSound) pingIncoming();
+function showInviteToast(fromUid, inv){
+  pingIncoming();
   // one toast at a time — newest wins
   if(activeInviteToast){ activeInviteToast.remove(); activeInviteToast=null; }
   const toast=document.createElement('div'); toast.className='invite-toast';
@@ -3266,7 +3328,10 @@ function showInviteToast(fromUid, inv, withSound=true){
     }catch(e){ console.error('invite join failed', e); }
   };
   disB.onclick=()=>{ clearInvite(); toast.remove(); activeInviteToast=null; };
-  toast.appendChild(txt); toast.appendChild(joinB); toast.appendChild(disB);
+  toast.appendChild(txt);
+  const acts=document.createElement('div'); acts.className='invite-toast-actions';
+  acts.appendChild(joinB); acts.appendChild(disB);
+  toast.appendChild(acts);
   document.body.appendChild(toast);
   requestAnimationFrame(()=>toast.classList.add('show'));
   activeInviteToast=toast;
@@ -5170,27 +5235,53 @@ function setupSessionName(code){
   if(!fb || !fb.db) return;
   const input=$('sessionNameInput');
   sessionNameRef = fb.db.ref('sessions/'+code+'/name');
+  // reflect the "named" state visually — set when there's a value and we're not editing
+  const syncNamedState=()=>{
+    const named = !!(input.value||'').trim() && document.activeElement!==input;
+    input.classList.toggle('named', named);
+  };
   // live: reflect the name others set (ignore the echo of our own recent edit)
   sessionNameHandler = sessionNameRef.on('value', snap=>{
     if(Date.now()-sessionNameLocalEdit < 1500) return;
     if(document.activeElement===input) return; // don't clobber while typing
     input.value = snap.val() || '';
+    syncNamedState();
   }, ()=>{});
+  const commit=()=>{
+    const v=(input.value||'').trim().slice(0,40);
+    input.value=v;
+    try{ sessionNameRef.set(v || null); }catch(e){}
+    syncNamedState();
+  };
   // write as the user types (debounced)
   let t=null;
   input.oninput=()=>{
     sessionNameLocalEdit = Date.now();
+    input.classList.remove('named');
     clearTimeout(t);
     t=setTimeout(()=>{
       const v=(input.value||'').trim().slice(0,40);
       try{ sessionNameRef.set(v || null); }catch(e){}
     }, 350);
   };
+  // clicking away locks the name in immediately rather than waiting on the debounce
+  input.onblur=()=>{
+    sessionNameLocalEdit = Date.now();
+    clearTimeout(t);
+    commit();
+  };
+  input.onfocus=()=> input.classList.remove('named');
+  input.onkeydown=(e)=>{ if(e.key==='Enter'){ e.preventDefault(); input.blur(); } };
+  syncNamedState();
 }
 function teardownSessionName(){
   if(sessionNameRef && sessionNameHandler){ try{ sessionNameRef.off('value', sessionNameHandler); }catch(e){} }
   sessionNameRef=null; sessionNameHandler=null;
-  const input=$('sessionNameInput'); if(input){ input.oninput=null; input.value=''; }
+  const input=$('sessionNameInput');
+  if(input){
+    input.oninput=null; input.onblur=null; input.onfocus=null; input.onkeydown=null;
+    input.value=''; input.classList.remove('named');
+  }
 }
 
 function attachSessionListeners(){
@@ -6184,6 +6275,12 @@ function closeSheets(){
   $('floatMembers').classList.remove('sheet-open');
   document.body.classList.remove('sheet-open');
   syncChromeColour();
+  // a focus session that started while a sheet was open engages now
+  if(focusModePending && S.running && S.phase==='focus' && !userExitedFocus){
+    enterFocusMode();
+  } else {
+    focusModePending=false;
+  }
 }
 /* ---------- consolidated menu popover ---------- */
 const menuBtn = $('menuBtn'), menuPopover = $('menuPopover');
@@ -6520,6 +6617,11 @@ checkGoogleRedirect();
 let focusHintTimer=null;
 let focusEnteredAt=0;
 function enterFocusMode(){
+  /* Joining a running session opens the co-work sheet AND syncs a running focus
+     timer, which used to drop into focus mode behind the open sheet — immersion
+     and a sheet at once. Defer instead, and engage when the sheet closes. */
+  if(document.querySelector('.sheet.show')){ focusModePending=true; return; }
+  focusModePending=false;
   document.body.classList.add('focus-mode');
   focusEnteredAt=Date.now();
   setTimeout(()=>{
@@ -6532,11 +6634,11 @@ function enterFocusMode(){
   }, 700);
 }
 function exitFocusMode(){
+  focusModePending=false;
   document.body.classList.remove('focus-mode');
   const h=$('focusHint'); if(h) h.classList.remove('show');
   clearTimeout(focusHintTimer);
 }
-let userExitedFocus = false;
 // tap anywhere exits focus mode (ignore the click that started it)
 document.addEventListener('click', e=>{
   if(!document.body.classList.contains('focus-mode')) return;
