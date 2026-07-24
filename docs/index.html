@@ -2537,6 +2537,7 @@ function applyCloudUser(user, cloudDoc){
   setupPresence();
   attachInviteListener();
   attachJoinRequestListener();
+  attachFriendsLive();
 }
 
 // ---- live sync: reflect changes made on other devices, without a refresh ----
@@ -2712,6 +2713,7 @@ async function cloudSignOut(){
   clearFriendPresenceWatch();
   detachInviteListener();
   detachJoinRequestListener();
+  detachFriendsLive();
   try{ if(fb && fb.auth) await fb.auth.signOut(); }catch(e){}
   cloudUser=null; cloudDataRef=null;
   try{ localStorage.removeItem('pomofit:cloudSession'); }catch(e){}
@@ -2832,6 +2834,16 @@ function showJoinRequestToast(fromUid, req){
 
 // distinct two-note ping for incoming social notifications, audible in a background tab
 function pingIncoming(){
+  if(!S.sound) return;
+  try{
+    if(!notifAudio) primeNotifAudio();
+    if(notifAudio){
+      notifAudio.currentTime = 0;
+      const p = notifAudio.play();
+      if(p && p.catch) p.catch(()=>{ beep(880,0.12,0.06,'sine',0); beep(1245,0.16,0.05,'sine',0.13); });
+      return;
+    }
+  }catch(e){}
   try{ beep(880, 0.12, 0.06, 'sine', 0); beep(1245, 0.16, 0.05, 'sine', 0.13); }catch(e){}
 }
 
@@ -3143,6 +3155,31 @@ async function inviteFriendToSession(fUid, btn){
   }catch(e){ console.error('invite/start failed', e); friendMsg('Couldn\'t start the session — try again.'); }
 }
 
+/* live friends — re-render as requests/friendships change, so the sheet doesn't
+   need closing and reopening to pick them up */
+let friendsLiveRefs=[];
+let friendsRenderTimer=null;
+function attachFriendsLive(){
+  detachFriendsLive();
+  if(!cloudUser || !fb || !fb.db) return;
+  const bump = ()=>{
+    clearTimeout(friendsRenderTimer);
+    friendsRenderTimer = setTimeout(()=>{ try{ renderFriends(); }catch(e){} }, 120);
+  };
+  ['friendRequests/'+cloudUser.uid, 'friends/'+cloudUser.uid].forEach(path=>{
+    try{
+      const ref = fb.db.ref(path);
+      const h = ref.on('value', bump, ()=>{});
+      friendsLiveRefs.push({ref, h});
+    }catch(e){}
+  });
+}
+function detachFriendsLive(){
+  friendsLiveRefs.forEach(({ref,h})=>{ try{ ref.off('value', h); }catch(e){} });
+  friendsLiveRefs=[];
+  clearTimeout(friendsRenderTimer);
+}
+
 let inviteListenerRef=null, inviteListenerHandler=null;
 function attachInviteListener(){
   detachInviteListener();
@@ -3287,32 +3324,93 @@ function ac(){
   }catch(e){}
   return AC;
 }
-// unlock AudioContext on the first user gesture — browsers block it until then
-(function unlockAudioOnGesture(){
+// Keep the AudioContext unlocked. Desktop browsers re-suspend it whenever the
+// tab is backgrounded, so these listeners stay attached for the whole session
+// rather than removing themselves after the first gesture.
+(function keepAudioUnlocked(){
   const unlock = ()=>{
     try{
       const a = ac();
-      // create a tiny silent buffer + play it to definitively unlock on iOS/Safari
+      if(a && a.state === 'suspended') a.resume();
       if(a && a.state !== 'closed'){
         const buf = a.createBuffer(1, 1, 22050);
         const src = a.createBufferSource();
-        src.buffer = buf;
-        src.connect(a.destination);
-        src.start(0);
+        src.buffer = buf; src.connect(a.destination); src.start(0);
       }
+      primeNotifAudio();
     }catch(e){}
-    document.removeEventListener('pointerdown', unlock);
-    document.removeEventListener('touchstart', unlock);
-    document.removeEventListener('keydown', unlock);
-    document.removeEventListener('click', unlock);
   };
-  document.addEventListener('pointerdown', unlock, {passive:true});
-  document.addEventListener('touchstart', unlock, {passive:true});
-  document.addEventListener('keydown', unlock, {passive:true});
-  document.addEventListener('click', unlock, {passive:true});
+  ['pointerdown','touchstart','keydown','click'].forEach(ev=>
+    document.addEventListener(ev, unlock, {passive:true}));
+  // re-arm when returning to the tab
+  document.addEventListener('visibilitychange', ()=>{
+    if(!document.hidden){ try{ const a=ac(); if(a && a.state==='suspended') a.resume(); }catch(e){} }
+  });
 })();
+
+/* ---------- notification ping ----------
+   Social pings need to be audible when the tab is in the background, where Web
+   Audio is throttled hardest. An <audio> element carrying a pre-rendered WAV is
+   far more reliable there, so that's the primary path with beep() as a fallback. */
+let notifAudio = null, notifPrimed = false;
+function buildNotifWav(){
+  const sr = 44100, dur = 0.42, n = Math.floor(sr*dur);
+  const data = new Float32Array(n);
+  const note = (startS, endS, freq, amp)=>{
+    const a = Math.floor(startS*sr), b = Math.floor(endS*sr);
+    for(let i=a;i<b && i<n;i++){
+      const p = (i-a)/(b-a);
+      // quick attack, smooth decay so it reads as a chime not a click
+      const env = Math.min(1, p*18) * Math.pow(1-p, 2.2);
+      data[i] += Math.sin(2*Math.PI*freq*(i-a)/sr) * env * amp;
+    }
+  };
+  note(0.00, 0.20, 880, 0.42);
+  note(0.13, 0.42, 1245, 0.36);
+  // encode 16-bit mono PCM WAV
+  const buf = new ArrayBuffer(44 + n*2), v = new DataView(buf);
+  const str = (off, sTxt)=>{ for(let i=0;i<sTxt.length;i++) v.setUint8(off+i, sTxt.charCodeAt(i)); };
+  str(0,'RIFF'); v.setUint32(4, 36+n*2, true); str(8,'WAVEfmt ');
+  v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true);
+  str(36,'data'); v.setUint32(40, n*2, true);
+  for(let i=0;i<n;i++){
+    const x = Math.max(-1, Math.min(1, data[i]));
+    v.setInt16(44+i*2, x<0 ? x*0x8000 : x*0x7FFF, true);
+  }
+  return URL.createObjectURL(new Blob([buf], {type:'audio/wav'}));
+}
+function primeNotifAudio(){
+  try{
+    if(!notifAudio){
+      notifAudio = new Audio(buildNotifWav());
+      notifAudio.preload = 'auto';
+    }
+    if(!notifPrimed){
+      // a muted play/pause during a gesture satisfies autoplay policies
+      notifAudio.muted = true;
+      const p = notifAudio.play();
+      if(p && p.then) p.then(()=>{ notifAudio.pause(); notifAudio.currentTime=0; notifAudio.muted=false; notifPrimed=true; })
+                       .catch(()=>{ notifAudio.muted=false; });
+      else { notifAudio.pause(); notifAudio.currentTime=0; notifAudio.muted=false; notifPrimed=true; }
+    }
+  }catch(e){}
+}
+
 function beep(freq, dur=0.09, gain=0.05, type='sine', when=0){
   if(!S.sound) return;
+  try{
+    const a0=ac();
+    // a suspended context has a frozen clock — scheduling now would be lost,
+    // so resume first and play once it's actually running
+    if(a0 && a0.state==='suspended'){
+      a0.resume().then(()=>playTone(freq,dur,gain,type,when)).catch(()=>{});
+      return;
+    }
+  }catch(e){}
+  playTone(freq,dur,gain,type,when);
+}
+function playTone(freq, dur=0.09, gain=0.05, type='sine', when=0){
   try{
     const a=ac(), t=a.currentTime+when, o=a.createOscillator(), g=a.createGain();
     o.type=type; o.frequency.value=freq;
@@ -4346,6 +4444,7 @@ $('deleteAccountBtn').onclick=async ()=>{
     clearFriendPresenceWatch();
     detachInviteListener();
     detachJoinRequestListener();
+    detachFriendsLive();
     try{ if(cloudDataRef) await cloudDataRef.remove(); }catch(e){}
     try{ await cloudUser.delete(); }catch(e){ /* may need recent login; sign out regardless */ }
     cloudUser=null; cloudDataRef=null;
@@ -5421,8 +5520,21 @@ $('copyCodeBtn').onclick=async ()=>{
 };
 $('leaveSessionBtn').onclick=async ()=>{
   if(sessionRefs){
-    try{ await sessionRefs.myMemberRef.remove(); }catch(e){}
+    const leavingRefs = sessionRefs, leavingCode = mySession;
+    try{ await leavingRefs.myMemberRef.remove(); }catch(e){}
     detachSessionListeners();
+    // if that was the last person out, tear the room down so it can't be rejoined
+    try{
+      const snap = await leavingRefs.membersRef.get();
+      const remaining = snap.exists() ? Object.keys(snap.val()||{}).length : 0;
+      if(remaining === 0){
+        await leavingRefs.sessionRef.remove();
+        try{
+          const last = JSON.parse(localStorage.getItem('pomofit:lastSession')||'null');
+          if(last && last.code === leavingCode) localStorage.removeItem('pomofit:lastSession');
+        }catch(e){}
+      }
+    }catch(e){ console.error('session cleanup failed', e); }
   }
   mySession=null; sessionRefs=null; isHost=false;
   if(typeof publishPresenceSession==='function') publishPresenceSession();
