@@ -1,7 +1,31 @@
 <!DOCTYPE html>
-<html lang="en" style="background:#2E7191; color-scheme:dark;">
+<html lang="en" class="boot" style="background:#2E7191; color-scheme:dark;">
 <head>
 <meta charset="UTF-8">
+<script>
+  /* Theme restore — MUST be the first executable thing in the document.
+     Anything above this (async tags, stylesheets) gives the browser a window in
+     which it can paint the canvas using the hardcoded ocean blue on <html>,
+     which is what produced the blue flash on refresh for other themes.
+     This also injects the resolved colour into the boot stylesheet so no
+     ocean-blue value survives anywhere once a theme is saved. */
+  (function(){
+    try{
+      const s = JSON.parse(localStorage.getItem('pomofit:settings') || 'null');
+      if(!(s && s.theme)) return;
+      const t = s.theme === 'cream' ? 'ocean' : s.theme;
+      const bgMap = { ember:'#1B3A2D', mono:'#141414', pink:'#E36F97', ocean:'#2E7191', light:'#EAE9E5' };
+      const bg = bgMap[t] || '#2E7191';
+      window.__bootTheme = t;
+      window.__bootBg = bg;
+      document.documentElement.style.background = bg;
+      document.documentElement.style.colorScheme = (t === 'light') ? 'light' : 'dark';
+      document.documentElement.dataset.pendingTheme = t;
+      const meta = document.getElementById('metaThemeColor');
+      if(meta) meta.setAttribute('content', bg);
+    }catch(e){}
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>PomoEase — Exercise and Study Environment</title>
 <!-- Google tag (gtag.js) -->
@@ -12,28 +36,7 @@
   gtag('js', new Date());
   gtag('config', 'G-1946TF0P4L');
 </script>
-<style>html,body{background:#2E7191;}</style>
-<script>
-  // apply saved theme instantly (before body renders) to prevent white flash
-  (function(){
-    try{
-      const s = JSON.parse(localStorage.getItem('pomofit:settings') || 'null');
-      if(s && s.theme){
-        const t = s.theme === 'cream' ? 'ocean' : s.theme;
-        const bgMap = { ember:'#1B3A2D', mono:'#141414', pink:'#E36F97', ocean:'#2E7191', light:'#EAE9E5' };
-        const bg = bgMap[t] || '#2E7191';
-        document.documentElement.style.background = bg;
-        document.documentElement.style.colorScheme = (t === 'light') ? 'light' : 'dark';
-        document.documentElement.dataset.pendingTheme = t;
-        // update theme-color meta so browser chrome (status bar) also matches
-        setTimeout(()=>{
-          const meta = document.getElementById('metaThemeColor');
-          if(meta) meta.setAttribute('content', bg);
-        }, 0);
-      }
-    }catch(e){}
-  })();
-</script>
+<style id="bootBg">html,body{background:#2E7191;}</style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2375662453335999" crossorigin="anonymous"></script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzFCM0EyRCIvPgogIDxsaW5lIHgxPSIxNiIgeTE9IjgiIHgyPSIxNiIgeTI9IjYiIHN0cm9rZT0iIzRBOEMzOCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxlbGxpcHNlIGN4PSIxNCIgY3k9IjYiIHJ4PSIzIiByeT0iMS41IiBmaWxsPSIjNEE4QzM4IiB0cmFuc2Zvcm09InJvdGF0ZSgtMzAgMTQgNikiLz4KICA8ZWxsaXBzZSBjeD0iMTgiIGN5PSI1LjUiIHJ4PSIyLjUiIHJ5PSIxLjIiIGZpbGw9IiM1QUFBNDQiIHRyYW5zZm9ybT0icm90YXRlKDIwIDE4IDUuNSkiLz4KICA8Y2lyY2xlIGN4PSIxNiIgY3k9IjE5IiByPSIxMCIgZmlsbD0iI0U4NDUyQSIvPgogIDxlbGxpcHNlIGN4PSIxMi41IiBjeT0iMTQiIHJ4PSIyLjUiIHJ5PSIxLjgiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsLjI1KSIgdHJhbnNmb3JtPSJyb3RhdGUoLTIwIDEyLjUgMTQpIi8+Cjwvc3ZnPg==">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzFCM0EyRCIvPgogIDxsaW5lIHgxPSIxNiIgeTE9IjgiIHgyPSIxNiIgeTI9IjYiIHN0cm9rZT0iIzRBOEMzOCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxlbGxpcHNlIGN4PSIxNCIgY3k9IjYiIHJ4PSIzIiByeT0iMS41IiBmaWxsPSIjNEE4QzM4IiB0cmFuc2Zvcm09InJvdGF0ZSgtMzAgMTQgNikiLz4KICA8ZWxsaXBzZSBjeD0iMTgiIGN5PSI1LjUiIHJ4PSIyLjUiIHJ5PSIxLjIiIGZpbGw9IiM1QUFBNDQiIHRyYW5zZm9ybT0icm90YXRlKDIwIDE4IDUuNSkiLz4KICA8Y2lyY2xlIGN4PSIxNiIgY3k9IjE5IiByPSIxMCIgZmlsbD0iI0U4NDUyQSIvPgogIDxlbGxpcHNlIGN4PSIxMi41IiBjeT0iMTQiIHJ4PSIyLjUiIHJ5PSIxLjgiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsLjI1KSIgdHJhbnNmb3JtPSJyb3RhdGUoLTIwIDEyLjUgMTQpIi8+Cjwvc3ZnPg==">
@@ -172,6 +175,9 @@
     font-family:'Noto Sans Arabic', system-ui, sans-serif;
   }
   @media (prefers-reduced-motion: reduce){ body{transition:none;} }
+  /* during boot nothing may animate its colour — prevents the theme fading in
+     from the markup default (ocean blue) on refresh */
+  html.boot body, html.boot #entryPage{ transition:none !important; }
 
   /* ---------- focus mode (timer centred, everything else hidden) ---------- */
   body.focus-mode .timer{
@@ -1605,13 +1611,24 @@
 <script>
   // apply saved theme immediately so the entry page matches the user's preference
   try{
-    const s = JSON.parse(localStorage.getItem('pomofit:settings')||'null');
-    if(s && s.theme){
-      // migrate deprecated cream theme to ocean
-      if(s.theme === 'cream') s.theme = 'ocean';
-      document.body.dataset.theme = s.theme;
+    const t = window.__bootTheme;
+    if(t) document.body.dataset.theme = t;
+    // neutralise the ocean-blue pre-paint fallback so no stale blue can surface
+    if(window.__bootBg){
+      const st = document.getElementById('bootBg');
+      if(st) st.textContent = 'html,body{background:' + window.__bootBg + ';}';
     }
   }catch(e){}
+  // release the no-transition lock only once the correct theme has actually
+  // painted — otherwise the body background animates *from* ocean blue,
+  // which reads as a blue flash on every refresh for other themes
+  try{
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      document.documentElement.classList.remove('boot');
+    }));
+    // safety: never leave transitions permanently disabled
+    setTimeout(()=> document.documentElement.classList.remove('boot'), 1200);
+  }catch(e){ document.documentElement.classList.remove('boot'); }
   // reveal the wordmark only once the Anton display font is loaded, to avoid a fallback-font flash
   (function(){
     const reveal = ()=> document.body.classList.add('fonts-ready');
@@ -2792,7 +2809,7 @@ async function askToJoinFriend(fUid, code, btn){
   }catch(e){ console.error('join request failed', e); friendMsg("Couldn't send that request — try again."); }
 }
 
-let joinReqRef=null, joinReqHandler=null;
+let joinReqRef=null, joinReqHandler=null, joinReqPrimed=false;
 function attachJoinRequestListener(){
   detachJoinRequestListener();
   if(!cloudUser || !fb || !fb.db) return;
@@ -2804,16 +2821,21 @@ function attachJoinRequestListener(){
       try{ joinReqRef.child(fromUid).remove(); }catch(e){}
       return;
     }
-    showJoinRequestToast(fromUid, req);
+    // Firebase replays child_added for every EXISTING child when a listener
+    // attaches — on a page refresh that fired the ping with nothing new having
+    // happened. Only genuinely new arrivals should make a sound.
+    showJoinRequestToast(fromUid, req, joinReqPrimed);
   }, err=>console.error('join request listener', err));
+  // 'value' fires after the initial batch of child_added events
+  joinReqRef.once('value', ()=>{ joinReqPrimed=true; }, ()=>{ joinReqPrimed=true; });
 }
 function detachJoinRequestListener(){
   if(joinReqRef && joinReqHandler){ try{ joinReqRef.off('child_added', joinReqHandler); }catch(e){} }
-  joinReqRef=null; joinReqHandler=null;
+  joinReqRef=null; joinReqHandler=null; joinReqPrimed=false;
 }
 
-function showJoinRequestToast(fromUid, req){
-  pingIncoming();
+function showJoinRequestToast(fromUid, req, withSound=true){
+  if(withSound) pingIncoming();
   const toast=document.createElement('div'); toast.className='invite-toast';
   const txt=document.createElement('span'); txt.className='invite-toast-text';
   txt.textContent=(req.name||'A friend')+' wants to join your session';
@@ -3180,10 +3202,11 @@ function detachFriendsLive(){
   clearTimeout(friendsRenderTimer);
 }
 
-let inviteListenerRef=null, inviteListenerHandler=null;
+let inviteListenerRef=null, inviteListenerHandler=null, invitesPrimed=false;
 function attachInviteListener(){
   detachInviteListener();
   if(!cloudUser || !fb || !fb.db) return;
+  invitesPrimed=false;
   inviteListenerRef = fb.db.ref('invites/'+cloudUser.uid);
   inviteListenerHandler = inviteListenerRef.on('child_added', snap=>{
     const inv=snap.val()||{};
@@ -3198,19 +3221,23 @@ function attachInviteListener(){
       try{ inviteListenerRef.child(fromUid).remove(); }catch(e){}
       return;
     }
-    showInviteToast(fromUid, inv);
+    // pre-existing invites are replayed on attach (i.e. on every refresh) —
+    // show them, but don't make a sound as if they'd just arrived
+    showInviteToast(fromUid, inv, invitesPrimed);
   }, err=>{ console.error('invite listener error', err); });
+  // 'value' fires after the initial batch of child_added events
+  inviteListenerRef.once('value', ()=>{ invitesPrimed=true; }, ()=>{ invitesPrimed=true; });
 }
 function detachInviteListener(){
   if(inviteListenerRef && inviteListenerHandler){
     try{ inviteListenerRef.off('child_added', inviteListenerHandler); }catch(e){}
   }
-  inviteListenerRef=null; inviteListenerHandler=null;
+  inviteListenerRef=null; inviteListenerHandler=null; invitesPrimed=false;
 }
 
 let activeInviteToast=null;
-function showInviteToast(fromUid, inv){
-  pingIncoming();
+function showInviteToast(fromUid, inv, withSound=true){
+  if(withSound) pingIncoming();
   // one toast at a time — newest wins
   if(activeInviteToast){ activeInviteToast.remove(); activeInviteToast=null; }
   const toast=document.createElement('div'); toast.className='invite-toast';
@@ -4881,7 +4908,18 @@ async function ensureFirebase(){
     // wait for Firebase to report any persisted auth state (a real signed-in user
     // survives reloads); if there's none, fall back to an anonymous guest session
     const existing = await new Promise(resolve=>{
-      const unsub = auth.onAuthStateChanged(u=>{ unsub(); resolve(u); });
+      let done=false, unsub=null;
+      const finish = u=>{
+        if(done) return; done=true;
+        // unsub can still be undefined if the observer fires synchronously —
+        // calling it blind threw, and the promise then never settled at all
+        try{ if(unsub) unsub(); }catch(e){}
+        resolve(u);
+      };
+      try{ unsub = auth.onAuthStateChanged(finish, ()=>finish(null)); }
+      catch(e){ finish(null); }
+      // never hang forever on a stalled handshake
+      setTimeout(()=>finish(null), 10000);
     });
     let user = existing;
     if(user && !user.isAnonymous){
@@ -4899,6 +4937,12 @@ async function ensureFirebase(){
     initServerTimeOffset();
     return fb;
   })();
+  // a rejected promise stays cached forever, which silently disabled every
+  // Firebase-backed control for the rest of the page's life — allow a retry
+  fbLoadPromise.catch(err=>{
+    console.error('[PomoEase] Firebase init failed, will retry on next use:', err);
+    fbLoadPromise = null;
+  });
   return fbLoadPromise;
 }
 
@@ -6305,6 +6349,17 @@ $('settingsSfxBtn').onclick=()=>{
 };
 wireToggle('autoBreak',()=>S.autoBreak,v=>S.autoBreak=v);
 wireToggle('autoFocus',()=>S.autoFocus,v=>S.autoFocus=v);
+
+/* ---------- diagnostics ----------
+   Everything below runs in one top-level script, so a single uncaught error
+   silently skips all remaining handler wiring — the page looks fine but taps
+   do nothing. These handlers make that visible in the console instead. */
+window.addEventListener('error', e=>{
+  console.error('[PomoEase] uncaught error —', e.message, 'at', (e.filename||'')+':'+e.lineno+':'+e.colno, e.error);
+});
+window.addEventListener('unhandledrejection', e=>{
+  console.error('[PomoEase] unhandled promise rejection —', e.reason);
+});
 
 /* ---------- boot ---------- */
 renderDots();
